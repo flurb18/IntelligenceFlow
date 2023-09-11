@@ -43,11 +43,11 @@ const blockTypes = {
             "INPUT-text" : {
                 "label" : "Input Text",
                 "type" : "text"
-            },
+            }/*,
             "INPUT-file" : {
                 "label" : "Input File",
                 "type" : "file"
-            }
+            }*/
         }
     },
     "OUTPUT" : {
