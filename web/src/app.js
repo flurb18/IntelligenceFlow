@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
   const cy = cytoscape({
     container: document.getElementById('flowDiagram'),
+    zoom: 1,
+    minZoom: 0.2,
+    maxZoom: 5,
     elements: [
       { data: { id: 'a' } },
       { data: { id: 'b' } },

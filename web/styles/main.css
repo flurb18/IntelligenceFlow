@@ -1,5 +1,14 @@
 #flowDiagram {
     position: absolute;
-    width: 100%;
+    margin-left: 25%;
+    width: 75%;
     height: 100%;
+    background-color: #f0f0f0;
+}
+
+#sidebar {
+    position: absolute;
+    width: 25%;
+    height: 100%;
+    background-color: #ffffff;
 }
