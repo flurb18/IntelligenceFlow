@@ -1,18 +1,4 @@
-#sideMenu {
-    width: 25%;
-    background-color: #ffffff;
-}
-
-#flowDiagramContainer {
-    margin-left: 25%;
-    background-color: #f0f0f0;
-    padding: 10px;
-}
-
 #flowDiagram {
-    display: block;
-    width: 75%;
+    width: 100%;
     height: 100%;
-    margin-left: 25%;
-    background-color: #f0f0f0;
 }
