@@ -93,7 +93,10 @@ const apiTypes = {
     },
     "Oobabooga" : {
         "parameters" : {
-
+            "Oobabooga-URL" : {
+                "label" : "API URL",
+                "type" : "text"
+            }
         }
     }
 }
@@ -121,7 +124,7 @@ function createSubmenusByType (config, selectElement) {
         selectElement.appendChild(typeOption);
         // Create submenu
         var typeSubmenu = document.createElement("div");
-        var typeSubmenuHeader = document.createElement("h5");
+        var typeSubmenuHeader = document.createElement("h4");
         typeSubmenuHeader.innerText = type + " Parameters";
         typeSubmenu.appendChild(typeSubmenuHeader);
         typeSubmenu.setAttribute("id", type +"-submenu");
