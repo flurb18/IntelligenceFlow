@@ -6,4 +6,9 @@
 #flowDiagramContainer {
     margin-left: 25%;
     background-color: #f0f0f0;
+    padding: 10px;
+}
+
+#flowDiagram {
+    display: block;
 }
