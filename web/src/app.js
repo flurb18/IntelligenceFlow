@@ -83,17 +83,17 @@ const blockTypes = {
 }
 
 const apiTypes = {
-    "Oobabooga" : {
-        "parameters" : {
-
-        }
-    },
     "OpenAI" : {
         "parameters" : {
             "OpenAI-APIkey" : {
                 "label" : "API Key",
                 "type" : "text"
             }
+        }
+    },
+    "Oobabooga" : {
+        "parameters" : {
+
         }
     }
 }
@@ -121,7 +121,7 @@ function createSubmenusByType (config, selectElement) {
         selectElement.appendChild(typeOption);
         // Create submenu
         var typeSubmenu = document.createElement("div");
-        var typeSubmenuHeader = document.createElement("h4");
+        var typeSubmenuHeader = document.createElement("h5");
         typeSubmenuHeader.innerText = type + " Parameters";
         typeSubmenu.appendChild(typeSubmenuHeader);
         typeSubmenu.setAttribute("id", type +"-submenu");
@@ -184,6 +184,8 @@ function createSubmenusByType (config, selectElement) {
         }
         insertAfter(typeSubmenu, selectElement);
     }
+    var firstType = Object.keys(config)[0];
+    document.getElementById(firstType + "-submenu").style.display = "block";
     selectElement.addEventListener("change", function () {
         let selectedValue = selectElement.options[selectElement.selectedIndex].value;
         let submenus = document.getElementsByClassName(selectElement.getAttribute("name")+"-submenu")
