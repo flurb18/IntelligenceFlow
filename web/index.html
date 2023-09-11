@@ -9,22 +9,33 @@
 </head>
 <body>
     <div id="sidebar">
-        <button class="sidebar-submenu-expand">New Block</button>
-        <form id="new-block-form" class="sidebar-submenu">
-            <button class="sidebar-submenu-expand">Parameters</button>
-            <div id="new-block-type-params" class="sidebar-submenu">
-                <label for="new-block-label">Block Label</label>
-                <input type="text" id="new-block-label" name="new-block-label">
-                <br>
-                <label for="new-block-type">Block Type</label>
-                <select id="new-block-type" name="new-block-type">
-                    <option hidden disabled selected value>Select...</option>
-                    <!--Dynamically generated-->
-                </select>
-                <br>
-                <!--Inputs dynamically generated-->
-            </div>
+        <button class="sidebar-submenu-expand-button">New Block</button>
+        <form id="new-block-form" class="sidebar-submenu-expand">
+            <label for="new-block-label">Block Label</label>
+            <input type="text" id="new-block-label" name="new-block-label">
+            <br>
+            <label for="new-block-type">Block Type</label>
+            <select id="new-block-type" name="new-block-type">
+                <option hidden disabled selected value>Select...</option>
+                <!--Dynamically generated-->
+            </select>
+            <!--Dynamically generated-->
+            <br>
             <input type="submit" value="Create New Block" class="sidebar-submit">
+        </form>
+        <button class="sidebar-submenu-expand-button">API Settings</button>
+        <form id="api-settings-form" class="sidebar-submenu-expand">
+            <label for="api-settings-url">API URL</label>
+            <input type="text" id="api-settings-url" name="api-settings-url">
+            <br>
+            <label for="api-settings-type">API Type</label>
+            <select id="api-settings-type" name="api-settings-type">
+                <option hidden disabled selected value>Select...</option>
+                <!--Dynamically generated-->
+            </select>
+            <!--Dynamically generated-->
+            <br>
+            <input type="submit" value="Save API Settings" class="sidebar-submit">
         </form>
     </div>
     <div id="flow-diagram"></div>

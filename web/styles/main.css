@@ -16,6 +16,18 @@
 .sidebar-submenu {
     border: 2px solid #dddddd;
     background-color: #f0f0f0;
+    color: #333333;
+    border-radius: 25px;
+    padding: 10px;
+    display: block;
+    overflow: hidden;
+    text-align: center;
+}
+
+.sidebar-submenu-expand {
+    border: 2px solid #dddddd;
+    background-color: #f0f0f0;
+    color: #333333;
     border-radius: 25px;
     padding: 10px;
     display: none;
@@ -23,8 +35,9 @@
     text-align: center;
 }
 
-.sidebar-submenu-expand {
+.sidebar-submenu-expand-button {
     background-color: #777;
+    display: block;
     color: white;
     cursor: pointer;
     padding-bottom: 18px;
@@ -37,27 +50,29 @@
     font-size: 15px;
 }
 
-.sidebar-submenu-expand-active, .sidebar-submenu-expand:hover {
+.sidebar-submenu-expand-button-active, .sidebar-submenu-expand-button:hover {
     background-color: #555;
-    color: white;
-    cursor: pointer;
-    padding-bottom: 18px;
-    padding-top: 18px;
-    border-radius: 25px;
-    width: 100%;
-    border: none;
-    text-align: center;
-    outline: none;
-    font-size: 15px;
 }
 
 .sidebar-submit {
+    background-color: #ffaa00;
+    color: white;
+    cursor: pointer;
     display: block;
+    border-radius: 25px;
     width: 80%;
-    margin: 0 auto;
+    border: none;
+    padding: 20px;
+    outline: none;
+    text-align: center;
+}
+
+.sidebar-submit:hover {
+    background-color: #ffdd00
 }
 
 .new-block-type-submenu {
     display: none;
+    padding: 20px;
 }
 
