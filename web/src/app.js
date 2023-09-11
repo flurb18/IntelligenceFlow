@@ -168,7 +168,8 @@ newBlockTypePicker.addEventListener("change", function () {
 // Make sidebar expand buttons work
 var expands = document.getElementsByClassName("sidebar-submenu-expand");
 for (var i = 0; i < expands.length; i++) {
-  expands[i].addEventListener("click", function() {
+  expands[i].addEventListener("click", function(e) {
+    e.preventDefault();
     this.classList.toggle("sidebar-submenu-expand-active");
     var content = this.nextElementSibling;
     if (content.style.display === "block") {
