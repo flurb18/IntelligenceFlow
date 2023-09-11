@@ -124,7 +124,6 @@ function createSubmenusByType (config, selectElement) {
         var typeSubmenuHeader = document.createElement("h4");
         typeSubmenuHeader.innerText = type + " Parameters";
         typeSubmenu.appendChild(typeSubmenuHeader);
-        typeSubmenu.appendChild(document.createElement("br"));
         typeSubmenu.setAttribute("id", type +"-submenu");
         typeSubmenu.setAttribute("name", type);
         typeSubmenu.setAttribute("class", selectElement.getAttribute("name")+"-submenu")
