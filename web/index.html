@@ -9,14 +9,21 @@
 </head>
 <body>
     <div id="sidebar">
+        <button class="sidebar-submenu-expand">New Block</button>
         <form id="new-block-form" class="sidebar-submenu">
-            <label for="new-block-label">Block Label</label>
-            <input type="text" id="new-block-label" name="new-block-label">
-            <select id="new-block-type" name="new-block-type">
-                <!--Dynamically generated-->
-            </select>
-            <input type="submit" value="Create Block">
-            <!--Forms dynamically generated-->
+            <button class="sidebar-submenu-expand">Parameters</button>
+            <div id="new-block-type-params" class="sidebar-submenu">
+                <label for="new-block-label">Block Label</label>
+                <input type="text" id="new-block-label" name="new-block-label">
+                <br>
+                <label for="new-block-type">Block Type</label>
+                <select id="new-block-type" name="new-block-type">
+                    <!--Dynamically generated-->
+                </select>
+                <br>
+                <!--Inputs dynamically generated-->
+            </div>
+            <input type="submit" value="Create New Block" class="sidebar-submit">
         </form>
     </div>
     <div id="flow-diagram"></div>
