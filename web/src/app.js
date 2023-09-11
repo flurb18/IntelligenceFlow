@@ -1,5 +1,3 @@
-const cytoscape = require('cytoscape');
-
 document.addEventListener('DOMContentLoaded', function() {
   const cy = cytoscape({
     container: document.getElementById('flowDiagram'),
