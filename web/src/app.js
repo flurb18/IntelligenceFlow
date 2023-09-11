@@ -157,11 +157,11 @@ newBlockTypePicker.addEventListener("change", function () {
     let selectedValue = newBlockTypePicker.options[newBlockTypePicker.selectedIndex].value;
     let subForms = document.getElementsByClassName("new-block-type-submenu");
     for (let i = 0; i < subForms.length; i += 1) {
-        if (selectedValue === subForms[i].name) {
+        if (selectedValue === subForms[i].value) {
             subForms[i].style.display = "block";
         } else {
             console.log(selectedValue);
-            console.log(subForms[i].name);
+            console.log(subForms[i].value);
             subForms[i].style.display = "none";
         }
     }
