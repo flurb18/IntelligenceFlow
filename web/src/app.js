@@ -129,7 +129,7 @@ function createSubmenusByType (config, selectElement) {
         typeSubmenu.appendChild(typeSubmenuHeader);
         typeSubmenu.setAttribute("id", type +"-submenu");
         typeSubmenu.setAttribute("name", type);
-        typeSubmenu.setAttribute("class", selectElement.getAttribute("name")+"-submenu")
+        typeSubmenu.setAttribute("class", "sidebar-submenu " + selectElement.getAttribute("name") + "-submenu")
         typeSubmenu.style.display = "none";
         let params = config[type]["parameters"];
         for (var param of Object.keys(params)) {
