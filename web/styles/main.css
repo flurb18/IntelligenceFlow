@@ -22,6 +22,7 @@
     display: block;
     overflow: hidden;
     text-align: center;
+    line-height: 2;
 }
 
 .sidebar-submenu-expand {
@@ -33,6 +34,7 @@
     display: none;
     overflow: hidden;
     text-align: center;
+    line-height: 2;
 }
 
 .sidebar-submenu-expand-button {
