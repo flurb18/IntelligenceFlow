@@ -1,48 +1,48 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const cy = cytoscape({
-    container: document.getElementById('flow-diagram'),
-    zoom: 1,
-    minZoom: 0.5,
-    maxZoom: 2,
-    elements: [
-      { data: { id: 'Input' } },
-      { data: { id: 'Output' } },
-      { data: { id: 'ab', source: 'Input', target: 'Output' } }
-    ],
-    style: [
-      {
-        selector: 'node',
-        style: {
-          'background-color': '#666',
-          'label': 'data(id)'
-        }
-      },
-      {
-        selector: 'edge',
-        style: {
-          'width': 3,
-          'line-color': '#ccc',
-          'target-arrow-color': '#ccc',
-          'target-arrow-shape': 'triangle',
-          'curve-style': 'straight'
-        }
-      }
-    ],
-    layout: { name: 'grid' }
-  });
+document.addEventListener('DOMContentLoaded', function () {
+    const cy = cytoscape({
+        container: document.getElementById('flow-diagram'),
+        zoom: 1,
+        minZoom: 0.5,
+        maxZoom: 2,
+        elements: [
+            { data: { id: 'Input' } },
+            { data: { id: 'Output' } },
+            { data: { id: 'ab', source: 'Input', target: 'Output' } }
+        ],
+        style: [
+            {
+                selector: 'node',
+                style: {
+                    'background-color': '#666',
+                    'label': 'data(id)'
+                }
+            },
+            {
+                selector: 'edge',
+                style: {
+                    'width': 3,
+                    'line-color': '#ccc',
+                    'target-arrow-color': '#ccc',
+                    'target-arrow-shape': 'triangle',
+                    'curve-style': 'straight'
+                }
+            }
+        ],
+        layout: { name: 'grid' }
+    });
 });
 
 const blockTypes = {
-    "INPUT" : {
-        "parameters" : {
-            "INPUT-type" : {
-                "label" : "Type of Input",
-                "type" : "choice",
-                "choices" : ["Input Text", "Choose File"]
+    "INPUT": {
+        "parameters": {
+            "INPUT-type": {
+                "label": "Type of Input",
+                "type": "choice",
+                "choices": ["Input Text", "Choose File"]
             },
-            "INPUT-text" : {
-                "label" : "Input Text",
-                "type" : "text"
+            "INPUT-text": {
+                "label": "Input Text",
+                "type": "text"
             }/*,
             "INPUT-file" : {
                 "label" : "Input File",
@@ -50,34 +50,34 @@ const blockTypes = {
             }*/
         }
     },
-    "OUTPUT" : {
-        "parameters" : {
-            "OUTPUT-type" : {
-                "label" : "Type of Output",
-                "type" : "choice",
-                "choices" : ["Output In Browser"]
+    "OUTPUT": {
+        "parameters": {
+            "OUTPUT-type": {
+                "label": "Type of Output",
+                "type": "choice",
+                "choices": ["Output In Browser"]
             }
         }
     },
-    "SPLIT" : {
-        "parameters" : {
-            "SPLIT-chunk-size" : {
-                "label" : "Chunk Size",
-                "type" : "num",
-                "min" : "0",
-                "max" : "100"
+    "SPLIT": {
+        "parameters": {
+            "SPLIT-chunk-size": {
+                "label": "Chunk Size",
+                "type": "num",
+                "min": "0",
+                "max": "100"
             },
-            "SPLIT-chunk-overlap" : {
-                "label" : "Chunk Overlap",
-                "type" : "num",
-                "min" : "0",
-                "max" : "100"
+            "SPLIT-chunk-overlap": {
+                "label": "Chunk Overlap",
+                "type": "num",
+                "min": "0",
+                "max": "100"
             }
         }
     },
-    "COMBINE" : {
-        "parameters" : {
-            
+    "COMBINE": {
+        "parameters": {
+
         }
     }
 }
@@ -158,9 +158,11 @@ newBlockTypePicker.addEventListener("change", function () {
     let subForms = document.getElementsByClassName("new-block-type-submenu");
     for (let i = 0; i < subForms.length; i += 1) {
         if (selectedValue === subForms[i].name) {
-          subForms[i].style.display = "block";
+            subForms[i].style.display = "block";
         } else {
-          subForms[i].style.display = "none";
+            console.log(selectedValue);
+            console.log(subForms[i].name);
+            subForms[i].style.display = "none";
         }
     }
 });
@@ -168,14 +170,14 @@ newBlockTypePicker.addEventListener("change", function () {
 // Make sidebar expand buttons work
 var expands = document.getElementsByClassName("sidebar-submenu-expand");
 for (var i = 0; i < expands.length; i++) {
-  expands[i].addEventListener("click", function(e) {
-    e.preventDefault();
-    this.classList.toggle("sidebar-submenu-expand-active");
-    var content = this.nextElementSibling;
-    if (content.style.display === "block") {
-      content.style.display = "none";
-    } else {
-      content.style.display = "block";
-    }
-  });
+    expands[i].addEventListener("click", function (e) {
+        e.preventDefault();
+        this.classList.toggle("sidebar-submenu-expand-active");
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+            content.style.display = "none";
+        } else {
+            content.style.display = "block";
+        }
+    });
 }
