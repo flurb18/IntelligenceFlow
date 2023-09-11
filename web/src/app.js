@@ -121,7 +121,7 @@ function createSubmenusByType (config, selectElement) {
         selectElement.appendChild(typeOption);
         // Create submenu
         var typeSubmenu = document.createElement("div");
-        var typeSubmenuHeader = document.createElement("h1");
+        var typeSubmenuHeader = document.createElement("h4");
         typeSubmenuHeader.innerText = type + " Parameters";
         typeSubmenu.appendChild(typeSubmenuHeader);
         typeSubmenu.appendChild(document.createElement("br"));
@@ -184,7 +184,6 @@ function createSubmenusByType (config, selectElement) {
             }
         }
         insertAfter(typeSubmenu, selectElement);
-        insertAfter(document.createElement("br"), selectElement);
     }
     selectElement.addEventListener("change", function () {
         let selectedValue = selectElement.options[selectElement.selectedIndex].value;

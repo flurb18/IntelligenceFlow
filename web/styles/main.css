@@ -38,6 +38,7 @@
 .sidebar-submenu-expand-button {
     background-color: #777;
     display: block;
+    margin: 0 auto;
     color: white;
     cursor: pointer;
     padding-bottom: 18px;
@@ -54,11 +55,16 @@
     background-color: #555;
 }
 
+.center {
+    text-align: center;
+}
+
 .sidebar-submit {
     background-color: #ffaa00;
     color: white;
     cursor: pointer;
     display: block;
+    margin: 0 auto;
     border-radius: 25px;
     width: 80%;
     border: none;
@@ -71,8 +77,4 @@
     background-color: #ffdd00
 }
 
-.new-block-type-submenu {
-    display: none;
-    padding: 20px;
-}
 
