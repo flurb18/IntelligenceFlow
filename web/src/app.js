@@ -1,4 +1,4 @@
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { RecursiveCharacterTextSplitter } from "https://unpkg.com/langchain@0.0.147/index.js";
 
 document.addEventListener('DOMContentLoaded', function () {
     const cy = cytoscape({
