@@ -34,11 +34,11 @@ document.addEventListener('DOMContentLoaded', function () {
     cy.on('cxttap', 'node', function (event) {
         if (selectedNode) {
             cy.add([{ group: 'edges', data: { id: selectedNode.id() + event.target.id(), source: selectedNode.id(), target: event.target.id() } }]);
-            selectedNode.unselect();
+            selectedNode.toggleClass("selected-node");
             selectedNode = null;
         } else {
             selectedNode = event.target;
-            selectedNode.select();
+            selectedNode.toggleClass("selected-node");
         }
     });
 

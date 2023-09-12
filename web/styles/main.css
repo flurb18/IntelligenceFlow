@@ -79,4 +79,9 @@
     background-color: #ffdd00
 }
 
+.selected-node {
+    background-color: #88ff88;
+    border-color: #0099ff;
+}
+
 
