@@ -221,6 +221,7 @@ function createSubmenusByType(config, selectElement) {
         var typeSubmenuHeader = document.createElement("strong");
         typeSubmenuHeader.innerText = type + " Parameters";
         typeSubmenu.appendChild(typeSubmenuHeader);
+        typeSubmenu.appendChild(document.createElement("br"));
         typeSubmenu.setAttribute("id", type + "-submenu");
         typeSubmenu.setAttribute("name", type);
         typeSubmenu.setAttribute("class", "sidebar-submenu " + selectElement.getAttribute("name") + "-submenu")
@@ -244,6 +245,7 @@ function createSubmenusByType(config, selectElement) {
                         paramChoice.appendChild(paramChoiceOption);
                     }
                     typeSubmenu.appendChild(paramChoice);
+                    typeSubmenu.appendChild(document.createElement("br"));
                     break;
                 //Textbox
                 case "text":
@@ -252,6 +254,7 @@ function createSubmenusByType(config, selectElement) {
                     paramText.setAttribute("name", param);
                     paramText.setAttribute("type", "text");
                     typeSubmenu.appendChild(paramText);
+                    typeSubmenu.appendChild(document.createElement("br"))
                     break;
                 //Numeric input
                 case "num":
@@ -262,6 +265,7 @@ function createSubmenusByType(config, selectElement) {
                     paramNum.setAttribute("min", params[param]["min"]);
                     paramNum.setAttribute("max", params[param]["max"]);
                     typeSubmenu.appendChild(paramNum);
+                    typeSubmenu.appendChild(document.createElement("br"))
                     break;
                 //File input
                 case "file":
@@ -270,6 +274,7 @@ function createSubmenusByType(config, selectElement) {
                     paramFile.setAttribute("name", param);
                     paramFile.setAttribute("type", "file");
                     typeSubmenu.appendChild(paramFile);
+                    typeSubmenu.appendChild(document.createElement("br"));
                     break;
                 default:
                     break;
