@@ -29,26 +29,27 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
         layout: { name: 'grid' }
     });
-    
+
     var selectedNode = null;
-    cy.on('cxttap', 'node', function(event){
-        if (selectedNode) {
-            cy.add([{ group: 'edges', data: { id: selectedNode.id()+event.target.id(), source: selectedNode.id(), target: event.target.id() } }]);
-            selectedNode.json({ selected: false });
+    cy.on('cxttapstart', 'node', function(event){
+        selectedNode = event.target;
+    });
+    cy.on('cxttapend', function (event) {
+        if (event.target === cy) {
             selectedNode = null;
         } else {
-            selectedNode = event.target;
-            selectedNode.json({ selected: true });
-        }
-    });
-
-    cy.on('tap', function(event) {
-        if (event.target === selectedNode) {} else {
-            selectedNode.json({ selected: false });
+            if (event.target.isNode() && selectedNode) {
+                cy.add([{ group: 'edges', data: { id: selectedNode.id() + event.target.id(), source: selectedNode.id(), target: event.target.id() } }]);
+            }
             selectedNode = null;
         }
     });
-
+    // Handle new block form submission
+    var newBlockForm = document.getElementById("new-block-form");
+    newBlockForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        cy.add([{ group: 'nodes', data: { id: newBlockForm.elements["new-block-label"].value}}]);
+    });
 });
 
 const blockTypes = {
@@ -241,9 +242,3 @@ for (var i = 0; i < expands.length; i++) {
         }
     });
 }
-
-// Handle new block form submission
-var newBlockForm = document.getElementById("new-block-form");
-newBlockForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-});
