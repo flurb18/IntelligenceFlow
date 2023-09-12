@@ -80,9 +80,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var newBlockForm = document.getElementById("new-block-form");
     newBlockForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        if (!(newBlockForm.elements["new-block-label"].value)) {
-            return;
-        }
         var extent = cy.extent();
         var blockType = newBlockForm.elements["new-block-type"].value;
         var _data = {
