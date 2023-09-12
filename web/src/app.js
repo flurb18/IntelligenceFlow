@@ -108,6 +108,7 @@ Promise.all([blockTypesPromise, apiTypesPromise, cytostylePromise]).then(
             // Handle new block form submission
             var newBlockForm = document.getElementById("new-block-form");
             newBlockForm.addEventListener("submit", function (e) {
+                console.log("poop");
                 e.preventDefault();
                 var extent = cy.extent();
                 var blockType = newBlockForm.elements["new-block-type"].value;
@@ -162,110 +163,4 @@ Promise.all([blockTypesPromise, apiTypesPromise, cytostylePromise]).then(
         });
     }
 );
-
-const apiTypes_backup = {
-    "OpenAI": {
-        "parameters": {
-            "OpenAI-APIkey": {
-                "label": "API Key",
-                "type": "text"
-            }
-        }
-    },
-    "Oobabooga": {
-        "parameters": {
-            "Oobabooga-URL": {
-                "label": "API URL",
-                "type": "text"
-            }
-        }
-    }
-}
-
-const blockTypes_backup = {
-    "INPUT": {
-        "maps": {
-            "none": ["single"]
-        },
-        "parameters": {}
-    },
-    "INPUT-FIXED": {
-        "maps": {
-            "none": ["single"]
-        },
-        "parameters": {
-            "INPUT-FIXED-text": {
-                "label": "Fixed Text Input",
-                "type": "textbox"
-            }
-        }
-    },
-    "OUTPUT": {
-        "maps": {
-            "none": ["none"],
-            "single": ["none"],
-            "multi": ["none"]
-        },
-        "parameters": {}
-    },
-    "COPY": {
-        "maps": {
-            "none": ["none"],
-            "single": ["multi"],
-            "multi": ["multi"]
-        },
-        "parameters": {
-            "COPY-num-copies": {
-                "label": "Number of Copies",
-                "type": "num",
-                "min": "2",
-                "max": "100"
-            }
-        }
-    },
-    "SPLIT": {
-        "maps": {
-            "none": ["none"],
-            "single": ["multi"],
-            "multi": ["multi"]
-        },
-        "parameters": {
-            "SPLIT-chunk-size": {
-                "label": "Chunk Size",
-                "type": "num",
-                "min": "100",
-                "max": "1000"
-            },
-            "SPLIT-chunk-overlap": {
-                "label": "Chunk Overlap",
-                "type": "num",
-                "min": "0",
-                "max": "100"
-            }
-        }
-    },
-    "COMBINE": {
-        "maps": {
-            "none": ["none"],
-            "single": ["none"],
-            "multi": ["single"]
-        },
-        "parameters": {
-
-        }
-    },
-    "LLM": {
-        "maps": {
-            "none": ["none"],
-            "single": ["single"],
-            "multi": ["multi"]
-        },
-        "parameters": {
-            "LLM-query" : {
-                "label": "Query for LLM",
-                "type": "textbox"
-            }
-        }
-    }
-}
 
