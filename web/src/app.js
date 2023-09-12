@@ -105,10 +105,11 @@ document.addEventListener('DOMContentLoaded', function () {
         var blockType = newBlockForm.elements["new-block-type"].value;
         var newId = Math.max(...blockTypeIdNums[blockType])+1;
         var idString = blockType + newId;
-        var label = newBlockForm.elements["new-block-label"].value;
+        var inputLabel = newBlockForm.elements["new-block-label"].value;
+        var label = inputLabel ? idString + "-" + inputLabel : idString;
         var _data = {
             "id": idString,
-            "label": label ? idString + "-" + label : idString,
+            "label": label,
             "block-type": blockType,
             "input-type": "none",
             "parameters" : {}
@@ -126,6 +127,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 y: ((extent.y1 + extent.y2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD
             }
         }]);
+        if (blockType === "INPUT") {
+            inputIdString = idString+"-input";
+            var inputElement = document.createElement("textarea");
+            inputElement.setAttribute("id", inputIdString);
+            inputElement.setAttribute("name", inputIdString);
+            var labelElement = document.createElement("label");
+            labelElement.setAttribute("for", inputIdString);
+            labelElement.innerText = label;
+            var submitButton = document.getElementById("execute-form-submit");
+            insertBefore(labelElement, submitButton);
+            insertBefore(inputElement, submitButton);
+            insertBefore(document.createElement("br"), submitButton);
+        }
     });
 
     function getBlocksOfType(blockType) {
@@ -252,6 +266,11 @@ function insertAfter(a, e) {
     } else {
         e.parentNode.appendChild(a);
     }
+}
+
+// Append a immediately before e
+function insertBefore(a, e) {
+    e.parentNode.insertBefore(a, e);
 }
 
 // Creates submenus that are only visisble according to the choice of selectElement, according to the config object.
