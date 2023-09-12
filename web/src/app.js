@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', function () {
             {
                 selector: 'edge.multi',
                 style: {
-                    'width': 10,
-                    'arrow-scale': 4
+                    'width': 15,
+                    'arrow-scale': 2
                 }
             }
         ],
