@@ -32,20 +32,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var selectedNode = null;
     cy.on('cxttap', 'node', function (event) {
-        event.preventDefault();
         if (selectedNode) {
             cy.add([{ group: 'edges', data: { id: selectedNode.id() + event.target.id(), source: selectedNode.id(), target: event.target.id() } }]);
-            selectedNode.json({ selected: false });
+            selectedNode.unselect();
             selectedNode = null;
         } else {
             selectedNode = event.target;
-            selectedNode.json({ selected: true });
+            selectedNode.select();
         }
     });
-    cy.on('cxttapend', function(event) {
-        event.preventDefault();
-    });
-    
+
     // Handle new block form submission
     var newBlockForm = document.getElementById("new-block-form");
     newBlockForm.addEventListener("submit", function (e) {
