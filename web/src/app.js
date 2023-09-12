@@ -71,26 +71,40 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    var blockTypeIdNums = {}
+    for (var type of Object.keys(blockTypes)) {
+        blockTypeIdNums[type] = 1;
+    }
+
     // Handle new block form submission
     var newBlockForm = document.getElementById("new-block-form");
     newBlockForm.addEventListener("submit", function (e) {
         e.preventDefault();
+        if (!(newBlockForm.elements["new-block-label"].value)) {
+            return;
+        }
         var extent = cy.extent();
         var blockType = newBlockForm.elements["new-block-type"].value;
         var _data = {
-            "id": newBlockForm.elements["new-block-label"].value,
+            "id": blockType + "-" + blockTypeIdNums[blockType],
             "block-type": blockType,
             "parameters" : {}
         };
+        blockTypeIdNums[blockType] += 1;
+        if (newBlockForm.elements["new-block-label"].value) {
+            _data["id"] += "-" + newBlockForm.elements["new-block-label"].value;
+        }
         for (param of Object.keys(blockTypes[blockType]["parameters"])) {
             _data["parameters"][param] = newBlockForm.elements[param].value;
         }
+        var maxD = Math.floor(Math.min(extent.w, extent.h) / 4);
+
         cy.add([{
             group: 'nodes',
             data: _data,
             position: {
-                x: (extent.x1 + extent.x2) / 2,
-                y: (extent.y1 + extent.y2) / 2
+                x: ((extent.x1 + extent.x2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD,
+                y: ((extent.y1 + extent.y2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD
             }
         }]);
     });
@@ -103,6 +117,18 @@ const blockTypes = {
         ],
         "block-output-type": "single",
         "parameters": {}
+    },
+    "INPUT-FIXED": {
+        "block-input-types": [
+            "none"
+        ],
+        "block-output-type": "single",
+        "parameters": {
+            "INPUT-FIXED-text": {
+                "label": "Fixed Text Input",
+                "type": "textbox"
+            }
+        }
     },
     "OUTPUT": {
         "block-input-types": [
@@ -194,6 +220,9 @@ function createSubmenusByType(config, selectElement) {
         typeSubmenu.setAttribute("class", "sidebar-submenu " + selectElement.getAttribute("name") + "-submenu")
         typeSubmenu.style.display = "none";
         let params = config[type]["parameters"];
+        if (params.length === 0) {
+            insertAfter(document.createElement("br"), selectElement);
+        }
         for (var param of Object.keys(params)) {
             var paramLabel = document.createElement("label");
             paramLabel.setAttribute("for", param);
