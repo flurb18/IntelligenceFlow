@@ -31,24 +31,31 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     var selectedNode = null;
-    cy.on('cxttapstart', 'node', function(event){
-        selectedNode = event.target;
-    });
-    cy.on('cxttapend', function (event) {
-        if (event.target === cy) {
+    cy.on('cxttap', 'node', function (event) {
+        event.preventDefault();
+        if (selectedNode) {
+            cy.add([{ group: 'edges', data: { id: selectedNode.id() + event.target.id(), source: selectedNode.id(), target: event.target.id() } }]);
+            selectedNode.json({ selected: false });
             selectedNode = null;
         } else {
-            if (event.target.isNode() && selectedNode) {
-                cy.add([{ group: 'edges', data: { id: selectedNode.id() + event.target.id(), source: selectedNode.id(), target: event.target.id() } }]);
-            }
-            selectedNode = null;
+            selectedNode = event.target;
+            selectedNode.json({ selected: true });
         }
     });
+
     // Handle new block form submission
     var newBlockForm = document.getElementById("new-block-form");
     newBlockForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        cy.add([{ group: 'nodes', data: { id: newBlockForm.elements["new-block-label"].value}}]);
+        var extent = cy.extent();
+        cy.add([{
+            group: 'nodes',
+            data: { id: newBlockForm.elements["new-block-label"].value },
+            position: {
+                x: (extent.x1 + extent.x2) / 2,
+                y: (extent.y1 + extent.y2) / 2
+            }
+        }]);
     });
 });
 
@@ -103,19 +110,19 @@ const blockTypes = {
 }
 
 const apiTypes = {
-    "OpenAI" : {
-        "parameters" : {
-            "OpenAI-APIkey" : {
-                "label" : "API Key",
-                "type" : "text"
+    "OpenAI": {
+        "parameters": {
+            "OpenAI-APIkey": {
+                "label": "API Key",
+                "type": "text"
             }
         }
     },
-    "Oobabooga" : {
-        "parameters" : {
-            "Oobabooga-URL" : {
-                "label" : "API URL",
-                "type" : "text"
+    "Oobabooga": {
+        "parameters": {
+            "Oobabooga-URL": {
+                "label": "API URL",
+                "type": "text"
             }
         }
     }
@@ -135,7 +142,7 @@ function insertAfter(a, e) {
 // describes the submenu to be created. The object should have an entry "parameters" mapping to an object of string:object pairs,
 // where this object has an entry "label" and an entry "type". "type" should be in choice,text,num,file. "label" is what goes next to
 // the field in the submenu.
-function createSubmenusByType (config, selectElement) {
+function createSubmenusByType(config, selectElement) {
     for (var type of Object.keys(config)) {
         // Create option in selectElement
         var typeOption = document.createElement("option");
@@ -148,7 +155,7 @@ function createSubmenusByType (config, selectElement) {
         typeSubmenuHeader.innerText = type + " Parameters";
         typeSubmenu.appendChild(typeSubmenuHeader);
         typeSubmenu.appendChild(document.createElement("br"));
-        typeSubmenu.setAttribute("id", type +"-submenu");
+        typeSubmenu.setAttribute("id", type + "-submenu");
         typeSubmenu.setAttribute("name", type);
         typeSubmenu.setAttribute("class", "sidebar-submenu " + selectElement.getAttribute("name") + "-submenu")
         typeSubmenu.style.display = "none";
@@ -212,7 +219,7 @@ function createSubmenusByType (config, selectElement) {
     document.getElementById(firstType + "-submenu").style.display = "block";
     selectElement.addEventListener("change", function () {
         let selectedValue = selectElement.options[selectElement.selectedIndex].value;
-        let submenus = document.getElementsByClassName(selectElement.getAttribute("name")+"-submenu")
+        let submenus = document.getElementsByClassName(selectElement.getAttribute("name") + "-submenu")
         for (let i = 0; i < submenus.length; i += 1) {
             if (selectedValue === submenus[i].getAttribute("name")) {
                 submenus[i].style.display = "block";
