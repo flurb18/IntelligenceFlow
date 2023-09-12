@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', function () {
             {
                 selector: 'edge.multi',
                 style: {
-                    'curve-style': 'haystack',
-                    'haystack-radius': 1
+                    'width': 10,
+                    'arrow-scale': 4
                 }
             }
         ],
@@ -48,33 +48,18 @@ document.addEventListener('DOMContentLoaded', function () {
             var srcOutputType = blockTypes[srcBlockType]["block-output-type"];
             var destInputTypes = blockTypes[destBlockType]["block-input-types"];
             if (destInputTypes.includes(srcOutputType) && !(srcOutputType === "none")) {
-                switch (srcOutputType) {
-                    case "single":
-                        cy.add([{
-                            "group": 'edges',
-                            "data": {
-                                "id": selectedNode.id() + event.target.id(),
-                                "source": selectedNode.id(),
-                                "target": event.target.id()
-                            }
-                        }]);
-                        break;
-                    case "multi":
-                        for (var i = 0; i < 20; i++) {
-                            cy.add([{
-                                "group": 'edges',
-                                "data": {
-                                    "id": selectedNode.id() + event.target.id() + i,
-                                    "source": selectedNode.id(),
-                                    "target": event.target.id(),
-                                    "classes": "multi"
-                                }
-                            }]);
-                        }
-                        break;
-                    default:
-                        break;
+                var _data = {
+                    "id": selectedNode.id() + event.target.id(),
+                    "source": selectedNode.id(),
+                    "target": event.target.id()
                 }
+                if (srcOutputType === "multi") {
+                    _data["classes"] = "multi"
+                }
+                cy.add([{
+                    "group": 'edges',
+                    "data": _data
+                }]);
             }
             selectedNode.toggleClass("selected");
             selectedNode = null;
