@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     var selectedNode = null;
-    cy.on('cxttap', 'node', function (event) {
+    cy.on('cxttap', function (event) {
         if (event.target === cy) {
             if (selectedNode) {
                 selectedNode.toggleClass("selected");
