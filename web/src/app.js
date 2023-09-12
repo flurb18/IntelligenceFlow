@@ -42,7 +42,10 @@ document.addEventListener('DOMContentLoaded', function () {
             selectedNode.json({ selected: true });
         }
     });
-
+    cy.on('cxttapend', function(event) {
+        event.preventDefault();
+    });
+    
     // Handle new block form submission
     var newBlockForm = document.getElementById("new-block-form");
     newBlockForm.addEventListener("submit", function (e) {
