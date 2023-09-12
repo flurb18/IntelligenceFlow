@@ -102,21 +102,7 @@ const blockTypes = {
             "none"
         ],
         "block-output-type": "single",
-        "parameters": {
-            "INPUT-type": {
-                "label": "Type of Input",
-                "type": "choice",
-                "choices": ["Input Text", "Choose File"]
-            },
-            "INPUT-text": {
-                "label": "Input Text",
-                "type": "textbox"
-            }/*,
-            "INPUT-file" : {
-                "label" : "Input File",
-                "type" : "file"
-            }*/
-        }
+        "parameters": {}
     },
     "OUTPUT": {
         "block-input-types": [
@@ -124,13 +110,7 @@ const blockTypes = {
             "multi"
         ],
         "block-output-type": "none",
-        "parameters": {
-            "OUTPUT-type": {
-                "label": "Type of Output",
-                "type": "choice",
-                "choices": ["Output In Browser"]
-            }
-        }
+        "parameters": {}
     },
     "SPLIT": {
         "block-input-types": [
@@ -276,16 +256,18 @@ function createSubmenusByType(config, selectElement) {
         }
         insertAfter(typeSubmenu, selectElement);
     }
+
     var firstType = Object.keys(config)[0];
-    document.getElementById(firstType + "-submenu").style.display = "block";
+    if (!(Object.keys(config[firstType]["parameters"]).length === 0)) {
+        document.getElementById(firstType + "-submenu").style.display = "block";
+    }
     selectElement.addEventListener("change", function () {
         let selectedValue = selectElement.options[selectElement.selectedIndex].value;
-        let submenus = document.getElementsByClassName(selectElement.getAttribute("name") + "-submenu")
-        for (let i = 0; i < submenus.length; i += 1) {
-            if (selectedValue === submenus[i].getAttribute("name")) {
-                submenus[i].style.display = "block";
+        for (var type of Object.keys(config)) {
+            if (selectedValue === type && !(Object.keys(config[type]["parameters"]).length === 0)) {
+                document.getElementById(type+"-submenu").style.display = "block";
             } else {
-                submenus[i].style.display = "none";
+                document.getElementById(type+"-submenu").style.display = "none";
             }
         }
     });
