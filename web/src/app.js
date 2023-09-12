@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
         for (param of Object.keys(blockTypes[blockType]["parameters"])) {
             _data["parameters"][param] = newBlockForm.elements[param].value;
         }
-        var maxD = Math.floor(Math.min(extent.w, extent.h) / 4);
+        var maxD = Math.floor(Math.min(extent.w, extent.h) / 6);
 
         cy.add([{
             group: 'nodes',
