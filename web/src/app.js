@@ -1,3 +1,5 @@
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+
 document.addEventListener('DOMContentLoaded', function () {
     const cy = cytoscape({
         container: document.getElementById('flow-diagram'),
