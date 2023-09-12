@@ -44,11 +44,9 @@ document.addEventListener('DOMContentLoaded', function () {
     cy.on('cxttap', 'node', function (event) {
         if (selectedNode) {
             var srcBlockType = selectedNode.data("block-type");
-            var destBlockType = selectedNode.data("block-type");
+            var destBlockType = event.target.data("block-type");
             var srcOutputType = blockTypes[srcBlockType]["block-output-type"];
             var destInputTypes = blockTypes[destBlockType]["block-input-types"];
-            console.log(srcOutputType);
-            console.log(destInputTypes);
             if (destInputTypes.includes(srcOutputType) && !(srcOutputType === "none")) {
                 switch (srcOutputType) {
                     case "single":
