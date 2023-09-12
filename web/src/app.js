@@ -130,7 +130,7 @@ function main(blockTypes, apiTypes, cytostyle) {
             "parameters" : {}
         };
         blockTypeIdNums[blockType].push(newId);
-        for (param of Object.keys(blockTypes[blockType]["parameters"])) {
+        for (var param of Object.keys(blockTypes[blockType]["parameters"])) {
             _data["parameters"][param] = newBlockForm.elements[param].value;
         }
         var maxD = Math.floor(Math.min(extent.w, extent.h) / 6);
