@@ -33,7 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 selector: 'edge.multi',
                 style: {
                     'width': 15,
-                    'line-style': 'dashed'
+                    'line-style': 'dashed',
+                    'arrow-scale': 0.8
                 }
             }
         ],
