@@ -1,0 +1,18 @@
+{
+    "OpenAI": {
+        "parameters": {
+            "OpenAI-APIkey": {
+                "label": "API Key",
+                "type": "text"
+            }
+        }
+    },
+    "Oobabooga": {
+        "parameters": {
+            "Oobabooga-URL": {
+                "label": "API URL",
+                "type": "text"
+            }
+        }
+    }
+}
