@@ -110,7 +110,7 @@ const blockTypes = {
             },
             "INPUT-text": {
                 "label": "Input Text",
-                "type": "text"
+                "type": "textbox"
             }/*,
             "INPUT-file" : {
                 "label" : "Input File",
@@ -234,14 +234,21 @@ function createSubmenusByType(config, selectElement) {
                     typeSubmenu.appendChild(paramChoice);
                     typeSubmenu.appendChild(document.createElement("br"));
                     break;
-                //Textbox
+                //Textline
                 case "text":
                     var paramText = document.createElement("input");
                     paramText.setAttribute("id", param);
                     paramText.setAttribute("name", param);
                     paramText.setAttribute("type", "text");
                     typeSubmenu.appendChild(paramText);
-                    typeSubmenu.appendChild(document.createElement("br"))
+                    typeSubmenu.appendChild(document.createElement("br"));
+                    break;
+                case "textbox":
+                    var paramTextbox = document.createElement("textarea");
+                    paramTextbox.setAttribute("id", param);
+                    paramTextbox.setAttribute("name", param);
+                    typeSubmenu.appendChild(paramTextbox);
+                    typeSubmenu.appendChild(document.createElement("br"));
                     break;
                 //Numeric input
                 case "num":
