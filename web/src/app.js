@@ -310,9 +310,9 @@ function createSubmenusByType(config, selectElement) {
                     paramNum.setAttribute("type", "range");
                     paramNum.setAttribute("min", params[param]["min"]);
                     paramNum.setAttribute("max", params[param]["max"]);
-                    paramNumDisplay.value = paramNum.value;
+                    paramNumDisplay.textContent = paramNum.value;
                     paramNum.addEventListener("input", function() {
-                        paramNumDisplay.value = paramNum.value;
+                        paramNumDisplay.textContent = paramNum.value;
                     });
                     typeSubmenu.appendChild(paramNum);
                     typeSubmenu.appendChild(paramNumDisplay);
