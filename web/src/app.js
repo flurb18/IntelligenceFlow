@@ -57,8 +57,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         var srcOutputTypes = blockTypes[srcBlockType]["maps"][selectedNode.data("input-type")];
                         if (srcOutputTypes.length === 1) {
                             var srcOutputType = srcOutputTypes[0];
-                            var destInputTypes = Object.keys(blockTypes[destBlockType]["maps"]);
-                            if (destInputTypes.includes(srcOutputType) && !(srcOutputType === "none")) {
+                            var destAssignedInputType = event.target.data("input-type");
+                            var destAvailableInputTypes = Object.keys(blockTypes[destBlockType]["maps"]);
+                            if (!(srcOutputType === "none") && (
+                                (destAssignedInputType === srcOutputType) ||
+                                (destAssignedInputType === "none" && destAvailableInputTypes.includes(srcOutputType))
+                                )
+                            ) {
                                 var _classes = []
                                 if (srcOutputType === "multi") {
                                     _classes.push("multi")
@@ -312,7 +317,7 @@ function createSubmenusByType(config, selectElement) {
                     paramNum.setAttribute("max", params[param]["max"]);
                     paramNumDisplay.textContent = paramNum.value;
                     paramNum.addEventListener("input", function() {
-                        paramNumDisplay.textContent = paramNum.value;
+                        this.nextElementSibling.textContent = this.value;
                     });
                     typeSubmenu.appendChild(paramNum);
                     typeSubmenu.appendChild(paramNumDisplay);
