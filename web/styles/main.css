@@ -11,6 +11,7 @@
     width: 33%;
     height: 100%;
     background-color: #ffffff;
+    overflow-y: scroll;
 }
 
 .sidebar-submenu {
