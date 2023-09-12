@@ -43,31 +43,47 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var selectedNode = null;
     cy.on('cxttap', 'node', function (event) {
-        if (selectedNode) {
-            var srcBlockType = selectedNode.data("block-type");
-            var destBlockType = event.target.data("block-type");
-            var srcOutputType = blockTypes[srcBlockType]["block-output-type"];
-            var destInputTypes = blockTypes[destBlockType]["block-input-types"];
-            if (destInputTypes.includes(srcOutputType) && !(srcOutputType === "none")) {
-                var _classes = []
-                if (srcOutputType === "multi") {
-                    _classes.push("multi")
-                }
-                cy.add([{
-                    "group": 'edges',
-                    "data": {
-                        "id": selectedNode.id() + event.target.id(),
-                        "source": selectedNode.id(),
-                        "target": event.target.id()
-                    },
-                    "classes": _classes
-                }]);
+        if (event.target === cy) {
+            if (selectedNode) {
+                selectedNode.toggleClass("selected");
+                selectedNode = null;
             }
-            selectedNode.toggleClass("selected");
-            selectedNode = null;
         } else {
-            selectedNode = event.target;
-            selectedNode.toggleClass("selected");
+            if (event.target.isNode()) {
+                if (selectedNode) {
+                    if (!(selectedNode === event.target)) {
+                        var srcBlockType = selectedNode.data("block-type");
+                        var destBlockType = event.target.data("block-type");
+                        var srcOutputTypes = blockTypes[srcBlockType]["maps"][selectedNode.data("input-type")];
+                        if (srcOutputTypes.length === 1) {
+                            var srcOutputType = srcOutputTypes[0];
+                            var destInputTypes = Object.keys(blockTypes[destBlockType]["maps"]);
+                            if (destInputTypes.includes(srcOutputType) && !(srcOutputType === "none")) {
+                                var _classes = []
+                                if (srcOutputType === "multi") {
+                                    _classes.push("multi")
+                                }
+                                cy.add([{
+                                    "group": 'edges',
+                                    "data": {
+                                        "id": selectedNode.id() + event.target.id(),
+                                        "source": selectedNode.id(),
+                                        "target": event.target.id(),
+                                        "flow-type": srcOutputType
+                                    },
+                                    "classes": _classes
+                                }]);
+                                event.target.data("input-type", srcOutputType);
+                            }
+                        }
+                        selectedNode.toggleClass("selected");
+                        selectedNode = null;
+                    }
+                } else {
+                    selectedNode = event.target;
+                    selectedNode.toggleClass("selected");
+                }
+            }
         }
     });
 
@@ -85,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var _data = {
             "id": blockType + "-" + blockTypeIdNums[blockType],
             "block-type": blockType,
+            "input-type": "none",
             "parameters" : {}
         };
         blockTypeIdNums[blockType] += 1;
@@ -109,17 +126,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
 const blockTypes = {
     "INPUT": {
-        "block-input-types": [
-            "none"
-        ],
-        "block-output-type": "single",
+        "maps": {
+            "none": ["single"]
+        },
         "parameters": {}
     },
     "INPUT-FIXED": {
-        "block-input-types": [
-            "none"
-        ],
-        "block-output-type": "single",
+        "maps": {
+            "none": ["single"]
+        },
         "parameters": {
             "INPUT-FIXED-text": {
                 "label": "Fixed Text Input",
@@ -128,24 +143,40 @@ const blockTypes = {
         }
     },
     "OUTPUT": {
-        "block-input-types": [
-            "single",
-            "multi"
-        ],
-        "block-output-type": "none",
+        "maps": {
+            "none": ["none"],
+            "single": ["none"],
+            "multi": ["none"]
+        },
         "parameters": {}
     },
+    "COPY": {
+        "maps": {
+            "none": ["none"],
+            "single": ["multi"],
+            "multi": ["multi"]
+        },
+        "parameters": {
+            "COPY-num-copies": {
+                "label": "Number of Copies",
+                "type": "num",
+                "min": "2",
+                "max": "100"
+            }
+        }
+    },
     "SPLIT": {
-        "block-input-types": [
-            "single"
-        ],
-        "block-output-type": "multi",
+        "maps": {
+            "none": ["none"],
+            "single": ["multi"],
+            "multi": ["multi"]
+        },
         "parameters": {
             "SPLIT-chunk-size": {
                 "label": "Chunk Size",
                 "type": "num",
-                "min": "0",
-                "max": "100"
+                "min": "100",
+                "max": "1000"
             },
             "SPLIT-chunk-overlap": {
                 "label": "Chunk Overlap",
@@ -156,12 +187,26 @@ const blockTypes = {
         }
     },
     "COMBINE": {
-        "block-input-types": [
-            "multi"
-        ],
-        "block-output-type": "single",
+        "maps": {
+            "none": ["none"],
+            "single": ["none"],
+            "multi": ["single"]
+        },
         "parameters": {
 
+        }
+    },
+    "LLM": {
+        "maps": {
+            "none": ["none"],
+            "single": ["single"],
+            "multi": ["multi"]
+        },
+        "parameters": {
+            "LLM-query" : {
+                "label": "Query for LLM",
+                "type": "textbox"
+            }
         }
     }
 }
@@ -259,12 +304,18 @@ function createSubmenusByType(config, selectElement) {
                 //Numeric input
                 case "num":
                     var paramNum = document.createElement("input");
+                    var paramNumDisplay = document.createElement("output");
                     paramNum.setAttribute("id", param);
                     paramNum.setAttribute("name", param);
                     paramNum.setAttribute("type", "range");
                     paramNum.setAttribute("min", params[param]["min"]);
                     paramNum.setAttribute("max", params[param]["max"]);
+                    paramNumDisplay.value = paramNum.value;
+                    paramNum.addEventListener("input", function() {
+                        paramNumDisplay.value = paramNum.value;
+                    });
                     typeSubmenu.appendChild(paramNum);
+                    typeSubmenu.appendChild(paramNumDisplay);
                     typeSubmenu.appendChild(document.createElement("br"))
                     break;
                 //File input
