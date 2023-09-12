@@ -4,10 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
         zoom: 1,
         minZoom: 0.5,
         maxZoom: 2,
-        elements: [
-            { data: { id: 'Input' } },
-            { data: { id: 'Output' } }
-        ],
+        elements: [],
         style: [
             {
                 selector: 'node',
@@ -31,6 +28,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     'target-arrow-shape': 'triangle',
                     'curve-style': 'straight'
                 }
+            },
+            {
+                selector: 'edge.multi',
+                style: {
+                    'curve-style': 'haystack',
+                    'haystack-radius': 0.5
+                }
             }
         ],
         layout: { name: 'grid' }
@@ -39,7 +43,39 @@ document.addEventListener('DOMContentLoaded', function () {
     var selectedNode = null;
     cy.on('cxttap', 'node', function (event) {
         if (selectedNode) {
-            cy.add([{ group: 'edges', data: { id: selectedNode.id() + event.target.id(), source: selectedNode.id(), target: event.target.id() } }]);
+            var srcBlockType = selectedNode.data("block-type");
+            var destBlockType = selectedNode.data("block-type");
+            var srcOutputType = blockTypes[srcBlockType]["block-output-type"];
+            var destInputTypes = blockTypes[destBlockType]["block-input-types"];
+            if (destInputTypes.includes(srcOutputType) && !(srcOutputType === "none")) {
+                switch (srcOutputType) {
+                    case "single":
+                        cy.add([{
+                            "group": 'edges',
+                            "data": {
+                                "id": selectedNode.id() + event.target.id(),
+                                "source": selectedNode.id(),
+                                "target": event.target.id()
+                            }
+                        }]);
+                        break;
+                    case "multi":
+                        for (var i = 0; i < 20; i++) {
+                            cy.add([{
+                                "group": 'edges',
+                                "data": {
+                                    "id": selectedNode.id() + event.target.id() + i,
+                                    "source": selectedNode.id(),
+                                    "target": event.target.id(),
+                                    "classes": "multi"
+                                }
+                            }]);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
             selectedNode.toggleClass("selected");
             selectedNode = null;
         } else {
@@ -53,9 +89,18 @@ document.addEventListener('DOMContentLoaded', function () {
     newBlockForm.addEventListener("submit", function (e) {
         e.preventDefault();
         var extent = cy.extent();
+        var blockType = newBlockForm.elements["new-block-type"].value;
+        var _data = {
+            "id": newBlockForm.elements["new-block-label"].value,
+            "block-type": blockType,
+            "parameters" : {}
+        };
+        for (param of Object.keys(blockTypes[blockType]["parameters"])) {
+            _data["parameters"][param] = newBlockForm.elements[param].value;
+        }
         cy.add([{
             group: 'nodes',
-            data: { id: newBlockForm.elements["new-block-label"].value },
+            data: _data,
             position: {
                 x: (extent.x1 + extent.x2) / 2,
                 y: (extent.y1 + extent.y2) / 2
@@ -66,6 +111,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 const blockTypes = {
     "INPUT": {
+        "block-input-types": [
+            "none"
+        ],
+        "block-output-type": "single",
         "parameters": {
             "INPUT-type": {
                 "label": "Type of Input",
@@ -83,6 +132,11 @@ const blockTypes = {
         }
     },
     "OUTPUT": {
+        "block-input-types": [
+            "single",
+            "multi"
+        ],
+        "block-output-type": "none",
         "parameters": {
             "OUTPUT-type": {
                 "label": "Type of Output",
@@ -92,6 +146,10 @@ const blockTypes = {
         }
     },
     "SPLIT": {
+        "block-input-types": [
+            "single"
+        ],
+        "block-output-type": "multi",
         "parameters": {
             "SPLIT-chunk-size": {
                 "label": "Chunk Size",
@@ -108,6 +166,10 @@ const blockTypes = {
         }
     },
     "COMBINE": {
+        "block-input-types": [
+            "multi"
+        ],
+        "block-output-type": "single",
         "parameters": {
 
         }
@@ -159,7 +221,6 @@ function createSubmenusByType(config, selectElement) {
         var typeSubmenuHeader = document.createElement("strong");
         typeSubmenuHeader.innerText = type + " Parameters";
         typeSubmenu.appendChild(typeSubmenuHeader);
-        typeSubmenu.appendChild(document.createElement("br"));
         typeSubmenu.setAttribute("id", type + "-submenu");
         typeSubmenu.setAttribute("name", type);
         typeSubmenu.setAttribute("class", "sidebar-submenu " + selectElement.getAttribute("name") + "-submenu")
@@ -183,7 +244,6 @@ function createSubmenusByType(config, selectElement) {
                         paramChoice.appendChild(paramChoiceOption);
                     }
                     typeSubmenu.appendChild(paramChoice);
-                    typeSubmenu.appendChild(document.createElement("br"));
                     break;
                 //Textbox
                 case "text":
@@ -192,7 +252,6 @@ function createSubmenusByType(config, selectElement) {
                     paramText.setAttribute("name", param);
                     paramText.setAttribute("type", "text");
                     typeSubmenu.appendChild(paramText);
-                    typeSubmenu.appendChild(document.createElement("br"))
                     break;
                 //Numeric input
                 case "num":
@@ -203,7 +262,6 @@ function createSubmenusByType(config, selectElement) {
                     paramNum.setAttribute("min", params[param]["min"]);
                     paramNum.setAttribute("max", params[param]["max"]);
                     typeSubmenu.appendChild(paramNum);
-                    typeSubmenu.appendChild(document.createElement("br"))
                     break;
                 //File input
                 case "file":
@@ -212,7 +270,6 @@ function createSubmenusByType(config, selectElement) {
                     paramFile.setAttribute("name", param);
                     paramFile.setAttribute("type", "file");
                     typeSubmenu.appendChild(paramFile);
-                    typeSubmenu.appendChild(document.createElement("br"));
                     break;
                 default:
                     break;
