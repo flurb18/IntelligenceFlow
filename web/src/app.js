@@ -143,7 +143,7 @@ function main(blockTypes, apiTypes, cytostyle) {
             }
         }]);
         if (blockType === "INPUT") {
-            inputIdString = idString+"-input";
+            var inputIdString = idString+"-input";
             var inputElement = document.createElement("textarea");
             inputElement.setAttribute("id", inputIdString);
             inputElement.setAttribute("name", inputIdString);
