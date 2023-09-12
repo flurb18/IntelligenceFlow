@@ -6,8 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
         maxZoom: 2,
         elements: [
             { data: { id: 'Input' } },
-            { data: { id: 'Output' } },
-            { data: { id: 'ab', source: 'Input', target: 'Output' } }
+            { data: { id: 'Output' } }
         ],
         style: [
             {
@@ -30,6 +29,26 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
         layout: { name: 'grid' }
     });
+    
+    var selectedNode = null;
+    cy.on('cxttap', 'node', function(event){
+        if (selectedNode) {
+            cy.add([{ group: 'edges', data: { id: selectedNode.id()+event.target.id(), source: selectedNode.id(), target: event.target.id() } }]);
+            selectedNode.json({ selected: false });
+            selectedNode = null;
+        } else {
+            selectedNode = event.target;
+            selectedNode.json({ selected: true });
+        }
+    });
+
+    cy.on('tap', function(event) {
+        if (event.target === selectedNode) {} else {
+            selectedNode.json({ selected: false });
+            selectedNode = null;
+        }
+    });
+
 });
 
 const blockTypes = {
