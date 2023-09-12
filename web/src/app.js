@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 selector: 'node',
                 style: {
                     'background-color': '#666',
-                    'label': 'data(id)'
+                    'label': 'data(label)'
                 }
             },
             {
@@ -93,8 +93,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     var blockTypeIdNums = {}
-    for (var type of Object.keys(blockTypes)) {
-        blockTypeIdNums[type] = 1;
+    for (var blockType of Object.keys(blockTypes)) {
+        blockTypeIdNums[blockType] = [0];
     }
 
     // Handle new block form submission
@@ -103,21 +103,21 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         var extent = cy.extent();
         var blockType = newBlockForm.elements["new-block-type"].value;
+        var newId = Math.max(...blockTypeIdNums[blockType])+1;
+        var idString = blockType + newId;
+        var label = newBlockForm.elements["new-block-label"].value;
         var _data = {
-            "id": blockType + "-" + blockTypeIdNums[blockType],
+            "id": idString,
+            "label": label ? idString + "-" + label : idString,
             "block-type": blockType,
             "input-type": "none",
             "parameters" : {}
         };
-        blockTypeIdNums[blockType] += 1;
-        if (newBlockForm.elements["new-block-label"].value) {
-            _data["id"] += "-" + newBlockForm.elements["new-block-label"].value;
-        }
+        blockTypeIdNums[blockType].push(newId);
         for (param of Object.keys(blockTypes[blockType]["parameters"])) {
             _data["parameters"][param] = newBlockForm.elements[param].value;
         }
         var maxD = Math.floor(Math.min(extent.w, extent.h) / 6);
-
         cy.add([{
             group: 'nodes',
             data: _data,
@@ -127,6 +127,16 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }]);
     });
+
+    function getBlocksOfType(blockType) {
+        var blocks = [];
+        for (var id of blockTypeIdNums[blockType]) {
+            if (!(id === 0)) {
+                blocks.push(cy.nodes().getElementById(blockType + id));
+            }
+        }
+        return blocks;
+    }
 });
 
 const blockTypes = {
