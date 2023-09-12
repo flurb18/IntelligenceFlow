@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
             {
+                selector: 'node.selected',
+                style: {
+                    'background-color': '#8f8'
+                }
+            },
+            {
                 selector: 'edge',
                 style: {
                     'width': 3,
@@ -34,11 +40,11 @@ document.addEventListener('DOMContentLoaded', function () {
     cy.on('cxttap', 'node', function (event) {
         if (selectedNode) {
             cy.add([{ group: 'edges', data: { id: selectedNode.id() + event.target.id(), source: selectedNode.id(), target: event.target.id() } }]);
-            selectedNode.toggleClass("selected-node");
+            selectedNode.toggleClass("selected");
             selectedNode = null;
         } else {
             selectedNode = event.target;
-            selectedNode.toggleClass("selected-node");
+            selectedNode.toggleClass("selected");
         }
     });
 
