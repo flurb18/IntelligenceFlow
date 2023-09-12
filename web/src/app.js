@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 selector: 'edge.multi',
                 style: {
                     'curve-style': 'haystack',
-                    'haystack-radius': 0.5
+                    'haystack-radius': 1
                 }
             }
         ],
