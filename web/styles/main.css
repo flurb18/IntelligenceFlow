@@ -1,3 +1,7 @@
+#body {
+    overflow: hidden;
+}
+
 #flow-diagram {
     position: absolute;
     margin-left: 33%;
