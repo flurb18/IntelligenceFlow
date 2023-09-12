@@ -47,6 +47,8 @@ document.addEventListener('DOMContentLoaded', function () {
             var destBlockType = selectedNode.data("block-type");
             var srcOutputType = blockTypes[srcBlockType]["block-output-type"];
             var destInputTypes = blockTypes[destBlockType]["block-input-types"];
+            console.log(srcOutputType);
+            console.log(destInputTypes);
             if (destInputTypes.includes(srcOutputType) && !(srcOutputType === "none")) {
                 switch (srcOutputType) {
                     case "single":
