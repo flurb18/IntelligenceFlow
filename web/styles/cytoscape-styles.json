@@ -1,0 +1,33 @@
+[
+    {
+        "selector": "node",
+        "style": {
+            "background-color": "#666",
+            "label": "data(label)"
+        }
+    },
+    {
+        "selector": "node.selected",
+        "style": {
+            "background-color": "#8f8"
+        }
+    },
+    {
+        "selector": "edge",
+        "style": {
+            "width": 3,
+            "line-color": "#ccc",
+            "target-arrow-color": "#ccc",
+            "target-arrow-shape": "triangle",
+            "curve-style": "straight"
+        }
+    },
+    {
+        "selector": "edge.multi",
+        "style": {
+            "width": 15,
+            "line-style": "dashed",
+            "arrow-scale": 0.8
+        }
+    }
+]
