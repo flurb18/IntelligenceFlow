@@ -48,17 +48,18 @@ document.addEventListener('DOMContentLoaded', function () {
             var srcOutputType = blockTypes[srcBlockType]["block-output-type"];
             var destInputTypes = blockTypes[destBlockType]["block-input-types"];
             if (destInputTypes.includes(srcOutputType) && !(srcOutputType === "none")) {
-                var _data = {
-                    "id": selectedNode.id() + event.target.id(),
-                    "source": selectedNode.id(),
-                    "target": event.target.id()
-                }
+                var _classes = []
                 if (srcOutputType === "multi") {
-                    _data["classes"] = "multi"
+                    _classes.push("multi")
                 }
                 cy.add([{
                     "group": 'edges',
-                    "data": _data
+                    "data": {
+                        "id": selectedNode.id() + event.target.id(),
+                        "source": selectedNode.id(),
+                        "target": event.target.id()
+                    },
+                    "classes": _classes
                 }]);
             }
             selectedNode.toggleClass("selected");
