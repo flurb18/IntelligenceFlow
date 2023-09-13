@@ -190,7 +190,6 @@ function main(blockTypes, apiTypes, cytostyle) {
         e.preventDefault();
         var promises = []
         getBlocksOfType("INPUT").forEach((inputBlock) => {
-            console.log(inputBlock.id());
             var textIn = document.getElementById(inputBlock.id() + "-input").value;
             promises.push(activateBlock(textIn, inputBlock));
         });
@@ -242,7 +241,7 @@ function main(blockTypes, apiTypes, cytostyle) {
     }
 
     function getBlocksOfType(blockType) {
-        return cy.nodes('[id = "' + blockType + '\\d+"]');
+        return cy.nodes('[id ^= "' + blockType+'"]');
     }
 }
 
