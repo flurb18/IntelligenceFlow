@@ -8,48 +8,51 @@
     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
 </head>
 <body id="body">
-    <div id="sidebar">
-        <button class="sidebar-submenu-expand-button">New Block</button>
-        <form id="new-block-form" class="sidebar-submenu-expand">
-            <label for="new-block-label">Block Label</label>
-            <input type="text" id="new-block-label" name="new-block-label">
-            <br>
-            <label for="new-block-type">Block Type</label>
-            <select id="new-block-type" name="new-block-type">
+    <div id="container">
+        <div id="sidebar">
+            <button class="sidebar-submenu-expand-button">New Block</button>
+            <form id="new-block-form" class="sidebar-submenu-expand">
+                <label for="new-block-label">Block Label</label>
+                <input type="text" id="new-block-label" name="new-block-label">
+                <br>
+                <label for="new-block-type">Block Type</label>
+                <select id="new-block-type" name="new-block-type">
+                    <!--Dynamically generated-->
+                </select>
                 <!--Dynamically generated-->
-            </select>
-            <!--Dynamically generated-->
-            <br>
-            <div class="center"><input type="submit" value="Create New Block" class="sidebar-submit"></div>
-        </form>
-        <button class="sidebar-submenu-expand-button">API Settings</button>
-        <form id="api-settings-form" class="sidebar-submenu-expand">
-            <label for="api-settings-type">API Type</label>
-            <select id="api-settings-type" name="api-settings-type">
+                <br>
+                <div class="center"><input type="submit" value="Create New Block" class="sidebar-submit"></div>
+            </form>
+            <button class="sidebar-submenu-expand-button">API Settings</button>
+            <form id="api-settings-form" class="sidebar-submenu-expand">
+                <label for="api-settings-type">API Type</label>
+                <select id="api-settings-type" name="api-settings-type">
+                    <!--Dynamically generated-->
+                </select>
                 <!--Dynamically generated-->
-            </select>
-            <!--Dynamically generated-->
-            <br>
-            <div class="center"><input type="submit" value="Save API Settings" class="sidebar-submit"></div>
-        </form>
-        <button class="sidebar-submenu-expand-button">Execute</button>
-        <form id="execute-form" class="sidebar-submenu-expand">
-            <!--Dynamically generated-->
-            <div id="execute-form-submit" class="center"><input type="submit" value="Execute Flow" class="sidebar-submit"></div>
-            <br>
-            <button id="execute-form-cancel" class="sidebar-button">Cancel Execution</button>
-        </form>
-        <button class="sidebar-submenu-expand-button">Output</button>
-        <div id="output-div" class="sidebar-submenu-expand">
-            <!--Dynamically generated-->
+                <br>
+                <div class="center"><input type="submit" value="Save API Settings" class="sidebar-submit"></div>
+            </form>
+            <button class="sidebar-submenu-expand-button">Execute</button>
+            <form id="execute-form" class="sidebar-submenu-expand">
+                <!--Dynamically generated-->
+                <div id="execute-form-submit" class="center"><input type="submit" value="Execute Flow" class="sidebar-submit"></div>
+                <br>
+                <button id="execute-form-cancel" class="sidebar-button">Cancel Execution</button>
+            </form>
+            <button class="sidebar-submenu-expand-button">Output</button>
+            <div id="output-div" class="sidebar-submenu-expand">
+                <!--Dynamically generated-->
+            </div>
+            <button class="sidebar-submenu-expand-button">Information</button>
+            <div class="sidebar-submenu-expand">
+                <p>Welcome to Intelligence Flow.</p>
+                <p>Create a block with the "New Block" menu. Attach two blocks by right clicking the source and then the target. The blocks must be compatible.</p>
+            </div>
         </div>
-        <button class="sidebar-submenu-expand-button">Information</button>
-        <div class="sidebar-submenu-expand">
-            <p>Welcome to Intelligence Flow.</p>
-            <p>Create a block with the "New Block" menu. Attach two blocks by right clicking the source and then the target. The blocks must be compatible.</p>
-        </div>
+        <div id="flow-diagram"></div>
+        <div id="notification"></div>
     </div>
-    <div id="flow-diagram"></div>
     <script type="module" src="src/app.js"></script>
 </body>
 </html>

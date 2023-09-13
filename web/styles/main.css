@@ -2,6 +2,19 @@
     overflow: hidden;
 }
 
+#container {
+    position: relative;
+}
+
+#notification {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 10%;
+    height: 8%;
+    display: none;
+}
+
 #flow-diagram {
     position: absolute;
     margin-left: 33%;

@@ -202,6 +202,10 @@ function main(blockTypes, apiTypes, cytostyle) {
             return;
         }
         state.running = true;
+        if (state.selectedNode) {
+            state.selectedNode.toggleClass("selected");
+            state.selectedNode = null;
+        }
         var promises = []
         getBlocksOfType("INPUT").forEach((inputBlock) => {
             var textIn = document.getElementById(inputBlock.id() + "-input").value;
