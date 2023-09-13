@@ -206,8 +206,9 @@ function main(blockTypes, apiTypes, cytostyle) {
         });
         return p.then((output) => {
             var promises = [];
-            for (var outNeighbor in block.outgoers()) {
-                console.log(outNeighbor.id())
+            console.log("incomers:"+block.incomers().length);
+            console.log("outgoers"+block.outgoers().length);
+            for (var outNeighbor in block.incomers()) {
                 promises.push(activateBlock(output, outNeighbor));
             }
             return Promise.all(promises);
