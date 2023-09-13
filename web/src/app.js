@@ -155,16 +155,83 @@ function main(blockTypes, apiTypes, cytostyle) {
             insertBefore(inputElement, submitButton);
             insertBefore(document.createElement("br"), submitButton);
         }
+        if (blockType == "OUTPUT") {
+            var outputIdString = idString+"-output";
+            var outputElement = document.createElement("textarea");
+            outputElement.setAttribute("id", outputIdString);
+            outputElement.setAttribute("name", outputIdString);
+            outputElement.setAttribute("readonly");
+            var labelElement = document.createElement("label");
+            labelElement.setAttribute("for", outputIdString);
+            labelElement.innerText = label;
+            var outputDiv = document.getElementById("output-div");
+            outputDiv.appendChild(labelElement);
+            outputDiv.appendChild(outputElement);
+            outputDiv.appendChild(document.createElement("br"));
+        }
     });
 
-    function getBlocksOfType(blockType) {
-        var blocks = [];
-        for (var id of blockTypeIdNums[blockType]) {
-            if (!(id === 0)) {
-                blocks.push(cy.nodes().getElementById(blockType + id));
-            }
+    // Handle API settings form submission
+    var apiSettingsForm = document.getElementById("api-settings-form");
+    var apiType;
+    var apiParams;
+    apiSettingsForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        apiType = apiSettingsForm.elements["api-settings-type"].value;
+        apiParams = {};
+        for (var param of Object.keys(apiTypes[apiType]["parameters"])) {
+            apiParams[param] = apiSettingsForm.elements[param].value;
         }
-        return blocks;
+    });
+
+    // Handle execute form submission
+    var executeForm = document.getElementById("execute-form");
+    executeForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var promises = []
+        for (var inp of getBlocksOfType("INPUT")) {
+            var textIn = document.getElementById(inp.id()+"-input").value;
+            promises.push(activateBlock(textIn, inp));
+        }
+        Promise.all(promises).then((responses) => {alert("done!")});
+    });
+
+    function activateBlock(input, block) {
+        var p = new Promise((res, rej) => {
+            block.addClass("active");
+            setTimeout(() => {
+                executeBlock(input, block, res, rej);
+                block.removeClass("active");
+            }, 50);
+        });
+        return p.then((output) => {
+            var promises = [];
+            for (var outNeighbor in block.outgoers()) {
+                promises.push(activateBlock(output, outNeighbor));
+            }
+            return Promise.all(promises);
+        });
+    }
+
+    function executeBlock(input, block, res, rej) {
+        var blockType = block.data("block-type");
+        var blockParams = block.data("parameters");
+        switch (blockType) {
+            case "INPUT":
+                res(input);
+                break;
+            case "OUTPUT":
+                document.getElementById(block.id()+"-output").value = input;
+                res();
+                break;
+            default:
+                res(input);
+                break;
+        }        
+    }
+
+    function getBlocksOfType(blockType) {
+        return cy.nodes('[id ^= "' + blockType + '"][id $= "\\d+"]');
     }
 }
 

@@ -13,6 +13,12 @@
         }
     },
     {
+        "selector": "node.active",
+        "style": {
+            "background-color": "#fa0"
+        }
+    },
+    {
         "selector": "edge",
         "style": {
             "width": 3,
