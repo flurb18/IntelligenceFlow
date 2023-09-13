@@ -1,6 +1,30 @@
 import { insertAfter, insertBefore, notify, createSubmenusByType } from './utils.js';
-import { blockFuncs } from './blockfuncs.js';
 
+var blockFuncs = {
+    "INPUT": function (input, blockData, resolve, reject) {
+        resolve(input);
+    },
+    "INPUT-FIXED": function (input, blockData, resolve, reject) {
+        resolve(input);
+    },
+    "OUTPUT": function (input, blockData, resolve, reject) {
+        document.getElementById(blockData.id + "-output").value = input;
+        resolve();
+    },
+    "COPY": function (input, blockData, resolve, reject) {
+        var numCopies = blockData.parameters["COPY-num-copies"];
+        resolve(Array(numCopies).fill(input));
+    },
+    "SPLIT": function (input, blockData, resolve, reject) {
+        resolve(input);
+    },
+    "COMBINE": function (input, blockData, resolve, reject) {
+        resolve(input.join(" "));
+    },
+    "LLM": function (input, blockData, resolve, reject) {
+        resolve(input);
+    }
+};
 
 // Make sidebar expand buttons work
 var expands = document.getElementsByClassName("sidebar-submenu-expand-button");
