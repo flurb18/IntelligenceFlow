@@ -160,7 +160,7 @@ function main(blockTypes, apiTypes, cytostyle) {
             var outputElement = document.createElement("textarea");
             outputElement.setAttribute("id", outputIdString);
             outputElement.setAttribute("name", outputIdString);
-            outputElement.setAttribute("readonly");
+            outputElement.readOnly = true;
             var labelElement = document.createElement("label");
             labelElement.setAttribute("for", outputIdString);
             labelElement.innerText = label;
