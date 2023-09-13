@@ -190,6 +190,7 @@ function main(blockTypes, apiTypes, cytostyle) {
         e.preventDefault();
         var promises = []
         getBlocksOfType("INPUT").forEach((inputBlock) => {
+            console.log(inputBlock.id());
             var textIn = document.getElementById(inputBlock.id() + "-input").value;
             promises.push(activateBlock(textIn, inputBlock));
         });
