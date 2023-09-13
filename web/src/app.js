@@ -1,4 +1,5 @@
 import { insertAfter, insertBefore, notify, createSubmenusByType } from './utils.js';
+import { blockFuncs } from './blockfuncs.js';
 
 // Make sidebar expand buttons work
 var expands = document.getElementsByClassName("sidebar-submenu-expand-button");
@@ -221,7 +222,7 @@ function main(blockTypes, apiTypes, cytostyle) {
             promises.push(activateBlock(textIn, inputBlock));
         });
         Promise.all(promises).then((responses) => { 
-            alert("done!");
+            notify("Done!");
             state.running = false;
         }).catch(error => {
             state.running = false;
@@ -262,19 +263,7 @@ function main(blockTypes, apiTypes, cytostyle) {
         }
         return new Promise((resolve, reject) => {
             var blockType = block.data("block-type");
-            var blockParams = block.data("parameters");
-            switch (blockType) {
-                case "INPUT":
-                    resolve(input);
-                    break;
-                case "OUTPUT":
-                    document.getElementById(block.id() + "-output").value = input;
-                    resolve();
-                    break;
-                default:
-                    resolve(input);
-                    break;
-            }
+            blockFuncs[blockType](input, block.data(), resolve, reject);
         });
     }
 
