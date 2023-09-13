@@ -77,7 +77,7 @@ function main(blockTypes, apiTypes, cytostyle) {
                             if (!(srcOutputType === "none") && (
                                 (destAssignedInputType === srcOutputType) ||
                                 (destAssignedInputType === "none" && destAvailableInputTypes.includes(srcOutputType))
-                                )
+                            )
                             ) {
                                 var _classes = []
                                 if (srcOutputType === "multi") {
@@ -118,7 +118,7 @@ function main(blockTypes, apiTypes, cytostyle) {
         e.preventDefault();
         var extent = cy.extent();
         var blockType = newBlockForm.elements["new-block-type"].value;
-        var newId = Math.max(...blockTypeIdNums[blockType])+1;
+        var newId = Math.max(...blockTypeIdNums[blockType]) + 1;
         var idString = blockType + newId;
         var inputLabel = newBlockForm.elements["new-block-label"].value;
         var label = inputLabel ? idString + "-" + inputLabel : idString;
@@ -127,7 +127,7 @@ function main(blockTypes, apiTypes, cytostyle) {
             "label": label,
             "block-type": blockType,
             "input-type": "none",
-            "parameters" : {}
+            "parameters": {}
         };
         blockTypeIdNums[blockType].push(newId);
         for (var param of Object.keys(blockTypes[blockType]["parameters"])) {
@@ -143,7 +143,7 @@ function main(blockTypes, apiTypes, cytostyle) {
             }
         }]);
         if (blockType === "INPUT") {
-            var inputIdString = idString+"-input";
+            var inputIdString = idString + "-input";
             var inputElement = document.createElement("textarea");
             inputElement.setAttribute("id", inputIdString);
             inputElement.setAttribute("name", inputIdString);
@@ -156,7 +156,7 @@ function main(blockTypes, apiTypes, cytostyle) {
             insertBefore(document.createElement("br"), submitButton);
         }
         if (blockType == "OUTPUT") {
-            var outputIdString = idString+"-output";
+            var outputIdString = idString + "-output";
             var outputElement = document.createElement("textarea");
             outputElement.setAttribute("id", outputIdString);
             outputElement.setAttribute("name", outputIdString);
@@ -189,47 +189,55 @@ function main(blockTypes, apiTypes, cytostyle) {
     executeForm.addEventListener("submit", function (e) {
         e.preventDefault();
         var promises = []
-        for (var inp of getBlocksOfType("INPUT")) {
-            var textIn = document.getElementById(inp.id()+"-input").value;
-            promises.push(activateBlock(textIn, inp));
-        }
-        Promise.all(promises).then((responses) => {alert("done!")});
+        getBlocksOfType("INPUT").forEach((inputBlock) => {
+            var textIn = document.getElementById(inputBlock.id() + "-input").value;
+            promises.push(activateBlock(textIn, inputBlock));
+        });
+        getBlocksOfType("INPUT-FIXED").forEach((inputBlock) => {
+            var textIn = inputBlock.data("parameters")["INPUT-FIXED-text"];
+            promises.push(activateBlock(textIn, inputBlock));
+        });
+        Promise.all(promises).then((responses) => { alert("done!") });
     });
 
     function activateBlock(input, block) {
-        var p = new Promise((res, rej) => {
+        return new Promise((resolve, reject) => {
             block.addClass("active");
             setTimeout(() => {
-                executeBlock(input, block, res, rej);
-                block.removeClass("active");
+                executeBlock(input, block).then(output => {
+                    block.removeClass("active");
+                    resolve(output);
+                }).catch(error => {
+                    block.removeClass("active");
+                    reject(error);
+                });
             }, 500);
-        });
-        return p.then((output) => {
+        }).then((output) => {
             var promises = [];
-            console.log("incomers:"+block.incomers().length);
-            console.log("outgoers"+block.outgoers().length);
-            for (var outNeighbor in block.incomers()) {
+            block.outgoers().forEach((outNeighbor) => {
                 promises.push(activateBlock(output, outNeighbor));
-            }
+            });
             return Promise.all(promises);
         });
     }
 
-    function executeBlock(input, block, res, rej) {
-        var blockType = block.data("block-type");
-        var blockParams = block.data("parameters");
-        switch (blockType) {
-            case "INPUT":
-                res(input);
-                break;
-            case "OUTPUT":
-                document.getElementById(block.id()+"-output").value = input;
-                res();
-                break;
-            default:
-                res(input);
-                break;
-        }        
+    function executeBlock(input, block) {
+        return new Promise((resolve, reject) => {
+            var blockType = block.data("block-type");
+            var blockParams = block.data("parameters");
+            switch (blockType) {
+                case "INPUT":
+                    resolve(input);
+                    break;
+                case "OUTPUT":
+                    document.getElementById(block.id() + "-output").value = input;
+                    resolve();
+                    break;
+                default:
+                    resolve(input);
+                    break;
+            }
+        });
     }
 
     function getBlocksOfType(blockType) {
