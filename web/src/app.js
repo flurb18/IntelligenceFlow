@@ -1,4 +1,4 @@
-import { insertAfter, insertBefore, createSubmenusByType } from './utils.js';
+import { insertAfter, insertBefore, notify, createSubmenusByType } from './utils.js';
 
 // Make sidebar expand buttons work
 var expands = document.getElementsByClassName("sidebar-submenu-expand-button");
@@ -105,6 +105,8 @@ function main(blockTypes, apiTypes, cytostyle) {
                                     "classes": _classes
                                 }]);
                                 event.target.data("input-type", srcOutputType);
+                            } else {
+                                notify("Incompatible blocks");
                             }
                         }
                         state.selectedNode.toggleClass("selected");
@@ -123,6 +125,7 @@ function main(blockTypes, apiTypes, cytostyle) {
     newBlockForm.addEventListener("submit", function (e) {
         e.preventDefault();
         if (state.running) {
+            notify("Cannot create new block while running");
             return;
         }
         var extent = cy.extent();
@@ -185,6 +188,7 @@ function main(blockTypes, apiTypes, cytostyle) {
     apiSettingsForm.addEventListener("submit", function (e) {
         e.preventDefault();
         if (state.running) {
+            notify("Cannot save API settings while running");
             return;
         }
         state.apiType = apiSettingsForm.elements["api-settings-type"].value;
@@ -199,6 +203,7 @@ function main(blockTypes, apiTypes, cytostyle) {
     executeForm.addEventListener("submit", function (e) {
         e.preventDefault();
         if (state.running) {
+            notify("Already running");
             return;
         }
         state.running = true;
@@ -227,6 +232,7 @@ function main(blockTypes, apiTypes, cytostyle) {
     document.getElementById("execute-form-cancel").addEventListener("click", function(e) {
         e.preventDefault();
         state.running = false;
+        notify("Cancelled");
     });
 
     function activateBlock(input, block) {

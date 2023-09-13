@@ -12,6 +12,15 @@ export function insertBefore(a, e) {
     e.parentNode.insertBefore(a, e);
 };
 
+// Notify the user of text
+export function notify(text) {
+    document.getElementById("notification-text").innerText = text;
+    document.getElementById("notification").style.display = "block";
+    setTimeout(function () {
+        document.getElementById("notification").style.display = "none";
+    }, 4000);
+}
+
 // Creates submenus that are only visisble according to the choice of selectElement, according to the config object.
 // config should consist of string:object pairs, where the string is an option to be added to selectElement, and the object
 // describes the submenu to be created. The object should have an entry "parameters" mapping to an object of string:object pairs,
