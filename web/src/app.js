@@ -202,7 +202,7 @@ function main(blockTypes, apiTypes, cytostyle) {
             setTimeout(() => {
                 executeBlock(input, block, res, rej);
                 block.removeClass("active");
-            }, 50);
+            }, 500);
         });
         return p.then((output) => {
             var promises = [];
