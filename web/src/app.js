@@ -1,5 +1,23 @@
 import { insertAfter, insertBefore, notify, createSubmenusByType } from './utils.js';
-import { blockFuncs } from './blockfuncs.js';
+import { 
+    execInputBlock,
+    execInputFixedBlock,
+    execOutputBlock,
+    execCopyBlock,
+    execSplitBlock,
+    execCombineBlock,
+    execLLMBlock
+ } from './blockfuncs.js';
+
+var blockFuncs = {
+    "INPUT": execInputBlock,
+    "INPUT-FIXED": execInputFixedBlock,
+    "OUTPUT": execOutputBlock,
+    "COPY": execCopyBlock,
+    "SPLIT": execSplitBlock,
+    "COMBINE": execCombineBlock,
+    "LLM": execLLMBlock
+};
 
 // Make sidebar expand buttons work
 var expands = document.getElementsByClassName("sidebar-submenu-expand-button");
