@@ -242,7 +242,7 @@ function main(blockTypes, apiTypes, cytostyle) {
     }
 
     function getBlocksOfType(blockType) {
-        return cy.nodes('[id ^= "' + blockType + '"][id $= "\\d+"]');
+        return cy.nodes('[id = "' + blockType + '\\d+"]');
     }
 }
 
