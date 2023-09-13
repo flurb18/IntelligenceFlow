@@ -1,30 +1,5 @@
 import { insertAfter, insertBefore, notify, createSubmenusByType } from './utils.js';
-
-var blockFuncs = {
-    "INPUT": function (input, blockData, resolve, reject) {
-        resolve(input);
-    },
-    "INPUT-FIXED": function (input, blockData, resolve, reject) {
-        resolve(input);
-    },
-    "OUTPUT": function (input, blockData, resolve, reject) {
-        document.getElementById(blockData.id + "-output").value = input;
-        resolve();
-    },
-    "COPY": function (input, blockData, resolve, reject) {
-        var numCopies = blockData.parameters["COPY-num-copies"];
-        resolve(Array(numCopies).fill(input));
-    },
-    "SPLIT": function (input, blockData, resolve, reject) {
-        resolve(input);
-    },
-    "COMBINE": function (input, blockData, resolve, reject) {
-        resolve(input.join(" "));
-    },
-    "LLM": function (input, blockData, resolve, reject) {
-        resolve(input);
-    }
-};
+import { blockFuncs } from './blockfuncs.js';
 
 // Make sidebar expand buttons work
 var expands = document.getElementsByClassName("sidebar-submenu-expand-button");
@@ -180,33 +155,7 @@ function main(blockTypes, apiTypes, cytostyle) {
                 y: ((extent.y1 + extent.y2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD
             }
         }]);
-        if (blockType === "INPUT") {
-            var inputIdString = idString + "-input";
-            var inputElement = document.createElement("textarea");
-            inputElement.setAttribute("id", inputIdString);
-            inputElement.setAttribute("name", inputIdString);
-            var labelElement = document.createElement("label");
-            labelElement.setAttribute("for", inputIdString);
-            labelElement.innerText = label;
-            var submitButton = document.getElementById("execute-form-submit");
-            insertBefore(labelElement, submitButton);
-            insertBefore(inputElement, submitButton);
-            insertBefore(document.createElement("br"), submitButton);
-        }
-        if (blockType == "OUTPUT") {
-            var outputIdString = idString + "-output";
-            var outputElement = document.createElement("textarea");
-            outputElement.setAttribute("id", outputIdString);
-            outputElement.setAttribute("name", outputIdString);
-            outputElement.readOnly = true;
-            var labelElement = document.createElement("label");
-            labelElement.setAttribute("for", outputIdString);
-            labelElement.innerText = label;
-            var outputDiv = document.getElementById("output-div");
-            outputDiv.appendChild(labelElement);
-            outputDiv.appendChild(outputElement);
-            outputDiv.appendChild(document.createElement("br"));
-        }
+        blockFuncs[blockType].create(_data);
     });
 
     // Handle API settings form submission
@@ -288,7 +237,7 @@ function main(blockTypes, apiTypes, cytostyle) {
         }
         return new Promise((resolve, reject) => {
             var blockType = block.data("block-type");
-            blockFuncs[blockType](input, block.data(), resolve, reject);
+            blockFuncs[blockType].exec(input, block.data(), resolve, reject);
         });
     }
 
