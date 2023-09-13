@@ -275,7 +275,7 @@ function main(blockTypes, apiTypes, cytostyle) {
             }, 500);
         }).then((output) => {
             var promises = [];
-            block.outgoers().forEach((outNeighbor) => {
+            block.outgoers('node').forEach((outNeighbor) => {
                 promises.push(activateBlock(output, outNeighbor));
             });
             return Promise.all(promises);
@@ -288,7 +288,6 @@ function main(blockTypes, apiTypes, cytostyle) {
         }
         return new Promise((resolve, reject) => {
             var blockType = block.data("block-type");
-            console.log(blockType);
             blockFuncs[blockType](input, block.data(), resolve, reject);
         });
     }
