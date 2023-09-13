@@ -1,4 +1,4 @@
-import { insertAfter, insertBefore, notify, createSubmenusByType } from './utils.js';
+import { notify, createSubmenusByType } from './utils.js';
 import { blockFuncs } from './blockfuncs.js';
 
 // Make sidebar expand buttons work

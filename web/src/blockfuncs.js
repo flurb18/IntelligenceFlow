@@ -1,3 +1,5 @@
+import { insertBefore } from "./utils.js";
+
 export var blockFuncs = {
     "INPUT": {
         exec: function (input, blockData, resolve, reject) {
