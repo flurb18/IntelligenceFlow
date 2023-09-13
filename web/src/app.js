@@ -56,20 +56,31 @@ function main(blockTypes, apiTypes, cytostyle) {
         layout: { name: 'grid' }
     });
 
-    var selectedNode = null;
+    var state = {
+        selectedNode: null,
+        blockTypeIdNums: {},
+        apiType: "none",
+        apiParams: {},
+        running: false
+    }
+
+    for (var blockType of Object.keys(blockTypes)) {
+        state.blockTypeIdNums[blockType] = [0];
+    }
+
     cy.on('cxttap', function (event) {
-        if (event.target === cy) {
-            if (selectedNode) {
-                selectedNode.toggleClass("selected");
-                selectedNode = null;
+        if (event.target === cy || state.running) {
+            if (state.selectedNode) {
+                state.selectedNode.toggleClass("selected");
+                state.selectedNode = null;
             }
         } else {
             if (event.target.isNode()) {
-                if (selectedNode) {
-                    if (!(selectedNode === event.target)) {
-                        var srcBlockType = selectedNode.data("block-type");
+                if (state.selectedNode) {
+                    if (!(state.selectedNode === event.target)) {
+                        var srcBlockType = state.selectedNode.data("block-type");
                         var destBlockType = event.target.data("block-type");
-                        var srcOutputTypes = blockTypes[srcBlockType]["maps"][selectedNode.data("input-type")];
+                        var srcOutputTypes = blockTypes[srcBlockType]["maps"][state.selectedNode.data("input-type")];
                         if (srcOutputTypes.length === 1) {
                             var srcOutputType = srcOutputTypes[0];
                             var destAssignedInputType = event.target.data("input-type");
@@ -86,8 +97,8 @@ function main(blockTypes, apiTypes, cytostyle) {
                                 cy.add([{
                                     "group": 'edges',
                                     "data": {
-                                        "id": selectedNode.id() + event.target.id(),
-                                        "source": selectedNode.id(),
+                                        "id": state.selectedNode.id() + event.target.id(),
+                                        "source": state.selectedNode.id(),
                                         "target": event.target.id(),
                                         "flow-type": srcOutputType
                                     },
@@ -96,29 +107,27 @@ function main(blockTypes, apiTypes, cytostyle) {
                                 event.target.data("input-type", srcOutputType);
                             }
                         }
-                        selectedNode.toggleClass("selected");
-                        selectedNode = null;
+                        state.selectedNode.toggleClass("selected");
+                        state.selectedNode = null;
                     }
                 } else {
-                    selectedNode = event.target;
-                    selectedNode.toggleClass("selected");
+                    state.selectedNode = event.target;
+                    state.selectedNode.toggleClass("selected");
                 }
             }
         }
     });
 
-    var blockTypeIdNums = {}
-    for (var blockType of Object.keys(blockTypes)) {
-        blockTypeIdNums[blockType] = [0];
-    }
-
     // Handle new block form submission
     var newBlockForm = document.getElementById("new-block-form");
     newBlockForm.addEventListener("submit", function (e) {
         e.preventDefault();
+        if (state.running) {
+            return;
+        }
         var extent = cy.extent();
         var blockType = newBlockForm.elements["new-block-type"].value;
-        var newId = Math.max(...blockTypeIdNums[blockType]) + 1;
+        var newId = Math.max(...state.blockTypeIdNums[blockType]) + 1;
         var idString = blockType + newId;
         var inputLabel = newBlockForm.elements["new-block-label"].value;
         var label = inputLabel ? idString + "-" + inputLabel : idString;
@@ -129,7 +138,7 @@ function main(blockTypes, apiTypes, cytostyle) {
             "input-type": "none",
             "parameters": {}
         };
-        blockTypeIdNums[blockType].push(newId);
+        state.blockTypeIdNums[blockType].push(newId);
         for (var param of Object.keys(blockTypes[blockType]["parameters"])) {
             _data["parameters"][param] = newBlockForm.elements[param].value;
         }
@@ -173,14 +182,15 @@ function main(blockTypes, apiTypes, cytostyle) {
 
     // Handle API settings form submission
     var apiSettingsForm = document.getElementById("api-settings-form");
-    var apiType;
-    var apiParams;
     apiSettingsForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        apiType = apiSettingsForm.elements["api-settings-type"].value;
-        apiParams = {};
-        for (var param of Object.keys(apiTypes[apiType]["parameters"])) {
-            apiParams[param] = apiSettingsForm.elements[param].value;
+        if (state.running) {
+            return;
+        }
+        state.apiType = apiSettingsForm.elements["api-settings-type"].value;
+        state.apiParams = {};
+        for (var param of Object.keys(apiTypes[state.apiType]["parameters"])) {
+            state.apiParams[param] = apiSettingsForm.elements[param].value;
         }
     });
 
@@ -188,6 +198,10 @@ function main(blockTypes, apiTypes, cytostyle) {
     var executeForm = document.getElementById("execute-form");
     executeForm.addEventListener("submit", function (e) {
         e.preventDefault();
+        if (state.running) {
+            return;
+        }
+        state.running = true;
         var promises = []
         getBlocksOfType("INPUT").forEach((inputBlock) => {
             var textIn = document.getElementById(inputBlock.id() + "-input").value;
@@ -197,7 +211,18 @@ function main(blockTypes, apiTypes, cytostyle) {
             var textIn = inputBlock.data("parameters")["INPUT-FIXED-text"];
             promises.push(activateBlock(textIn, inputBlock));
         });
-        Promise.all(promises).then((responses) => { alert("done!") });
+        Promise.all(promises).then((responses) => { 
+            alert("done!");
+            state.running = false;
+        }).catch(error => {
+            state.running = false;
+        });
+    });
+
+    // Handle running cancelation
+    document.getElementById("execute-form-cancel").addEventListener("click", function(e) {
+        e.preventDefault();
+        state.running = false;
     });
 
     function activateBlock(input, block) {
@@ -222,6 +247,9 @@ function main(blockTypes, apiTypes, cytostyle) {
     }
 
     function executeBlock(input, block) {
+        if (!state.running) {
+            return new Promise((resolve, reject) => reject("Stopped"));
+        }
         return new Promise((resolve, reject) => {
             var blockType = block.data("block-type");
             var blockParams = block.data("parameters");

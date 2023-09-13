@@ -84,6 +84,24 @@
     background-color: #ffdd00
 }
 
+.sidebar-button {
+    background-color: #777;
+    color: white;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    border-radius: 25px;
+    width: 80%;
+    border: none;
+    padding: 20px;
+    outline: none;
+    text-align: center;
+}
+
+.sidebar-button:hover {
+    background-color: #555;
+}
+
 textarea {
     width: 90%;
     height: 200px;
