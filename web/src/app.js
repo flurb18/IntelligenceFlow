@@ -288,6 +288,7 @@ function main(blockTypes, apiTypes, cytostyle) {
         }
         return new Promise((resolve, reject) => {
             var blockType = block.data("block-type");
+            console.log(blockType);
             blockFuncs[blockType](input, block.data(), resolve, reject);
         });
     }
