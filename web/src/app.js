@@ -187,6 +187,7 @@ function main(blockTypes, apiTypes, cytostyle) {
             state.selectedNode.toggleClass("selected");
             state.selectedNode = null;
         }
+        reset();
         var promises = []
         getBlocksOfType("INPUT").forEach((inputBlock) => {
             var textIn = document.getElementById(inputBlock.id() + "-input").value;
@@ -198,8 +199,10 @@ function main(blockTypes, apiTypes, cytostyle) {
         });
         Promise.all(promises).then((responses) => { 
             notify("Done!");
+            reset();
             state.running = false;
         }).catch(error => {
+            reset();
             state.running = false;
         });
     });
@@ -207,11 +210,15 @@ function main(blockTypes, apiTypes, cytostyle) {
     // Handle running cancelation
     document.getElementById("execute-form-cancel").addEventListener("click", function(e) {
         e.preventDefault();
+        reset();
         state.running = false;
         notify("Cancelled");
     });
 
     function activateBlock(input, block, srcId) {
+        if (!state.running) {
+            return new Promise((resolve, reject) => reject("Stopped"));
+        }
         return new Promise((resolve, reject) => {
             if (!(block.data("waits-for").length == 0)) {
                 var waitIds = [...block.scratch("waiting-for")];
@@ -224,18 +231,14 @@ function main(blockTypes, apiTypes, cytostyle) {
                     if (waitIds.length == 0) {
                         setTimeout(() => {
                             executeBlock(queuedInputs, block).then(executeOutput => {
-                                block.removeClass("active");
-                                block.scratch("waiting-for", [...block.data("waits-for")]);
-                                block.scratch("queued-inputs", {});
+                                resetBlock(block);
                                 resolve({
                                     done: true,
                                     output: executeOutput
                                 });
                             }).catch(error => {
                                 console.log(error);
-                                block.removeClass("active");
-                                block.scratch("waiting-for",  [...block.data("waits-for")]);
-                                block.scratch("queued-inputs", {});
+                                resetBlock(block);
                                 reject(error);
                             });
                         }, 500);
@@ -286,6 +289,20 @@ function main(blockTypes, apiTypes, cytostyle) {
             var blockType = block.data("block-type");
             // Run block
             blockFuncs[blockType].exec(input, block.data(), resolve, reject);
+        });
+    }
+
+    function resetBlock(block) {
+        block.removeClass("active");
+        block.scratch({
+            "waiting-for": [...block.data("waits-for")],
+            "queued-inputs": {}
+        });
+    }
+
+    function reset() {
+        cy.nodes().forEach((block) => {
+            resetBlock(block);
         });
     }
 
