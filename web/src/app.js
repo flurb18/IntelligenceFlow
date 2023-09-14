@@ -239,6 +239,7 @@ function main(blockTypes, apiTypes, cytostyle) {
                     } else {
                         block.scratch("queued-inputs", queuedInputs);
                         block.scratch("waiting-for", waitIds);
+                        resolve(null);
                     }
                 } else {
                     console.log("Waiting got extra in");
@@ -257,11 +258,13 @@ function main(blockTypes, apiTypes, cytostyle) {
                 }, 500);
             }
         }).then((output) => {
-            var promises = [];
-            block.outgoers('node').forEach((outNeighbor) => {
-                promises.push(activateBlock(output, outNeighbor, block.id()));
-            });
-            return Promise.all(promises);
+            if (output) {
+                var promises = [];
+                block.outgoers('node').forEach((outNeighbor) => {
+                    promises.push(activateBlock(output, outNeighbor, block.id()));
+                });
+                return Promise.all(promises);
+            }
         });
     }
 
