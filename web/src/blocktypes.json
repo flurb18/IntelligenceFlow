@@ -54,7 +54,8 @@
                 "label": "Number of Copies",
                 "type": "num",
                 "min": "2",
-                "max": "100"
+                "max": "100",
+                "default": "10"
             }
         },
         "hidden": false
@@ -76,13 +77,15 @@
                 "label": "Chunk Size",
                 "type": "num",
                 "min": "100",
-                "max": "1000"
+                "max": "10000",
+                "default": "500"
             },
             "SPLIT-chunk-overlap": {
                 "label": "Chunk Overlap",
                 "type": "num",
                 "min": "0",
-                "max": "100"
+                "max": "100",
+                "default": "0"
             }
         },
         "hidden": false
@@ -133,7 +136,8 @@
                 "label": "Number of Inputs",
                 "type": "num",
                 "min": "1",
-                "max": "10"
+                "max": "10",
+                "default": "2"
             },
             "SYNTHESIZE-output-format": {
                 "label": "Output Format",

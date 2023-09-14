@@ -95,6 +95,7 @@ export function createSubmenusByType(config, selectElement) {
                     paramNum.setAttribute("type", "range");
                     paramNum.setAttribute("min", params[param]["min"]);
                     paramNum.setAttribute("max", params[param]["max"]);
+                    paramNum.setAttribute("value", params[param]["default"]);
                     paramNumDisplay.textContent = paramNum.value;
                     paramNum.addEventListener("input", function() {
                         this.nextElementSibling.textContent = this.value;
