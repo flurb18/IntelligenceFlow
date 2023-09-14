@@ -214,18 +214,18 @@ function main(blockTypes, apiTypes, cytostyle) {
     function activateBlock(input, block, srcId) {
         return new Promise((resolve, reject) => {
             if (!(block.data("waits-for").length == 0)) {
-                var waitIds = block.scratch("waiting-for");
+                var waitIds = [...block.scratch("waiting-for")];
                 var queuedInputs = block.scratch("queued-inputs");
-                queuedInputs[srcId] = input;
                 var idx = waitIds.indexOf(srcId);
                 if (idx > -1) {
                     block.addClass("active");
                     waitIds.splice(idx, 1);
+                    queuedInputs[srcId] = input;
                     if (waitIds.length == 0) {
                         setTimeout(() => {
                             executeBlock(queuedInputs, block).then(executeOutput => {
                                 block.removeClass("active");
-                                block.scratch("waiting-for", block.data("waits-for"));
+                                block.scratch("waiting-for", [...block.data("waits-for")]);
                                 block.scratch("queued-inputs", {});
                                 resolve({
                                     done: true,
@@ -234,7 +234,7 @@ function main(blockTypes, apiTypes, cytostyle) {
                             }).catch(error => {
                                 console.log(error);
                                 block.removeClass("active");
-                                block.scratch("waiting-for",  block.data("waits-for"));
+                                block.scratch("waiting-for",  [...block.data("waits-for")]);
                                 block.scratch("queued-inputs", {});
                                 reject(error);
                             });
