@@ -216,8 +216,10 @@ function main(blockTypes, apiTypes, cytostyle) {
         return new Promise((resolve, reject) => {
             block.addClass("active");
             if (blockTypes[block.data("block-type")]["waits"]) {
-                var waitIds = block.data("waiting-for");
-                var queuedInputs = block.data("queued-inputs");
+                var waitIds = block.scratch("waiting-for");
+                var queuedInputs = block.scratch("queued-inputs");
+                var resList = block.scratch("waiting-resolves");
+                var rejList = block.scratch("waiting-rejects");
                 queuedInputs[srcId] = input;
                 var idx = waitIds.indexOf(srcId);
                 if (idx > -1) {
@@ -226,20 +228,29 @@ function main(blockTypes, apiTypes, cytostyle) {
                         setTimeout(() => {
                             executeBlock(queuedInputs, block).then(output => {
                                 block.removeClass("active");
-                                block.data("waiting-for", Object.keys(queuedInputs));
-                                block.data("queued-inputs", {})
+                                block.scratch("waiting-for", Object.keys(queuedInputs));
+                                block.scratch("queued-inputs", {})
                                 resolve(output);
+                                for (var waitingResolve of resList) {
+                                    waitingResolve(output);
+                                }
                             }).catch(error => {
                                 block.removeClass("active");
-                                block.data("waiting-for", Object.keys(queuedInputs));
-                                block.data("queued-inputs", {})
+                                block.scratch("waiting-for", Object.keys(queuedInputs));
+                                block.scratch("queued-inputs", {})
                                 reject(error);
+                                for (var waitingReject of rejList) {
+                                    waitingReject(error);
+                                }
                             });
                         }, 500);
                     } else {
-                        block.data("queued-inputs", queuedInputs);
-                        block.data("waiting-for", waitIds);
-                        reject("Not ready");
+                        block.scratch("queued-inputs", queuedInputs);
+                        block.scratch("waiting-for", waitIds);
+                        resList.push(resolve);
+                        rejList.push(reject);
+                        block.scratch("waiting-resolves", resList);
+                        block.scratch("waiting-rejects", rejList);
                     }
                 } else {
                     console.log("Waiting got extra in");

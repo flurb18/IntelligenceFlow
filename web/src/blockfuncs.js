@@ -124,8 +124,6 @@ export var blockFuncs = {
                         "label": blockData.label + "-INPUT" + i,
                         "block-type": "SYNTHESIZE-INPUT",
                         "input-type": "none",
-                        "waiting-for": [],
-                        "queued-inputs": {},
                         "parameters": blockData.parameters
                     }
                 });
@@ -146,9 +144,13 @@ export var blockFuncs = {
                     "label": blockData.label + "-OUTPUT",
                     "block-type": "SYNTHESIZE-OUTPUT",
                     "input-type": "single",
+                    "parameters": blockData.parameters,
+                },
+                scratch: {
                     "waiting-for": inputIds,
                     "queued-inputs": {},
-                    "parameters": blockData.parameters,
+                    "waiting-resolves" : [],
+                    "waiting-rejects" : []
                 }
             };
             
