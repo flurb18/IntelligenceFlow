@@ -239,7 +239,6 @@ function main(blockTypes, apiTypes, cytostyle) {
                     } else {
                         block.scratch("queued-inputs", queuedInputs);
                         block.scratch("waiting-for", waitIds);
-                        reject("Not ready");
                     }
                 } else {
                     console.log("Waiting got extra in");
