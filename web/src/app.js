@@ -1,6 +1,5 @@
 import { notify, createSubmenusByType } from './utils.js';
 import { blockFuncs } from './blockfuncs.js';
-import openai from "openai";
 import { OpenAI } from "openai";
 
 // Make sidebar expand buttons work
