@@ -156,7 +156,12 @@ function main(blockTypes, apiTypes, cytostyle) {
             }
         }]);
         // Children nodes and block creation hook
-        cy.add(blockFuncs[blockType].create(_data));
+        cy.add(blockFuncs[blockType].create(_data)).nodes().positions((node, i) => {
+            return {
+                x: ((extent.x1 + extent.x2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD,
+                y: ((extent.y1 + extent.y2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD
+            }
+        });
     });
 
     // Handle API settings form submission
