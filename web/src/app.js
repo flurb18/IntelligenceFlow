@@ -1,6 +1,8 @@
 import { notify, createSubmenusByType } from './utils.js';
 import { blockFuncs } from './blockfuncs.js';
 
+import { OpenAI } from 'openai';
+
 // Make sidebar expand buttons work
 var expands = document.getElementsByClassName("sidebar-submenu-expand-button");
 for (var i = 0; i < expands.length; i++) {
