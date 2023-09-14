@@ -28,6 +28,9 @@ export function notify(text) {
 // the field in the submenu.
 export function createSubmenusByType(config, selectElement) {
     for (var type of Object.keys(config)) {
+        if (config[type]["hidden"]) {
+            continue;
+        }
         // Create option in selectElement
         var typeOption = document.createElement("option");
         typeOption.setAttribute("value", type);

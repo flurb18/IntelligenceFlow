@@ -5,7 +5,8 @@
                 "single"
             ]
         },
-        "parameters": {}
+        "parameters": {},
+        "hidden": false
     },
     "INPUT-FIXED": {
         "maps": {
@@ -18,7 +19,8 @@
                 "label": "Fixed Text Input",
                 "type": "textbox"
             }
-        }
+        },
+        "hidden": false
     },
     "OUTPUT": {
         "maps": {
@@ -32,7 +34,8 @@
                 "none"
             ]
         },
-        "parameters": {}
+        "parameters": {},
+        "hidden": false
     },
     "COPY": {
         "maps": {
@@ -53,7 +56,8 @@
                 "min": "2",
                 "max": "100"
             }
-        }
+        },
+        "hidden": false
     },
     "SPLIT": {
         "maps": {
@@ -80,7 +84,8 @@
                 "min": "0",
                 "max": "100"
             }
-        }
+        },
+        "hidden": false
     },
     "COMBINE": {
         "maps": {
@@ -94,7 +99,8 @@
                 "single"
             ]
         },
-        "parameters": {}
+        "parameters": {},
+        "hidden": false
     },
     "LLM": {
         "maps": {
@@ -113,6 +119,51 @@
                 "label": "Query for LLM",
                 "type": "textbox"
             }
-        }
+        },
+        "hidden": false
+    },
+    "SYNTHESIZE": {
+        "maps": {
+            "none": [
+                "none"
+            ]
+        },
+        "parameters": {
+            "SYNTHESIZE-num-inputs": {
+                "label": "Number of Inputs",
+                "type": "num",
+                "min": "1",
+                "max": "10"
+            },
+            "SYNTHESIZE-output-format": {
+                "label": "Output Format",
+                "type": "textbox"
+            }
+        },
+        "hidden": false
+    },
+    "SYNTHESIZE-INPUT": {
+        "maps": {
+            "none": [
+                "none"
+            ],
+            "single": [
+                "none"
+            ]
+        },
+        "parameters": {},
+        "hidden": true
+    },
+    "SYNTHESIZE-OUTPUT": {
+        "maps": {
+            "none": [
+                "none"
+            ],
+            "single-all": [
+                "single"
+            ]
+        },
+        "parameters": {},
+        "hidden": true
     }
 }

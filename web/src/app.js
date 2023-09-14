@@ -100,8 +100,7 @@ function main(blockTypes, apiTypes, cytostyle) {
                                     "data": {
                                         "id": state.selectedNode.id() + event.target.id(),
                                         "source": state.selectedNode.id(),
-                                        "target": event.target.id(),
-                                        "flow-type": srcOutputType
+                                        "target": event.target.id()
                                     },
                                     "classes": _classes
                                 }]);
@@ -155,7 +154,8 @@ function main(blockTypes, apiTypes, cytostyle) {
                 y: ((extent.y1 + extent.y2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD
             }
         }]);
-        blockFuncs[blockType].create(_data);
+        // Children nodes and block creation hook
+        cy.add(blockFuncs[blockType].create(_data));
     });
 
     // Handle API settings form submission
@@ -189,11 +189,11 @@ function main(blockTypes, apiTypes, cytostyle) {
         var promises = []
         getBlocksOfType("INPUT").forEach((inputBlock) => {
             var textIn = document.getElementById(inputBlock.id() + "-input").value;
-            promises.push(activateBlock(textIn, inputBlock));
+            promises.push(activateBlock(textIn, inputBlock, "UserInput"));
         });
         getBlocksOfType("INPUT-FIXED").forEach((inputBlock) => {
             var textIn = inputBlock.data("parameters")["INPUT-FIXED-text"];
-            promises.push(activateBlock(textIn, inputBlock));
+            promises.push(activateBlock(textIn, inputBlock, "FixedInput"));
         });
         Promise.all(promises).then((responses) => { 
             notify("Done!");
@@ -210,11 +210,11 @@ function main(blockTypes, apiTypes, cytostyle) {
         notify("Cancelled");
     });
 
-    function activateBlock(input, block) {
+    function activateBlock(input, block, srcId) {
         return new Promise((resolve, reject) => {
             block.addClass("active");
             setTimeout(() => {
-                executeBlock(input, block).then(output => {
+                executeBlock(input, block, srcId).then(output => {
                     block.removeClass("active");
                     resolve(output);
                 }).catch(error => {
@@ -225,19 +225,20 @@ function main(blockTypes, apiTypes, cytostyle) {
         }).then((output) => {
             var promises = [];
             block.outgoers('node').forEach((outNeighbor) => {
-                promises.push(activateBlock(output, outNeighbor));
+                promises.push(activateBlock(output, outNeighbor, block.id()));
             });
             return Promise.all(promises);
         });
     }
 
-    function executeBlock(input, block) {
+    function executeBlock(input, block, srcId) {
         if (!state.running) {
             return new Promise((resolve, reject) => reject("Stopped"));
         }
         return new Promise((resolve, reject) => {
             var blockType = block.data("block-type");
-            blockFuncs[blockType].exec(input, block.data(), resolve, reject);
+            // Run block and update block data from result
+            block.data(blockFuncs[blockType].exec(input, block.data(), srcId, resolve, reject));
         });
     }
 
