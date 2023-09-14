@@ -69,7 +69,10 @@ function main(blockTypes, apiTypes, cytostyle) {
         state.blockTypeIdNums[blockType] = [0];
     }
 
-    cy.on('cxttap', function (event) {
+    cy.on('cxttap', handleBlockSelection);
+    cy.on('taphold', handleBlockSelection);
+    
+    function handleBlockSelection(event) {
         if (event.target === cy || state.running) {
             if (state.selectedNode) {
                 state.selectedNode.toggleClass("selected");
@@ -118,7 +121,7 @@ function main(blockTypes, apiTypes, cytostyle) {
                 }
             }
         }
-    });
+    }
 
     // Handle new block form submission
     var newBlockForm = document.getElementById("new-block-form");
