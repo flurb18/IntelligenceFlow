@@ -230,10 +230,12 @@ function main(blockTypes, apiTypes, cytostyle) {
                 var queuedInputs = block.scratch("queued-inputs");
                 var idx = waitIds.indexOf(srcId);
                 if (idx > -1) {
-                    block.addClass("active");
+                    block.addClass("waiting");
                     waitIds.splice(idx, 1);
                     queuedInputs[srcId] = input;
                     if (waitIds.length == 0) {
+                        block.removeClass("waiting")
+                        block.addClass("active");
                         setTimeout(() => {
                             executeBlock(queuedInputs, block).then(executeOutput => {
                                 resetBlock(block);
@@ -299,6 +301,7 @@ function main(blockTypes, apiTypes, cytostyle) {
 
     function resetBlock(block) {
         block.removeClass("active");
+        block.removeClass("waiting");
         block.scratch({
             "waiting-for": [...block.data("waits-for")],
             "queued-inputs": {}

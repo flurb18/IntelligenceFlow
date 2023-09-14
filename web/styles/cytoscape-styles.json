@@ -9,11 +9,17 @@
     {
         "selector": "node.selected",
         "style": {
-            "background-color": "#8f8"
+            "background-color": "#333"
         }
     },
     {
         "selector": "node.active",
+        "style": {
+            "background-color": "#8f8"
+        }
+    },
+    {
+        "selector": "node.waiting",
         "style": {
             "background-color": "#fa0"
         }
@@ -30,8 +36,8 @@
         "selector": "edge",
         "style": {
             "width": 3,
-            "line-color": "#ccc",
-            "target-arrow-color": "#ccc",
+            "line-color": "#bbb",
+            "target-arrow-color": "#bbb",
             "target-arrow-shape": "triangle",
             "curve-style": "straight"
         }
