@@ -226,13 +226,11 @@ function main(blockTypes, apiTypes, cytostyle) {
                         setTimeout(() => {
                             executeBlock(queuedInputs, block).then(output => {
                                 block.removeClass("active");
-                                console.log("resolve");
                                 block.data("waiting-for", Object.keys(queuedInputs));
                                 block.data("queued-inputs", {})
                                 resolve(output);
                             }).catch(error => {
                                 block.removeClass("active");
-                                console.log("reject");
                                 block.data("waiting-for", Object.keys(queuedInputs));
                                 block.data("queued-inputs", {})
                                 reject(error);

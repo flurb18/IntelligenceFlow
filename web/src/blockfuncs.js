@@ -171,6 +171,7 @@ export var blockFuncs = {
     },
     "SYNTHESIZE-OUTPUT": {
         exec: function (input, blockData, resolve, reject) {
+            console.log(input);
             output = blockData.parameters["SYNTHESIZE-output-format"];
             for (var i = 1; i <= blockData.parameters["SYNTHESIZE-num-inputs"]; i++) {
                 output = output.replace("_INPUT" + i + "_", input[blockData.parent + "INPUT" + i]);
