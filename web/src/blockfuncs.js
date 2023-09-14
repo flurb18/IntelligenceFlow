@@ -2,9 +2,8 @@ import { insertBefore } from "./utils.js";
 
 export var blockFuncs = {
     "INPUT": {
-        exec: function (input, blockData, srcId, resolve, reject) {
+        exec: function (input, blockData, resolve, reject) {
             resolve(input);
-            return {};
         },
         create: function(blockData) {
             var inputIdString = blockData.id + "-input";
@@ -25,9 +24,8 @@ export var blockFuncs = {
         }
     },
     "INPUT-FIXED": {
-        exec: function (input, blockData, srcId, resolve, reject) {
+        exec: function (input, blockData, resolve, reject) {
             resolve(input);
-            return {};
         },
         create: function(blockData) {
             return [];
@@ -37,10 +35,9 @@ export var blockFuncs = {
         }
     },
     "OUTPUT": {
-        exec: function (input, blockData, srcId, resolve, reject) {
+        exec: function (input, blockData, resolve, reject) {
             document.getElementById(blockData.id + "-output").value = input;
             resolve();
-            return {};
         },
         create: function(blockData) {
             var outputIdString = blockData.id + "-output";
@@ -62,10 +59,9 @@ export var blockFuncs = {
         }
     },
     "COPY": {
-        exec: function (input, blockData, srcId, resolve, reject) {
+        exec: function (input, blockData, resolve, reject) {
             var numCopies = blockData.parameters["COPY-num-copies"];
             resolve(Array(numCopies).fill(input));
-            return {};
         },
         create: function(blockData) {
             return [];
@@ -76,9 +72,8 @@ export var blockFuncs = {
     },
     // TODO
     "SPLIT": {
-        exec: function (input, blockData, srcId, resolve, reject) {
+        exec: function (input, blockData, resolve, reject) {
             resolve(input);
-            return {};
         },
         create: function(blockData) {
             return [];
@@ -88,9 +83,8 @@ export var blockFuncs = {
         }
     },
     "COMBINE": {
-        exec: function (input, blockData, srcId, resolve, reject) {
+        exec: function (input, blockData, resolve, reject) {
             resolve(input.join(" "));
-            return {};
         },
         create: function(blockData) {
             return [];
@@ -100,9 +94,8 @@ export var blockFuncs = {
         }
     },
     "LLM": {
-        exec: function (input, blockData, srcId, resolve, reject) {
+        exec: function (input, blockData, resolve, reject) {
             resolve(input);
-            return {};
         },
         create: function(blockData) {
             return [];
@@ -112,29 +105,17 @@ export var blockFuncs = {
         }
     },
     "SYNTHESIZE": {
-        exec: function (input, blockData, srcId, resolve, reject) {
+        exec: function (input, blockData, resolve, reject) {
             reject("This block is a container and shouldn't ever run");
-            return {};
         },
         create: function(blockData) {
             var inputs = [];
             var edges = [];
             var outputId = blockData.id + "OUTPUT";
-            var output = {
-                group: 'nodes',
-                data: {
-                    "id": outputId,
-                    "parent": blockData.id,
-                    "label": blockData.label + "-OUTPUT",
-                    "block-type": "SYNTHESIZE-OUTPUT",
-                    "input-type": "single",
-                    "position": { x: 100, y: 50 },
-                    "parameters": blockData.parameters,
-                    "inputs-received": {}
-                }
-            };
+            var inputIds = []
             for (var i = 1; i <= blockData.parameters["SYNTHESIZE-num-inputs"]; i++) {
-                var inputId = blockData.id + "INPUT" + i
+                var inputId = blockData.id + "INPUT" + i;
+                inputIds.push(inputId);
                 inputs.push({
                     group: 'nodes',
                     data: {
@@ -143,7 +124,8 @@ export var blockFuncs = {
                         "label": blockData.label + "-INPUT" + i,
                         "block-type": "SYNTHESIZE-INPUT",
                         "input-type": "none",
-                        "position": { x: 20, y: (i*90/blockData.parameters["SYNTHESIZE-num-inputs"])+10 },
+                        "waiting-for": [],
+                        "queued-inputs": {},
                         "parameters": blockData.parameters
                     }
                 });
@@ -156,6 +138,19 @@ export var blockFuncs = {
                     }
                 })
             }
+            var output = {
+                group: 'nodes',
+                data: {
+                    "id": outputId,
+                    "parent": blockData.id,
+                    "label": blockData.label + "-OUTPUT",
+                    "block-type": "SYNTHESIZE-OUTPUT",
+                    "input-type": "single",
+                    "waiting-for": inputIds,
+                    "queued-inputs": {},
+                    "parameters": blockData.parameters,
+                }
+            };
             
             return [...inputs, output, ...edges]
         },
@@ -164,9 +159,8 @@ export var blockFuncs = {
         }
     },
     "SYNTHESIZE-INPUT": {
-        exec: function (input, blockData, srcId, resolve, reject) {
+        exec: function (input, blockData, resolve, reject) {
             resolve(input);
-            return {};
         },
         create: function(blockData) {
             return [];
@@ -176,24 +170,12 @@ export var blockFuncs = {
         }
     },
     "SYNTHESIZE-OUTPUT": {
-        exec: function (input, blockData, srcId, resolve, reject) {
-            var newData = blockData["inputs-received"];
-            newData[srcId] = input;
-            if (Object.keys(newData).length == blockData.parameters["SYNTHESIZE-num-inputs"]) {
-                output = blockData.parameters["SYNTHESIZE-output-format"];
-                for (var i = 1; i <= blockData.parameters["SYNTHESIZE-num-inputs"]; i++) {
-                    output = output.replace("_INPUT"+ i +"_", newData[blockData.parent + "INPUT" + i]);
-                }
-                resolve(output);
-                return {
-                    "inputs-received": {}
-                };
-            } else {
-                reject("NOTREADY");
-                return {
-                    "inputs-received": newData
-                };
+        exec: function (input, blockData, resolve, reject) {
+            output = blockData.parameters["SYNTHESIZE-output-format"];
+            for (var i = 1; i <= blockData.parameters["SYNTHESIZE-num-inputs"]; i++) {
+                output = output.replace("_INPUT" + i + "_", input[blockData.parent + "INPUT" + i]);
             }
+            resolve(output);
         },
         create: function(blockData) {
             return [];

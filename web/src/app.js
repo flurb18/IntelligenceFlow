@@ -139,6 +139,8 @@ function main(blockTypes, apiTypes, cytostyle) {
             "label": label,
             "block-type": blockType,
             "input-type": "none",
+            "waiting-for": [],
+            "queued-inputs": {},
             "parameters": {}
         };
         state.blockTypeIdNums[blockType].push(newId);
@@ -213,15 +215,47 @@ function main(blockTypes, apiTypes, cytostyle) {
     function activateBlock(input, block, srcId) {
         return new Promise((resolve, reject) => {
             block.addClass("active");
-            setTimeout(() => {
-                executeBlock(input, block, srcId).then(output => {
-                    block.removeClass("active");
-                    resolve(output);
-                }).catch(error => {
-                    block.removeClass("active");
-                    reject(error);
-                });
-            }, 500);
+            if (blockTypes[block.data("block-type")]["waits"]) {
+                var waitIds = block.data("waiting-for");
+                var queuedInputs = block.data("queued-inputs");
+                queuedInputs[srcId] = input;
+                var idx = waitIds.indexOf(srcId);
+                if (idx > -1) {
+                    waitIds.splice(idx, 1);
+                    if (waitIds.length == 0) {
+                        setTimeout(() => {
+                            executeBlock(queuedInputs, block).then(output => {
+                                block.removeClass("active");
+                                block.data("waiting-for", Object.keys(queuedInputs));
+                                block.data("queued-inputs", {})
+                                resolve(output);
+                            }).catch(error => {
+                                block.removeClass("active");
+                                block.data("waiting-for", Object.keys(queuedInputs));
+                                block.data("queued-inputs", {})
+                                reject(error);
+                            });
+                        }, 500);
+                    } else {
+                        block.data("queued-inputs", queuedInputs);
+                        block.data("waiting-for", waitIds);
+                        reject("Not ready");
+                    }
+                } else {
+                    reject("Waiting block got an extra input");
+                }
+            } else {
+                // Run block immediately
+                setTimeout(() => {
+                    executeBlock(input, block).then(output => {
+                        block.removeClass("active");
+                        resolve(output);
+                    }).catch(error => {
+                        block.removeClass("active");
+                        reject(error);
+                    });
+                }, 500);
+            }
         }).then((output) => {
             var promises = [];
             block.outgoers('node').forEach((outNeighbor) => {
@@ -231,14 +265,14 @@ function main(blockTypes, apiTypes, cytostyle) {
         });
     }
 
-    function executeBlock(input, block, srcId) {
+    function executeBlock(input, block) {
         if (!state.running) {
             return new Promise((resolve, reject) => reject("Stopped"));
         }
         return new Promise((resolve, reject) => {
             var blockType = block.data("block-type");
-            // Run block and update block data from result
-            block.data(blockFuncs[blockType].exec(input, block.data(), srcId, resolve, reject));
+            // Run block
+            blockFuncs[blockType].exec(input, block.data(), resolve, reject);
         });
     }
 

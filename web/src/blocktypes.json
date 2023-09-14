@@ -6,7 +6,8 @@
             ]
         },
         "parameters": {},
-        "hidden": false
+        "hidden": false,
+        "waits": false
     },
     "INPUT-FIXED": {
         "maps": {
@@ -20,7 +21,8 @@
                 "type": "textbox"
             }
         },
-        "hidden": false
+        "hidden": false,
+        "waits": false
     },
     "OUTPUT": {
         "maps": {
@@ -35,7 +37,8 @@
             ]
         },
         "parameters": {},
-        "hidden": false
+        "hidden": false,
+        "waits": false
     },
     "COPY": {
         "maps": {
@@ -57,7 +60,8 @@
                 "max": "100"
             }
         },
-        "hidden": false
+        "hidden": false,
+        "waits": false
     },
     "SPLIT": {
         "maps": {
@@ -85,7 +89,8 @@
                 "max": "100"
             }
         },
-        "hidden": false
+        "hidden": false,
+        "waits": false
     },
     "COMBINE": {
         "maps": {
@@ -100,7 +105,8 @@
             ]
         },
         "parameters": {},
-        "hidden": false
+        "hidden": false,
+        "waits": false
     },
     "LLM": {
         "maps": {
@@ -120,7 +126,8 @@
                 "type": "textbox"
             }
         },
-        "hidden": false
+        "hidden": false,
+        "waits": false
     },
     "SYNTHESIZE": {
         "maps": {
@@ -140,7 +147,8 @@
                 "type": "textbox"
             }
         },
-        "hidden": false
+        "hidden": false,
+        "waits": false
     },
     "SYNTHESIZE-INPUT": {
         "maps": {
@@ -152,7 +160,8 @@
             ]
         },
         "parameters": {},
-        "hidden": true
+        "hidden": true,
+        "waits": false
     },
     "SYNTHESIZE-OUTPUT": {
         "maps": {
@@ -164,6 +173,7 @@
             ]
         },
         "parameters": {},
-        "hidden": true
+        "hidden": true,
+        "waits": true
     }
 }
