@@ -223,11 +223,14 @@ function main(blockTypes, apiTypes, cytostyle) {
                     waitIds.splice(idx, 1);
                     if (waitIds.length == 0) {
                         setTimeout(() => {
-                            executeBlock(queuedInputs, block).then(output => {
+                            executeBlock(queuedInputs, block).then(executeOutput => {
                                 block.removeClass("active");
                                 block.scratch("waiting-for", block.data("waits-for"));
                                 block.scratch("queued-inputs", {})
-                                resolve(output);
+                                resolve({
+                                    done: true,
+                                    output: executeOutput
+                                });
                             }).catch(error => {
                                 console.log(error);
                                 block.removeClass("active");
@@ -239,31 +242,38 @@ function main(blockTypes, apiTypes, cytostyle) {
                     } else {
                         block.scratch("queued-inputs", queuedInputs);
                         block.scratch("waiting-for", waitIds);
-                        resolve(null);
+                        resolve({
+                            done: false
+                        });
                     }
                 } else {
-                    console.log("Waiting got extra in");
+                    console.log("Waiting block" + block.id() + " got extra input");
                 }
             } else {
                 // Run block immediately
                 block.addClass("active");
                 setTimeout(() => {
-                    executeBlock(input, block).then(output => {
+                    executeBlock(input, block).then(executeOutput => {
                         block.removeClass("active");
-                        resolve(output);
+                        resolve({
+                            done: true,
+                            output: executeOutput
+                        });
                     }).catch(error => {
                         block.removeClass("active");
                         reject(error);
                     });
                 }, 500);
             }
-        }).then((output) => {
-            if (output) {
+        }).then((status) => {
+            if (status.done) {
                 var promises = [];
                 block.outgoers('node').forEach((outNeighbor) => {
-                    promises.push(activateBlock(output, outNeighbor, block.id()));
+                    promises.push(activateBlock(status.output, outNeighbor, block.id()));
                 });
                 return Promise.all(promises);
+            } else {
+                return Promise.resolve();
             }
         });
     }
