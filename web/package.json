@@ -9,7 +9,6 @@
     "author": "",
     "license": "ISC",
     "type": "module",
-    "importmap": "src/imports.json",
     "dependencies": {
         "cytoscape": "^3.26.0",
         "langchain": "^0.0.147",
