@@ -19,6 +19,15 @@
         }
     },
     {
+        "selector": "$node > node",
+        "style": {
+            "background-color": "#ffe",
+            "shape": "rounded-rectangle",
+            "border-width": 1,
+            "border-color": "#444"
+        }
+    },
+    {
         "selector": "edge",
         "style": {
             "width": 3,

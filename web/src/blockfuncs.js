@@ -128,6 +128,7 @@ export var blockFuncs = {
                     "label": blockData.label + "-OUTPUT",
                     "block-type": "SYNTHESIZE-OUTPUT",
                     "input-type": "none",
+                    "position": { x: 100, y: 50 },
                     "parameters": blockData.parameters,
                     "inputs-received": {}
                 }
@@ -142,6 +143,7 @@ export var blockFuncs = {
                         "label": blockData.label + "-INPUT" + i,
                         "block-type": "SYNTHESIZE-INPUT",
                         "input-type": "none",
+                        "position": { x: 20, y: (i*90/blockData.parameters["SYNTHESIZE-num-inputs"])+10 },
                         "parameters": blockData.parameters
                     }
                 });
