@@ -227,7 +227,6 @@ function main(blockTypes, apiTypes, cytostyle) {
                                 block.removeClass("active");
                                 block.scratch("waiting-for", block.data("waits-for"));
                                 block.scratch("queued-inputs", {});
-                                console.log(block.scratch("queued-inputs"))
                                 resolve({
                                     done: true,
                                     output: executeOutput
