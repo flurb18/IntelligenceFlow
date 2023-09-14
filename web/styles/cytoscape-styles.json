@@ -35,8 +35,8 @@
     {
         "selector": "edge",
         "style": {
-            "width": 3,
-            "line-color": "#bbb",
+            "width": 5,
+            "line-color": "#f33",
             "target-arrow-color": "#bbb",
             "target-arrow-shape": "triangle",
             "curve-style": "straight"
