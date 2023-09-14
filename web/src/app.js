@@ -131,7 +131,6 @@ function main(blockTypes, apiTypes, cytostyle) {
             notify("Cannot create new block while running");
             return;
         }
-        var extent = cy.extent();
         var blockType = newBlockForm.elements["new-block-type"].value;
         var newId = Math.max(...state.blockTypeIdNums[blockType]) + 1;
         var idString = blockType + newId;
@@ -150,15 +149,8 @@ function main(blockTypes, apiTypes, cytostyle) {
             _data["parameters"][param] = newBlockForm.elements[param].value;
         }
         var maxD = Math.floor(Math.min(extent.w, extent.h) / 6);
-        cy.add([{
-            group: 'nodes',
-            data: _data,
-            position: {
-                x: ((extent.x1 + extent.x2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD,
-                y: ((extent.y1 + extent.y2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD
-            }
-        }]);
-        // Children nodes and block creation hook
+        var extent = cy.extent();
+        // Block creation hook
         cy.add(blockFuncs[blockType].create(_data)).nodes().positions((node, i) => {
             return {
                 x: ((extent.x1 + extent.x2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD,

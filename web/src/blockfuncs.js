@@ -17,7 +17,7 @@ export var blockFuncs = {
             insertBefore(labelElement, submitButton);
             insertBefore(inputElement, submitButton);
             insertBefore(document.createElement("br"), submitButton);
-            return [];
+            return [{group: 'nodes', data: blockData}];
         },
         destroy: function(blockData) {
 
@@ -28,7 +28,7 @@ export var blockFuncs = {
             resolve(input);
         },
         create: function(blockData) {
-            return [];
+            return [{group: 'nodes', data: blockData}];
         },
         destroy: function(blockData) {
             
@@ -52,7 +52,7 @@ export var blockFuncs = {
             outputDiv.appendChild(labelElement);
             outputDiv.appendChild(outputElement);
             outputDiv.appendChild(document.createElement("br"));
-            return [];
+            return [{group: 'nodes', data: blockData}];
         },
         destroy: function(blockData) {
             
@@ -64,7 +64,7 @@ export var blockFuncs = {
             resolve(Array(numCopies).fill(input));
         },
         create: function(blockData) {
-            return [];
+            return [{group: 'nodes', data: blockData}];
         },
         destroy: function(blockData) {
             
@@ -76,7 +76,7 @@ export var blockFuncs = {
             resolve(input);
         },
         create: function(blockData) {
-            return [];
+            return [{group: 'nodes', data: blockData}];
         },
         destroy: function(blockData) {
             
@@ -87,7 +87,7 @@ export var blockFuncs = {
             resolve(input.join(" "));
         },
         create: function(blockData) {
-            return [];
+            return [{group: 'nodes', data: blockData}];
         },
         destroy: function(blockData) {
             
@@ -98,7 +98,7 @@ export var blockFuncs = {
             resolve(input);
         },
         create: function(blockData) {
-            return [];
+            return [{group: 'nodes', data: blockData}];
         },
         destroy: function(blockData) {
             
@@ -109,14 +109,13 @@ export var blockFuncs = {
             reject("This block is a container and shouldn't ever run");
         },
         create: function(blockData) {
-            var inputs = [];
-            var edges = [];
+            var elements = [{group: 'nodes', data: blockData}];
             var outputId = blockData.id + "OUTPUT";
             var inputIds = []
             for (var i = 1; i <= blockData.parameters["SYNTHESIZE-num-inputs"]; i++) {
                 var inputId = blockData.id + "INPUT" + i;
                 inputIds.push(inputId);
-                inputs.push({
+                elements.push({
                     group: 'nodes',
                     data: {
                         "id": inputId,
@@ -128,14 +127,14 @@ export var blockFuncs = {
                         "waits-for": []
                     }
                 });
-                edges.push({
+                elements.push({
                     group: 'edges',
                     data: {
                         "id": inputId + outputId,
                         "source": inputId,
                         "target": outputId
                     }
-                })
+                });
             }
             var output = {
                 group: 'nodes',
@@ -153,8 +152,7 @@ export var blockFuncs = {
                     "queued-inputs": {}
                 }
             };
-            
-            return [...inputs, output, ...edges]
+            return [...elements, output];
         },
         destroy: function(blockData) {
             
@@ -165,7 +163,7 @@ export var blockFuncs = {
             resolve(input);
         },
         create: function(blockData) {
-            return [];
+            return [{group: 'nodes', data: blockData}];
         },
         destroy: function(blockData) {
             
@@ -180,7 +178,7 @@ export var blockFuncs = {
             resolve(output);
         },
         create: function(blockData) {
-            return [];
+            return [{group: 'nodes', data: blockData}];
         },
         destroy: function(blockData) {
             
