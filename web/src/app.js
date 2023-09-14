@@ -241,6 +241,7 @@ function main(blockTypes, apiTypes, cytostyle) {
                     } else {
                         block.data("queued-inputs", queuedInputs);
                         block.data("waiting-for", waitIds);
+                        reject("Not ready");
                     }
                 } else {
                     console.log("Waiting got extra in");
