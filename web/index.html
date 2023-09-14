@@ -6,7 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Intelligence Flow</title>
     <link rel="stylesheet" href="styles/main.css">
-    <script type="importmap" src="src/imports.json"></script>
+    <script type="importmap">
+        {
+            "imports": {
+                "openai": "/node_modules/openai/"
+            }
+        }
+    </script>
     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
 </head>
 
