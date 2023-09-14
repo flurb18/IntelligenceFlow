@@ -148,8 +148,8 @@ function main(blockTypes, apiTypes, cytostyle) {
         for (var param of Object.keys(blockTypes[blockType]["parameters"])) {
             _data["parameters"][param] = newBlockForm.elements[param].value;
         }
-        var maxD = Math.floor(Math.min(extent.w, extent.h) / 6);
         var extent = cy.extent();
+        var maxD = Math.floor(Math.min(extent.w, extent.h) / 6);
         // Block creation hook
         cy.add(blockFuncs[blockType].create(_data)).nodes().positions((node, i) => {
             return {
