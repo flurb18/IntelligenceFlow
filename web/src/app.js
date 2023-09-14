@@ -235,6 +235,7 @@ function main(blockTypes, apiTypes, cytostyle) {
                                     waitingResolve(output);
                                 }
                             }).catch(error => {
+                                console.log(error);
                                 block.removeClass("active");
                                 block.scratch("waiting-for", Object.keys(queuedInputs));
                                 block.scratch("queued-inputs", {})
@@ -268,7 +269,6 @@ function main(blockTypes, apiTypes, cytostyle) {
                 }, 500);
             }
         }).then((output) => {
-            console.log("got to here");
             var promises = [];
             block.outgoers('node').forEach((outNeighbor) => {
                 promises.push(activateBlock(output, outNeighbor, block.id()));
