@@ -27,7 +27,7 @@
     {
         "selector": "$node > node",
         "style": {
-            "background-color": "#ffd",
+            "background-color": "#ffa",
             "border-width": 1,
             "border-color": "#444"
         }
