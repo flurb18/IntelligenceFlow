@@ -127,7 +127,7 @@ export var blockFuncs = {
                     "parent": blockData.id,
                     "label": blockData.label + "-OUTPUT",
                     "block-type": "SYNTHESIZE-OUTPUT",
-                    "input-type": "none",
+                    "input-type": "single",
                     "position": { x: 100, y: 50 },
                     "parameters": blockData.parameters,
                     "inputs-received": {}
