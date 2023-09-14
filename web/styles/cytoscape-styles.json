@@ -22,7 +22,7 @@
         "selector": "$node > node",
         "style": {
             "background-color": "#ffe",
-            "shape": "rounded-rectangle",
+            "shape": "roundedrectangle",
             "border-width": 1,
             "border-color": "#444"
         }
