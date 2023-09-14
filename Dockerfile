@@ -7,4 +7,6 @@ RUN npm install
 
 ADD ./web /web
 
+RUN npx webpack
+
 CMD cd /web && npm start
