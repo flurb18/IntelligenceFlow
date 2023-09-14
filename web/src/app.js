@@ -139,9 +139,8 @@ function main(blockTypes, apiTypes, cytostyle) {
             "label": label,
             "block-type": blockType,
             "input-type": "none",
-            "waiting-for": [],
-            "queued-inputs": {},
-            "parameters": {}
+            "parameters": {},
+            "waits-for": []
         };
         state.blockTypeIdNums[blockType].push(newId);
         for (var param of Object.keys(blockTypes[blockType]["parameters"])) {
@@ -214,50 +213,40 @@ function main(blockTypes, apiTypes, cytostyle) {
 
     function activateBlock(input, block, srcId) {
         return new Promise((resolve, reject) => {
-            block.addClass("active");
-            if (blockTypes[block.data("block-type")]["waits"]) {
+            if (!(block.data("waits-for").length == 0)) {
                 var waitIds = block.scratch("waiting-for");
                 var queuedInputs = block.scratch("queued-inputs");
-                var resList = block.scratch("waiting-resolves");
-                var rejList = block.scratch("waiting-rejects");
                 queuedInputs[srcId] = input;
                 var idx = waitIds.indexOf(srcId);
                 if (idx > -1) {
+                    block.addClass("active");
                     waitIds.splice(idx, 1);
                     if (waitIds.length == 0) {
                         setTimeout(() => {
                             executeBlock(queuedInputs, block).then(output => {
                                 block.removeClass("active");
-                                block.scratch("waiting-for", Object.keys(queuedInputs));
+                                block.scratch("waiting-for", block.data("waits-for"));
                                 block.scratch("queued-inputs", {})
                                 resolve(output);
-                                for (var waitingResolve of resList) {
-                                    waitingResolve(output);
-                                }
                             }).catch(error => {
                                 console.log(error);
                                 block.removeClass("active");
-                                block.scratch("waiting-for", Object.keys(queuedInputs));
+                                block.scratch("waiting-for",  block.data("waits-for"));
                                 block.scratch("queued-inputs", {})
                                 reject(error);
-                                for (var waitingReject of rejList) {
-                                    waitingReject(error);
-                                }
                             });
                         }, 500);
                     } else {
                         block.scratch("queued-inputs", queuedInputs);
                         block.scratch("waiting-for", waitIds);
-                        resList.push(resolve);
-                        rejList.push(reject);
-                        block.scratch("waiting-resolves", resList);
-                        block.scratch("waiting-rejects", rejList);
+                        reject("Not ready");
                     }
                 } else {
                     console.log("Waiting got extra in");
                 }
             } else {
                 // Run block immediately
+                block.addClass("active");
                 setTimeout(() => {
                     executeBlock(input, block).then(output => {
                         block.removeClass("active");

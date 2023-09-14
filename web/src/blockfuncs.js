@@ -124,7 +124,8 @@ export var blockFuncs = {
                         "label": blockData.label + "-INPUT" + i,
                         "block-type": "SYNTHESIZE-INPUT",
                         "input-type": "none",
-                        "parameters": blockData.parameters
+                        "parameters": blockData.parameters,
+                        "waits-for": []
                     }
                 });
                 edges.push({
@@ -145,12 +146,11 @@ export var blockFuncs = {
                     "block-type": "SYNTHESIZE-OUTPUT",
                     "input-type": "single",
                     "parameters": blockData.parameters,
+                    "waits-for": inputIds
                 },
                 scratch: {
                     "waiting-for": inputIds,
-                    "queued-inputs": {},
-                    "waiting-resolves" : [],
-                    "waiting-rejects" : []
+                    "queued-inputs": {}
                 }
             };
             
