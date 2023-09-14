@@ -268,6 +268,7 @@ function main(blockTypes, apiTypes, cytostyle) {
                 }, 500);
             }
         }).then((output) => {
+            console.log("got to here");
             var promises = [];
             block.outgoers('node').forEach((outNeighbor) => {
                 promises.push(activateBlock(output, outNeighbor, block.id()));
