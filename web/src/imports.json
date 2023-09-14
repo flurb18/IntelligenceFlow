@@ -1,0 +1,5 @@
+{
+    "imports": {
+        "openai": "/node_modules/openai/index.mjs"
+    }
+}
