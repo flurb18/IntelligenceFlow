@@ -276,17 +276,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         var nodeData = nodesData[nodeKey]["data"];
                         var blockType = nodeData["block-type"];
                         if (!blockTypes[blockType]["hidden"]) {
-                            console.log("Here1");
                             var _data = newBlockData(blockType, idNumMap[nodeData["id"]], nodeData["barelabel"]);
-                            console.log("here2")
                             _data["input-type"] = nodeData["input-type"];
                             _data["parameters"] = nodeData["parameters"];
                             nodeData["waits-for"].forEach((oldId) => {
                                 _data["waits-for"].push(idMap[oldId]);
                             });
-                            console.log("here3");
-                            blockFuncs[blockTypes].create(_data).forEach((desc) => {
-                                console.log(desc);
+                            blockFuncs[blockType].create(_data).forEach((desc) => {
                                 if (desc["group"] === "nodes") {
                                     var pos = nodesData[nodeKey]["position"];
                                     if (blockTypes[desc["data"]["block-type"]]["hidden"]) {
