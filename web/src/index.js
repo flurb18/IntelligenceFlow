@@ -1,7 +1,11 @@
+import cytoscape from 'cytoscape';
+
 import { notify, createSubmenusByType } from './utils.js';
 import { blockFuncs } from './blockfuncs.js';
-import { OpenAI } from 'openai';
-import cytoscape from 'cytoscape';
+
+//import blockTypes from './blocktypes.json';
+//import apiTypes from './apitypes.json';
+import cytostyle from './cytoscape-styles.json';
 
 // Make sidebar expand buttons work
 var expands = document.getElementsByClassName("sidebar-submenu-expand-button");
@@ -31,23 +35,23 @@ for (var form of forms) {
 document.addEventListener('DOMContentLoaded', function () {
     const blockTypesPromise = fetch("/src/blocktypes.json").then(response => response.json());
     const apiTypesPromise = fetch("/src/apitypes.json").then(response => response.json());
-    const cytostylePromise = fetch("/styles/cytoscape-styles.json").then(response => response.json());
+    //const cytostylePromise = fetch("/styles/cytoscape-styles.json").then(response => response.json());
 
-    Promise.all([blockTypesPromise, apiTypesPromise, cytostylePromise]).then(
+    Promise.all([blockTypesPromise, apiTypesPromise]).then(
         function (responses) {
             let blockTypes = responses[0];
             let apiTypes = responses[1];
-            let cytostyle = responses[2];
+            //let cytostyle = responses[2];
             // Create block type submenus
             createSubmenusByType(blockTypes, document.getElementById("new-block-type"));
             createSubmenusByType(apiTypes, document.getElementById("api-settings-type"));
             // Create the cytoscape
-            main(blockTypes, apiTypes, cytostyle);
+            main(blockTypes, apiTypes);
         }
     );
 });
 
-function main(blockTypes, apiTypes, cytostyle) {
+function main(blockTypes, apiTypes) {
     // Run Cytoscape
     const cy = cytoscape({
         container: document.getElementById('flow-diagram'),

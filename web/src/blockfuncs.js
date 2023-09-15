@@ -1,3 +1,6 @@
+import { OpenAI } from 'openai';
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+
 import { insertBefore } from "./utils.js";
 
 export var blockFuncs = {
@@ -70,10 +73,19 @@ export var blockFuncs = {
             
         }
     },
-    // TODO
     "SPLIT": {
         exec: function (input, blockData, resolve, reject) {
-            resolve(input);
+            const splitter = new RecursiveCharacterTextSplitter({
+                chunkSize: blockData.parameters["SPLIT-chunk-size"],
+                chunkOverlap: blockData.parameters["SPLIT-chunk-overlap"]
+            });
+            splitter.createDocuments([input]).then((docs) => {
+                output = []
+                for (var doc of docs) {
+                    output.push(doc.pageContent);
+                }
+                resolve(output);
+            }).catch((error) => { reject(error); });
         },
         create: function(blockData) {
             return [{group: 'nodes', data: blockData}];
@@ -84,7 +96,7 @@ export var blockFuncs = {
     },
     "COMBINE": {
         exec: function (input, blockData, resolve, reject) {
-            resolve(input.join(" "));
+            resolve(input.join("\n"));
         },
         create: function(blockData) {
             return [{group: 'nodes', data: blockData}];
