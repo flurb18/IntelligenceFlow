@@ -108,8 +108,6 @@ export var blockFuncs = {
     "LLM": {
         exec: function (input, blockData, state, resolve, reject) {
             var prompt = blockData.parameters["LLM-query"].replace("_INPUT_", input);
-            console.log(prompt);
-            var output;
             switch (state.apiType) {
                 case "none":
                     reject("API");
@@ -119,6 +117,7 @@ export var blockFuncs = {
                     const oa = new OpenAI({
                         apiKey: state.apiParms["OpenAI-APIkey"],
                     });
+                    console.log("here");
                     oa.chat.completions.create({
                         messages: [{ role: "user", content: prompt }],
                         model: "gpt-3.5-turbo"
