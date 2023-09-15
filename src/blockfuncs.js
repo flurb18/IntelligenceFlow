@@ -118,6 +118,7 @@ export var blockFuncs = {
                         apiKey: state.apiParams["OpenAI-APIkey"],
                         dangerouslyAllowBrowser: true
                     });
+                    console.log(state.apiParams["OpenAI-APIkey"]);
                     oa.chat.completions.create({
                         messages: [{ role: "user", content: prompt }],
                         model: "gpt-3.5-turbo"
