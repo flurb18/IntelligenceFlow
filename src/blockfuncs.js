@@ -116,6 +116,7 @@ export var blockFuncs = {
                 case "OpenAI":
                     const oa = new OpenAI({
                         apiKey: state.apiParams["OpenAI-APIkey"],
+                        dangerouslyAllowBrowser: true
                     });
                     oa.chat.completions.create({
                         messages: [{ role: "user", content: prompt }],
