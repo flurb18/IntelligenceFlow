@@ -241,7 +241,13 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("export-form").addEventListener("submit", function(e) {
         e.preventDefault();
         var text = JSON.stringify({
-            "state": state,
+            "state": {
+                selectedNode: null,
+                blockTypeIdNums: state.blockTypeIdNums,
+                apiType: "none",
+                apiParams: {},
+                running: false
+            },
             "cytoscape": cy.json()
         });
         var element = document.createElement('a');
