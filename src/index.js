@@ -1,11 +1,25 @@
 import cytoscape from 'cytoscape';
 
-import { notify, createSubmenusByType } from './utils.js';
+import { notify, createSubmenusByType, insertAfter } from './utils.js';
 import { blockFuncs } from './blockfuncs.js';
 
 import blockTypes from './blocktypes.json';
 import apiTypes from './apitypes.json';
 import cytostyle from './cytoscape-styles.json';
+
+// Generate block type info
+var infoSection = document.getElementById("sidebar-info");
+for (var blockType of Object.keys(blockTypes)) {
+    if (blockTypes[blockType]["hidden"]) { continue; }
+    var button = document.createElement("button");
+    button.setAttribute("class", "sidebar-submenu-expand-button");
+    button.innerText = blockType;
+    var div = document.createElement("div");
+    div.setAttribute("class", "sidebar-submenu-expand");
+    div.innerText = blockTypes[blockType]["info"];
+    infoSection.appendChild(button);
+    infoSection.appendChild(div);
+}
 
 // Make sidebar expand buttons work
 var expands = document.getElementsByClassName("sidebar-submenu-expand-button");
