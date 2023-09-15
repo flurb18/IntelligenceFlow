@@ -256,6 +256,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             output: executeOutput
                         });
                     }).catch(error => {
+                        console.log(error);
                         block.removeClass("active");
                         reject(error);
                     });

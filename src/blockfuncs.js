@@ -117,7 +117,6 @@ export var blockFuncs = {
                     const oa = new OpenAI({
                         apiKey: state.apiParms["OpenAI-APIkey"],
                     });
-                    console.log("here");
                     oa.chat.completions.create({
                         messages: [{ role: "user", content: prompt }],
                         model: "gpt-3.5-turbo"
