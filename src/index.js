@@ -205,6 +205,7 @@ document.addEventListener('DOMContentLoaded', function () {
             reset();
             state.running = false;
         }).catch(error => {
+            notify(error);
             reset();
             state.running = false;
         });

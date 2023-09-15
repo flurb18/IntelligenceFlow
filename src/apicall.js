@@ -19,7 +19,7 @@ export var apiFuncs = {
             ...apiTypes["Oobabooga"]["request-template"]
         };
         var url = params["Oobabooga-URL"];
-        if (!url.endsWith("/api/v1/generate")) {
+        if (!url.endsWith("/api/v1/generate") || !url.endsWith("/api/v1/generate/")) {
             url = url + "/api/v1/generate";
         }
         return fetch(url, {

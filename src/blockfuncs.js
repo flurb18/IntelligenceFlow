@@ -1,6 +1,6 @@
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
-import { removeElement, insertBefore, notify } from "./utils.js";
+import { removeElement, insertBefore } from "./utils.js";
 import { apiFuncs } from "./apicall.js";
 
 export var blockFuncs = {
