@@ -125,6 +125,7 @@ export var blockFuncs = {
                         resolve(output);
                     }).catch((error) => { 
                         reject(error);
+                        console.log(error);
                     });
                     break;
                 case "Oobabooga":

@@ -23,14 +23,14 @@ for (var i = 0; i < expands.length; i++) {
 }
 
 // Prevent enter from submitting forms
-var forms = document.getElementsByClassName("sidebar-submenu-expand");
+/*var forms = document.getElementsByClassName("sidebar-submenu-expand");
 for (var form of forms) {
     form.addEventListener('keypress', function (e) {
         if (e.keyCode === 13) {
             e.preventDefault();
         }
     });
-}
+}*/
 
 document.addEventListener('DOMContentLoaded', function () {
     createSubmenusByType(blockTypes, document.getElementById("new-block-type"));
