@@ -115,17 +115,15 @@ export var blockFuncs = {
                     break;
                 case "OpenAI":
                     const oa = new OpenAI({
-                        apiKey: state.apiParms["OpenAI-APIkey"],
+                        apiKey: state.apiParams["OpenAI-APIkey"],
                     });
                     oa.chat.completions.create({
                         messages: [{ role: "user", content: prompt }],
                         model: "gpt-3.5-turbo"
                     }).then((output) => {
                         resolve(output);
-                        console.log(output);
                     }).catch((error) => { 
                         reject(error);
-                        console.log(error);
                     });
                     break;
                 case "Oobabooga":
