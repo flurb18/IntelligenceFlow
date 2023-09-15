@@ -3,12 +3,11 @@
     "description": "",
     "private": true,
     "scripts": {
-        "start": "http-server"
+        "build": "webpack"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "type": "module",
     "dependencies": {
         "cytoscape": "^3.26.0",
         "langchain": "^0.0.147",
