@@ -112,10 +112,14 @@ export var blockFuncs = {
     "LLM": {
         exec: function (input, blockData, state, resolve, reject) {
             var prompt = blockData.parameters["LLM-query"].replace("_INPUT_", input);
+            if (!Object.keys(apiFuncs).includes(state.apiType)) {
+                reject("API error")
+            }
             apiFuncs[state.apiType](prompt, state.apiParams).then((output) => {
                 resolve(output);
             }).catch((error) => {
-                reject(error);
+                reject("API error");
+                console.log(error);
             });
         },
         create: function (blockData) {
