@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return new Promise((resolve, reject) => {
             var blockType = block.data("block-type");
             // Run block
-            blockFuncs[blockType].exec(input, block.data(), resolve, reject);
+            blockFuncs[blockType].exec(input, block.data(), state, resolve, reject);
         });
     }
 

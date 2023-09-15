@@ -1,11 +1,11 @@
 import { OpenAI } from 'openai';
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
-import { insertBefore } from "./utils.js";
+import { insertBefore, notify } from "./utils.js";
 
 export var blockFuncs = {
     "INPUT": {
-        exec: function (input, blockData, resolve, reject) {
+        exec: function (input, blockData, state, resolve, reject) {
             resolve(input);
         },
         create: function(blockData) {
@@ -27,7 +27,7 @@ export var blockFuncs = {
         }
     },
     "INPUT-FIXED": {
-        exec: function (input, blockData, resolve, reject) {
+        exec: function (input, blockData, state, resolve, reject) {
             resolve(input);
         },
         create: function(blockData) {
@@ -38,7 +38,7 @@ export var blockFuncs = {
         }
     },
     "OUTPUT": {
-        exec: function (input, blockData, resolve, reject) {
+        exec: function (input, blockData, state, resolve, reject) {
             document.getElementById(blockData.id + "-output").value = input;
             resolve();
         },
@@ -62,7 +62,7 @@ export var blockFuncs = {
         }
     },
     "COPY": {
-        exec: function (input, blockData, resolve, reject) {
+        exec: function (input, blockData, state, resolve, reject) {
             var numCopies = blockData.parameters["COPY-num-copies"];
             resolve(Array(numCopies).fill(input));
         },
@@ -74,7 +74,7 @@ export var blockFuncs = {
         }
     },
     "SPLIT": {
-        exec: function (input, blockData, resolve, reject) {
+        exec: function (input, blockData, state, resolve, reject) {
             const splitter = new RecursiveCharacterTextSplitter({
                 chunkSize: blockData.parameters["SPLIT-chunk-size"],
                 chunkOverlap: blockData.parameters["SPLIT-chunk-overlap"]
@@ -95,7 +95,7 @@ export var blockFuncs = {
         }
     },
     "COMBINE": {
-        exec: function (input, blockData, resolve, reject) {
+        exec: function (input, blockData, state, resolve, reject) {
             resolve(input.join("\n"));
         },
         create: function(blockData) {
@@ -106,8 +106,34 @@ export var blockFuncs = {
         }
     },
     "LLM": {
-        exec: function (input, blockData, resolve, reject) {
-            resolve(input);
+        exec: function (input, blockData, state, resolve, reject) {
+            var prompt = blockData.parameters["LLM-query"].replace("_INPUT_", input);
+            var output;
+            switch (state.apiType) {
+                case "none":
+                    reject("API");
+                    notify("Configure the API settings to use an LLM block");
+                    break;
+                case "OpenAI":
+                    const openai = new OpenAI({
+                        apiKey: state.apiParms["OpenAI-APIkey"],
+                    });
+                    openai.chat.completions.create({
+                        messages: [{ role: "user", content: prompt }],
+                        model: "gpt-3.5-turbo"
+                    }).then((output) => {
+                        resolve(output);
+                    }).catch((error) => { 
+                        reject(error);
+                    });
+                    break;
+                case "Oobabooga":
+                    resolve(input);
+                    break;
+                default:
+                    reject("Invalid API type");
+                    break;
+            }
         },
         create: function(blockData) {
             return [{group: 'nodes', data: blockData}];
@@ -117,7 +143,7 @@ export var blockFuncs = {
         }
     },
     "SYNTHESIZE": {
-        exec: function (input, blockData, resolve, reject) {
+        exec: function (input, blockData, state, resolve, reject) {
             reject("This block is a container and shouldn't ever run");
         },
         create: function(blockData) {
@@ -171,7 +197,7 @@ export var blockFuncs = {
         }
     },
     "SYNTHESIZE-INPUT": {
-        exec: function (input, blockData, resolve, reject) {
+        exec: function (input, blockData, state, resolve, reject) {
             resolve(input);
         },
         create: function(blockData) {
@@ -182,7 +208,7 @@ export var blockFuncs = {
         }
     },
     "SYNTHESIZE-OUTPUT": {
-        exec: function (input, blockData, resolve, reject) {
+        exec: function (input, blockData, state, resolve, reject) {
             var output = blockData.parameters["SYNTHESIZE-output-format"];
             for (var i = 1; i <= blockData.parameters["SYNTHESIZE-num-inputs"]; i++) {
                 output = output.replace("_INPUT" + i + "_", input[blockData.parent + "INPUT" + i]);
