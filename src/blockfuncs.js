@@ -112,7 +112,7 @@ export var blockFuncs = {
             switch (state.apiType) {
                 case "none":
                     reject("API");
-                    notify("Configure the API settings to use an LLM block");
+                    notify("Configure API settings");
                     break;
                 case "OpenAI":
                     const oa = new OpenAI({
@@ -134,6 +134,7 @@ export var blockFuncs = {
                     break;
                 default:
                     reject("Invalid API type");
+                    console.log("Invalid API type "+state.apiType);
                     break;
             }
         },
