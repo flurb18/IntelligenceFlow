@@ -217,6 +217,9 @@ document.addEventListener('DOMContentLoaded', function () {
             var data = JSON.parse(evt.target.result);
             if (confirm("Import file? Current flow will be lost!")) {
                 state = data["state"];
+                cy.nodes().forEach((block) => {
+                    blockFuncs[block.data("block-type")].destroy(block.data());
+                })
                 cy.destroy();
                 cy = cytoscape({
                     container: document.getElementById('flow-diagram'),
@@ -240,6 +243,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Handle export form submission
     document.getElementById("export-form").addEventListener("submit", function(e) {
         e.preventDefault();
+        if (state.running) { notify("Can't export while running"); return; }
+        reset();
         var text = JSON.stringify({
             "state": {
                 selectedNode: null,
@@ -253,14 +258,10 @@ document.addEventListener('DOMContentLoaded', function () {
         var element = document.createElement('a');
         element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text));
         element.setAttribute('download', "flow.json");
-      
         element.style.display = 'none';
         document.body.appendChild(element);
-      
         element.click();
-      
         document.body.removeChild(element);
-        
     });
 
     function activateBlock(input, block, srcId) {
@@ -356,6 +357,10 @@ document.addEventListener('DOMContentLoaded', function () {
         cy.nodes().forEach((block) => {
             resetBlock(block);
         });
+        if (state.selectedNode) {
+            state.selectedNode.removeClass("selected");
+            state.selectedNode = null;
+        }
     }
 
     function getBlocksOfType(blockType) {

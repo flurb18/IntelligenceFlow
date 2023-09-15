@@ -12,6 +12,11 @@ export function insertBefore(a, e) {
     e.parentNode.insertBefore(a, e);
 };
 
+// Remove e
+export function removeElement(e) {
+    e.parentNode.removeChild(e);
+}
+
 // Notify the user of text
 export function notify(text) {
     document.getElementById("notification-text").innerText = text;

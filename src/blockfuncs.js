@@ -1,6 +1,6 @@
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
-import { insertBefore, notify } from "./utils.js";
+import { removeElement, insertBefore, notify } from "./utils.js";
 import { apiFuncs } from "./apicall.js";
 
 export var blockFuncs = {
@@ -15,15 +15,17 @@ export var blockFuncs = {
             inputElement.setAttribute("name", inputIdString);
             var labelElement = document.createElement("label");
             labelElement.setAttribute("for", inputIdString);
+            labelElement.setAttribute("id", inputIdString + "-label");
             labelElement.innerText = blockData.label;
             var submitButton = document.getElementById("execute-form-submit");
             insertBefore(labelElement, submitButton);
             insertBefore(inputElement, submitButton);
-            insertBefore(document.createElement("br"), submitButton);
             return [{ group: 'nodes', data: blockData }];
         },
         destroy: function (blockData) {
-
+            var inputIdString = blockData.id + "-input";
+            removeElement(document.getElementById(inputIdString));
+            removeElement(document.getElementById(inputIdString + "-label"));
         }
     },
     "INPUT-FIXED": {
@@ -50,15 +52,17 @@ export var blockFuncs = {
             outputElement.readOnly = true;
             var labelElement = document.createElement("label");
             labelElement.setAttribute("for", outputIdString);
+            labelElement.setAttribute("id", outputIdString + "-label");
             labelElement.innerText = blockData.label;
             var outputDiv = document.getElementById("output-div");
             outputDiv.appendChild(labelElement);
             outputDiv.appendChild(outputElement);
-            outputDiv.appendChild(document.createElement("br"));
             return [{ group: 'nodes', data: blockData }];
         },
         destroy: function (blockData) {
-
+            var outputIdString = blockData.id + "-output";
+            removeElement(document.getElementById(outputIdString));
+            removeElement(document.getElementById(outputIdString + "-label"));
         }
     },
     "COPY": {
