@@ -329,6 +329,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     });
                     cy.add(newEles);
+                    reset();
                     break;
             }
         }
