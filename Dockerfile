@@ -3,7 +3,7 @@ ADD ./package.json /build/package.json
 WORKDIR /build
 RUN npm install
 ADD . /build
-RUN npm build
+RUN npm run build
 
 
 FROM node
