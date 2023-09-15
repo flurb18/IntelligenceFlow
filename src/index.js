@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     layout: { name: 'grid' }
                 });
                 cy.json(data["cytoscape"]);
-                cy.nodes.forEach((block) => {
+                cy.nodes().forEach((block) => {
                     // Run creation hook, but don't import data (already there)
                     blockFuncs[block.data("block-type")].create(block.data());
                 });
