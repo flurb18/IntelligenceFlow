@@ -5,9 +5,5 @@ RUN npm install
 ADD . /build
 RUN npm run build
 
-
-FROM node
-COPY --from=builder /build/dist /web
-WORKDIR /web
-RUN npm install
-CMD npm start
+FROM nginx
+COPY --from=builder /build/dist /usr/share/nginx/html
