@@ -108,6 +108,7 @@ export var blockFuncs = {
     "LLM": {
         exec: function (input, blockData, state, resolve, reject) {
             var prompt = blockData.parameters["LLM-query"].replace("_INPUT_", input);
+            console.log(prompt);
             var output;
             switch (state.apiType) {
                 case "none":
