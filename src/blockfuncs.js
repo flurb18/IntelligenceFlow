@@ -1,8 +1,7 @@
-import { OpenAI } from 'openai';
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
 import { insertBefore, notify } from "./utils.js";
-import apiTypes from './apitypes.json';
+import { apiFuncs } from "./apicall.js";
 
 export var blockFuncs = {
     "INPUT": {
@@ -108,50 +107,12 @@ export var blockFuncs = {
     },
     "LLM": {
         exec: function (input, blockData, state, resolve, reject) {
-            var _prompt = blockData.parameters["LLM-query"].replace("_INPUT_", input);
-            switch (state.apiType) {
-                case "none":
-                    reject("API");
-                    notify("Configure API settings");
-                    break;
-                case "OpenAI":
-                    const oa = new OpenAI({
-                        apiKey: state.apiParams["OpenAI-APIkey"],
-                        dangerouslyAllowBrowser: true
-                    });
-                    oa.chat.completions.create({
-                        messages: [{ role: "user", content: _prompt }],
-                        model: "gpt-3.5-turbo"
-                    }).then((output) => {
-                        resolve(output);
-                    }).catch((error) => {
-                        reject(error);
-                    });
-                    break;
-                case "Oobabooga":
-                    var request = {
-                        prompt: _prompt,
-                        ...apiTypes["Oobabooga"]["request-template"]
-                    };
-                    var url = state.apiParams["Oobabooga-URL"];
-                    if (!url.endsWith("/api/v1/generate")) {
-                        url = url + "/api/v1/generate";
-                    }
-                    fetch(url, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(request)
-                    }).then((response) => response.json()).then((responseJSON) => {
-                        resolve(responseJSON["results"][0]["text"]);
-                    }).catch((error) => { reject(error) });
-                    break;
-                default:
-                    reject("Invalid API type");
-                    console.log("Invalid API type " + state.apiType);
-                    break;
-            }
+            var prompt = blockData.parameters["LLM-query"].replace("_INPUT_", input);
+            apiFuncs[state.apiType](prompt, state.apiParams).then((output) => {
+                resolve(output);
+            }).catch((error) => {
+                reject(error);
+            });
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];
