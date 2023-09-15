@@ -1,12 +1,13 @@
-FROM node
-
-ADD ./web/package.json /web/package.json
-
-WORKDIR /web
+FROM node as builder
+ADD ./package.json /build/package.json
+WORKDIR /build
 RUN npm install
-
-ADD ./web /web
-
+ADD . /build
 RUN npx webpack
 
-CMD cd /web && npm start
+
+FROM node
+COPY --from=builder /build/dist /web
+ADD ./package.json /web/package.json
+WORKDIR /web
+CMD npm start
