@@ -143,8 +143,8 @@ export var blockFuncs = {
                             "Content-Type": "application/json",
                         },
                         body: JSON.stringify(request)
-                    }).then((response) => {
-                        resolve(response.json()["results"][0]["text"]);
+                    }).then((response) => response.json()).then((responseJSON) => {
+                        resolve(responseJSON["results"][0]["text"]);
                     }).catch((error) => { reject(error) });
                     break;
                 default:
