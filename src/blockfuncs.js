@@ -2,13 +2,14 @@ import { OpenAI } from 'openai';
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
 import { insertBefore, notify } from "./utils.js";
+import apiTypes from './apitypes.json';
 
 export var blockFuncs = {
     "INPUT": {
         exec: function (input, blockData, state, resolve, reject) {
             resolve(input);
         },
-        create: function(blockData) {
+        create: function (blockData) {
             var inputIdString = blockData.id + "-input";
             var inputElement = document.createElement("textarea");
             inputElement.setAttribute("id", inputIdString);
@@ -20,9 +21,9 @@ export var blockFuncs = {
             insertBefore(labelElement, submitButton);
             insertBefore(inputElement, submitButton);
             insertBefore(document.createElement("br"), submitButton);
-            return [{group: 'nodes', data: blockData}];
+            return [{ group: 'nodes', data: blockData }];
         },
-        destroy: function(blockData) {
+        destroy: function (blockData) {
 
         }
     },
@@ -30,11 +31,11 @@ export var blockFuncs = {
         exec: function (input, blockData, state, resolve, reject) {
             resolve(input);
         },
-        create: function(blockData) {
-            return [{group: 'nodes', data: blockData}];
+        create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
         },
-        destroy: function(blockData) {
-            
+        destroy: function (blockData) {
+
         }
     },
     "OUTPUT": {
@@ -42,7 +43,7 @@ export var blockFuncs = {
             document.getElementById(blockData.id + "-output").value = input;
             resolve();
         },
-        create: function(blockData) {
+        create: function (blockData) {
             var outputIdString = blockData.id + "-output";
             var outputElement = document.createElement("textarea");
             outputElement.setAttribute("id", outputIdString);
@@ -55,10 +56,10 @@ export var blockFuncs = {
             outputDiv.appendChild(labelElement);
             outputDiv.appendChild(outputElement);
             outputDiv.appendChild(document.createElement("br"));
-            return [{group: 'nodes', data: blockData}];
+            return [{ group: 'nodes', data: blockData }];
         },
-        destroy: function(blockData) {
-            
+        destroy: function (blockData) {
+
         }
     },
     "COPY": {
@@ -66,11 +67,11 @@ export var blockFuncs = {
             var numCopies = blockData.parameters["COPY-num-copies"];
             resolve(Array(numCopies).fill(input));
         },
-        create: function(blockData) {
-            return [{group: 'nodes', data: blockData}];
+        create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
         },
-        destroy: function(blockData) {
-            
+        destroy: function (blockData) {
+
         }
     },
     "SPLIT": {
@@ -87,27 +88,27 @@ export var blockFuncs = {
                 resolve(output);
             }).catch((error) => { reject(error); });
         },
-        create: function(blockData) {
-            return [{group: 'nodes', data: blockData}];
+        create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
         },
-        destroy: function(blockData) {
-            
+        destroy: function (blockData) {
+
         }
     },
     "COMBINE": {
         exec: function (input, blockData, state, resolve, reject) {
             resolve(input.join("\n"));
         },
-        create: function(blockData) {
-            return [{group: 'nodes', data: blockData}];
+        create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
         },
-        destroy: function(blockData) {
-            
+        destroy: function (blockData) {
+
         }
     },
     "LLM": {
         exec: function (input, blockData, state, resolve, reject) {
-            var prompt = blockData.parameters["LLM-query"].replace("_INPUT_", input);
+            var _prompt = blockData.parameters["LLM-query"].replace("_INPUT_", input);
             switch (state.apiType) {
                 case "none":
                     reject("API");
@@ -118,38 +119,53 @@ export var blockFuncs = {
                         apiKey: state.apiParams["OpenAI-APIkey"],
                         dangerouslyAllowBrowser: true
                     });
-                    console.log(state.apiParams["OpenAI-APIkey"]);
                     oa.chat.completions.create({
-                        messages: [{ role: "user", content: prompt }],
+                        messages: [{ role: "user", content: _prompt }],
                         model: "gpt-3.5-turbo"
                     }).then((output) => {
                         resolve(output);
-                    }).catch((error) => { 
+                    }).catch((error) => {
                         reject(error);
                     });
                     break;
                 case "Oobabooga":
-                    resolve(input);
+                    var request = {
+                        prompt: _prompt,
+                        ...apiTypes["Oobabooga"]["request-template"]
+                    };
+                    var url = state.apiParams["Oobabooga-URL"];
+                    if (!url.endsWith("/api/v1/generate")) {
+                        url = url + "/api/v1/generate";
+                    }
+                    fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(request)
+                    }).then((response) => {
+                        resolve(response.json()["results"][0]["text"]);
+                    }).catch((error) => { reject(error) });
                     break;
                 default:
                     reject("Invalid API type");
-                    console.log("Invalid API type "+state.apiType);
+                    console.log("Invalid API type " + state.apiType);
                     break;
             }
         },
-        create: function(blockData) {
-            return [{group: 'nodes', data: blockData}];
+        create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
         },
-        destroy: function(blockData) {
-            
+        destroy: function (blockData) {
+
         }
     },
     "SYNTHESIZE": {
         exec: function (input, blockData, state, resolve, reject) {
             reject("This block is a container and shouldn't ever run");
         },
-        create: function(blockData) {
-            var elements = [{group: 'nodes', data: blockData}];
+        create: function (blockData) {
+            var elements = [{ group: 'nodes', data: blockData }];
             var outputId = blockData.id + "OUTPUT";
             var inputIds = []
             for (var i = 1; i <= blockData.parameters["SYNTHESIZE-num-inputs"]; i++) {
@@ -194,19 +210,19 @@ export var blockFuncs = {
             };
             return [...elements, output];
         },
-        destroy: function(blockData) {
-            
+        destroy: function (blockData) {
+
         }
     },
     "SYNTHESIZE-INPUT": {
         exec: function (input, blockData, state, resolve, reject) {
             resolve(input);
         },
-        create: function(blockData) {
-            return [{group: 'nodes', data: blockData}];
+        create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
         },
-        destroy: function(blockData) {
-            
+        destroy: function (blockData) {
+
         }
     },
     "SYNTHESIZE-OUTPUT": {
@@ -217,11 +233,11 @@ export var blockFuncs = {
             }
             resolve(output);
         },
-        create: function(blockData) {
-            return [{group: 'nodes', data: blockData}];
+        create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
         },
-        destroy: function(blockData) {
-            
+        destroy: function (blockData) {
+
         }
     }
 };
