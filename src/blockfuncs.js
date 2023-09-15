@@ -115,14 +115,15 @@ export var blockFuncs = {
                     notify("Configure the API settings to use an LLM block");
                     break;
                 case "OpenAI":
-                    const openai = new OpenAI({
+                    const oa = new OpenAI({
                         apiKey: state.apiParms["OpenAI-APIkey"],
                     });
-                    openai.chat.completions.create({
+                    oa.chat.completions.create({
                         messages: [{ role: "user", content: prompt }],
                         model: "gpt-3.5-turbo"
                     }).then((output) => {
                         resolve(output);
+                        console.log(output);
                     }).catch((error) => { 
                         reject(error);
                         console.log(error);
