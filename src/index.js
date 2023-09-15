@@ -272,6 +272,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             state.blockTypeIdNums[blockType].push(newId);
                         }
                     });
+                    console.log("ID map set up")
                     Object.keys(nodesData).forEach((nodeKey) => {
                         var nodeData = nodesData[nodeKey]["data"];
                         var blockType = nodeData["block-type"];
@@ -283,6 +284,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 _data["waits-for"].push(idMap[oldId]);
                             });
                             blockFuncs[blockTypes].create(_data).forEach((desc) => {
+                                console.log(desc);
                                 if (desc["group"] === "nodes") {
                                     var pos = nodesData[nodeKey]["position"];
                                     if (blockTypes[desc["data"]["block-type"]]["hidden"]) {
