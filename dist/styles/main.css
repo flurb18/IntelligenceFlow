@@ -43,7 +43,7 @@
 }
 
 .sidebar-submenu {
-    border: 2px solid #dddddd;
+    border: 2px solid black;
     background-color: #f0f0f0;
     color: #333333;
     border-radius: 25px;
@@ -55,7 +55,7 @@
 }
 
 .sidebar-submenu-expand {
-    border: 2px solid #dddddd;
+    border: 2px solid black;
     background-color: #f0f0f0;
     color: #333333;
     border-radius: 25px;
@@ -76,7 +76,7 @@
     padding-top: 18px;
     border-radius: 25px;
     width: 100%;
-    border: 2px solid white;
+    border: 4px solid white;
     text-align: center;
     outline: none;
     font-size: 15px;
