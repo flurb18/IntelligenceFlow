@@ -272,24 +272,25 @@ document.addEventListener('DOMContentLoaded', function () {
                             state.blockTypeIdNums[blockType].push(newId);
                         }
                     });
-                    console.log("ID map set up")
                     Object.keys(nodesData).forEach((nodeKey) => {
                         var nodeData = nodesData[nodeKey]["data"];
                         var blockType = nodeData["block-type"];
                         if (!blockTypes[blockType]["hidden"]) {
+                            console.log("Here1");
                             var _data = newBlockData(blockType, idNumMap[nodeData["id"]], nodeData["barelabel"]);
+                            console.log("here2")
                             _data["input-type"] = nodeData["input-type"];
                             _data["parameters"] = nodeData["parameters"];
                             nodeData["waits-for"].forEach((oldId) => {
                                 _data["waits-for"].push(idMap[oldId]);
                             });
+                            console.log("here3");
                             blockFuncs[blockTypes].create(_data).forEach((desc) => {
                                 console.log(desc);
                                 if (desc["group"] === "nodes") {
                                     var pos = nodesData[nodeKey]["position"];
                                     if (blockTypes[desc["data"]["block-type"]]["hidden"]) {
                                         var oldId = desc["data"]["id"].replace(_data["id"], nodeData["id"]);
-                                        console.log(oldId);
                                         idMap[oldId] = desc["data"]["id"];
                                     }
                                     newEles.push({
