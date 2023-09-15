@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const cy = cytoscape({
         container: document.getElementById('flow-diagram'),
         zoom: 1,
-        minZoom: 0.5,
+        minZoom: 0.4,
         maxZoom: 2,
         elements: [],
         style: cytostyle,
@@ -204,6 +204,53 @@ document.addEventListener('DOMContentLoaded', function () {
         reset();
         state.running = false;
         notify("Cancelled");
+    });
+
+    // Handle file import
+    document.getElementById("import-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        if (state.running) { notify("Can't import while running"); return; }
+        var file = document.getElementById('import-file').files[0];
+        var reader = new FileReader();
+        reader.readAsText(file, 'UTF-8');
+        reader.onload = function (evt) {
+            var data = JSON.parse(evt.target.result);
+            if (confirm("Import file? Current flow will be lost!")) {
+                state = data["state"];
+                cy.destroy();
+                cy = cytoscape({
+                    container: document.getElementById('flow-diagram'),
+                    zoom: 1,
+                    minZoom: 0.4,
+                    maxZoom: 2,
+                    elements: [],
+                    style: cytostyle,
+                    layout: { name: 'grid' }
+                });
+                cy.json(data["cytoscape"]);
+                reset();
+            }
+        }
+    });
+
+    // Handle export form submission
+    document.getElementById("export-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        var text = JSON.stringify({
+            "state": state,
+            "cytoscape": cy.json()
+        });
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', "flow.json");
+      
+        element.style.display = 'none';
+        document.body.appendChild(element);
+      
+        element.click();
+      
+        document.body.removeChild(element);
+        
     });
 
     function activateBlock(input, block, srcId) {

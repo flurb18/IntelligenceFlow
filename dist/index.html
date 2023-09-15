@@ -48,9 +48,21 @@
         </div>
         <button class="sidebar-submenu-expand-button">Information</button>
         <div class="sidebar-submenu-expand">
-            <p>Welcome to Intelligence Flow.</p>
-            <p>Create a block with the "New Block" menu. Attach two blocks by right clicking the source and then the
-                target. The blocks must be compatible.</p>
+            <div class="sidebar-info">
+                <p>Welcome to Intelligence Flow.</p>
+                <p>Create a block with the "New Block" menu. Attach two blocks by right clicking the source and then the
+                    target. The blocks must be compatible.</p>
+            </div>
+        </div>
+        <button class="sidebar-submenu-expand-button">Import / Export</button>
+        <div class="sidebar-submenu-expand">
+            <form id="import-form" action="" method="post" class="sidebar-submenu">
+                <input type="file" id="import-file" accept=".json">
+                <input type="submit" value="Import" class="sidebar-submit">
+            </form>
+            <form id="export-form" class="sidebar-submenu">
+                <input type="submit" value="Export" class="sidebar-submit">
+            </form>
         </div>
     </div>
     <div id="flow-diagram"></div>
