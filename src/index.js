@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             var newId = blockType + newIdNum;
                             idMap[nodeData["id"]] = newId;
                             idNumMap[nodeData["id"]] = newIdNum;
-                            state.blockTypeIdNums[blockType].push(newId);
+                            state.blockTypeIdNums[blockType].push(newIdNum);
                         }
                     });
                     Object.keys(nodesData).forEach((nodeKey) => {
