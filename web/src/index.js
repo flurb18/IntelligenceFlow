@@ -1,7 +1,7 @@
 import { notify, createSubmenusByType } from './utils.js';
 import { blockFuncs } from './blockfuncs.js';
 import { OpenAI } from 'openai';
-import { cytoscape } from 'cytoscape';
+import cytoscape from 'cytoscape';
 
 // Make sidebar expand buttons work
 var expands = document.getElementsByClassName("sidebar-submenu-expand-button");
