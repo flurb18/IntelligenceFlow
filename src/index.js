@@ -101,7 +101,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         "data": {
                             "id": state.selectedNode.id() + event.target.id(),
                             "source": state.selectedNode.id(),
-                            "target": event.target.id()
+                            "target": event.target.id(),
+                            "user-created": true
                         },
                         "classes": _classes
                     }]);
@@ -115,6 +116,20 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function newBlockData(blockType, idNum, inputLabel) {
+        var idString = blockType + idNum;
+        var label = inputLabel ? idString + "-" + inputLabel : idString;
+        return {
+            "id": idString,
+            "label": label,
+            "barelabel": inputLabel,
+            "block-type": blockType,
+            "input-type": "none",
+            "parameters": {},
+            "waits-for": []
+        };
+    }
+
     // Handle new block form submission
     var newBlockForm = document.getElementById("new-block-form");
     newBlockForm.addEventListener("submit", function (e) {
@@ -125,17 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         var blockType = newBlockForm.elements["new-block-type"].value;
         var newId = Math.max(...state.blockTypeIdNums[blockType]) + 1;
-        var idString = blockType + newId;
-        var inputLabel = newBlockForm.elements["new-block-label"].value;
-        var label = inputLabel ? idString + "-" + inputLabel : idString;
-        var _data = {
-            "id": idString,
-            "label": label,
-            "block-type": blockType,
-            "input-type": "none",
-            "parameters": {},
-            "waits-for": []
-        };
+        var _data = newBlockData(blockType, newId, newBlockForm.elements["new-block-label"].value);
         state.blockTypeIdNums[blockType].push(newId);
         for (var param of Object.keys(blockTypes[blockType]["parameters"])) {
             _data["parameters"][param] = newBlockForm.elements[param].value;
@@ -218,30 +223,94 @@ document.addEventListener('DOMContentLoaded', function () {
         reader.readAsText(file, 'UTF-8');
         reader.onload = function (evt) {
             var data = JSON.parse(evt.target.result);
-            if (confirm("Import file? Current flow will be lost!")) {
-                reset();
-                state = data["state"];
-                cy.nodes().forEach((block) => {
-                    blockFuncs[block.data("block-type")].destroy(block.data());
-                })
-                cy.destroy();
-                cy = cytoscape({
-                    container: document.getElementById('flow-diagram'),
-                    zoom: 1,
-                    minZoom: 0.4,
-                    maxZoom: 2,
-                    elements: [],
-                    style: cytostyle,
-                    layout: { name: 'grid' }
-                });
-                cy.json(data["cytoscape"]);
-                cy.on('cxttap', handleBlockSelection);
-                cy.on('taphold', handleBlockSelection);
-                cy.nodes().forEach((block) => {
-                    // Run creation hook, but don't import data (already there)
-                    blockFuncs[block.data("block-type")].create(block.data());
-                });
-                reset();
+            var selectElement = document.getElementById("import-file-type");
+            switch (selectElement.options[selectElement.selectedIndex].value) {
+                case "new":
+                    if (!confirm("Import file? Current flow will be lost!")) {
+                        return;
+                    }
+                    reset();
+                    state = data["state"];
+                    cy.nodes().forEach((block) => {
+                        blockFuncs[block.data("block-type")].destroy(block.data());
+                    })
+                    cy.destroy();
+                    cy = cytoscape({
+                        container: document.getElementById('flow-diagram'),
+                        zoom: 1,
+                        minZoom: 0.4,
+                        maxZoom: 2,
+                        elements: [],
+                        style: cytostyle,
+                        layout: { name: 'grid' }
+                    });
+                    cy.json(data["cytoscape"]);
+                    cy.on('cxttap', handleBlockSelection);
+                    cy.on('taphold', handleBlockSelection);
+                    cy.nodes().forEach((block) => {
+                        // Run creation hook, but don't import data (already there)
+                        blockFuncs[block.data("block-type")].create(block.data());
+                    });
+                    reset();
+                    break;                    
+                case "copy":
+                    if (!confirm("Import file into current flow?")) {
+                        return;
+                    }
+                    var nodesData = data["cytoscape"]["elements"]["nodes"];
+                    var newEles = [];
+                    var idMap = {};
+                    Object.keys(nodesData).forEach((nodeKey) => {
+                        var nodeData = nodesData[nodeKey]["data"];
+                        var blockType = nodeData["block-type"];
+                        if (!blockTypes[blockType]["hidden"]) {
+                            var newIdNum = Math.max(...state.blockTypeIdNums[blockType]) + 1;
+                            var newId = blockType + newIdNum;
+                            idMap[nodeData["id"]] = newId;
+                            state.blockTypeIdNums[blockType].push(newId);
+                        }
+                    });
+                    Object.keys(nodesData).forEach((nodeKey) => {
+                        var nodeData = nodesData[nodeKey]["data"];
+                        var blockType = nodeData["block-type"];
+                        if (!blockTypes[blockType]["hidden"]) {
+                            var _data = newBlockData(blockType, idMap[nodeData["id"]], nodeData["barelabel"]);
+                            _data["input-type"] = nodeData["input-type"];
+                            _data["parameters"] = nodeData["parameters"];
+                            nodeData["waits-for"].forEach((oldId) => {
+                                _data["waits-for"].push(idMap[oldId]);
+                            });
+                            blockFuncs[blockTypes].create(_data).forEach((desc) => {
+                                if (desc["group"] === "nodes") {
+                                    newEles.push({
+                                        ...desc,
+                                        "position": nodesData[nodeKey]["position"]
+                                    });
+                                } else {
+                                    newEles.push(desc);
+                                }
+                            });
+                        }
+                    });
+                    var edgesData = data["cytoscape"]["elements"]["edges"];
+                    Object.keys(edgesData).forEach((edgeKey) => {
+                        var oldEdgeData = edgesData[edgeKey]["data"];
+                        if (oldEdgeData["user-created"]) {
+                            var newSource = idMap[oldEdgeData["source"]];
+                            var newTarget = idMap[oldEdgeData["target"]];
+                            newEles.push({
+                                group: 'edges',
+                                data: {
+                                    "id": newSource + newTarget,
+                                    "source": newSource,
+                                    "target": newTarget,
+                                    "user-created": true
+                                }
+                            });
+                        }
+                    });
+                    cy.add(newEles);
+                    break;
             }
         }
     });
@@ -294,7 +363,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                     output: executeOutput
                                 });
                             }).catch(error => {
-                                console.log(error);
                                 resetBlock(block);
                                 reject(error);
                             });
@@ -320,7 +388,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             output: executeOutput
                         });
                     }).catch(error => {
-                        console.log(error);
                         block.removeClass("active");
                         reject(error);
                     });

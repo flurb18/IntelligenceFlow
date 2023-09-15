@@ -61,6 +61,11 @@
         <div class="sidebar-submenu-expand">
             <form id="import-form" action="" method="post" class="sidebar-submenu">
                 <input type="file" id="import-file" accept=".json">
+                <label for="import-file-type">Import Type</label>
+                <select id="import-file-type" name="import-file-type">
+                    <option value="new" selected>Import as New Flow</option>
+                    <option value="copy">Copy to Current Flow</option>
+                </select>
                 <input type="submit" value="Import" class="sidebar-submit">
             </form>
             <form id="export-form" class="sidebar-submenu">

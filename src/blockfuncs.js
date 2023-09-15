@@ -157,7 +157,8 @@ export var blockFuncs = {
                     data: {
                         "id": inputId + outputId,
                         "source": inputId,
-                        "target": outputId
+                        "target": outputId,
+                        "user-created": false
                     }
                 });
             }
