@@ -63,53 +63,51 @@ document.addEventListener('DOMContentLoaded', function () {
     cy.on('taphold', handleBlockSelection);
     
     function handleBlockSelection(event) {
-        if (event.target === cy || state.running) {
+        if (event.target === cy || !(event.target.isNode()) || state.running) {
             if (state.selectedNode) {
-                state.selectedNode.toggleClass("selected");
+                state.selectedNode.removeClass("selected");
                 state.selectedNode = null;
             }
-        } else {
-            if (event.target.isNode()) {
-                if (state.selectedNode) {
-                    if (!(state.selectedNode === event.target)) {
-                        var srcBlockType = state.selectedNode.data("block-type");
-                        var destBlockType = event.target.data("block-type");
-                        var srcOutputTypes = blockTypes[srcBlockType]["maps"][state.selectedNode.data("input-type")];
-                        if (srcOutputTypes.length === 1) {
-                            var srcOutputType = srcOutputTypes[0];
-                            var destAssignedInputType = event.target.data("input-type");
-                            var destAvailableInputTypes = Object.keys(blockTypes[destBlockType]["maps"]);
-                            if (!(srcOutputType === "none") && (
-                                (destAssignedInputType === srcOutputType) ||
-                                (destAssignedInputType === "none" && destAvailableInputTypes.includes(srcOutputType))
-                            )
-                            ) {
-                                var _classes = []
-                                if (srcOutputType === "multi") {
-                                    _classes.push("multi")
-                                }
-                                cy.add([{
-                                    "group": 'edges',
-                                    "data": {
-                                        "id": state.selectedNode.id() + event.target.id(),
-                                        "source": state.selectedNode.id(),
-                                        "target": event.target.id()
-                                    },
-                                    "classes": _classes
-                                }]);
-                                event.target.data("input-type", srcOutputType);
-                            } else {
-                                notify("Incompatible blocks");
-                            }
-                        }
-                        state.selectedNode.toggleClass("selected");
-                        state.selectedNode = null;
+            return;
+        }
+        if (!state.selectedNode) {
+            state.selectedNode = event.target;
+            state.selectedNode.addClass("selected");
+            return;
+        }
+        if (!(state.selectedNode.id() === event.target.id())) {
+            var srcBlockType = state.selectedNode.data("block-type");
+            var destBlockType = event.target.data("block-type");
+            var srcOutputTypes = blockTypes[srcBlockType]["maps"][state.selectedNode.data("input-type")];
+            if (srcOutputTypes.length === 1) {
+                var srcOutputType = srcOutputTypes[0];
+                var destAssignedInputType = event.target.data("input-type");
+                var destAvailableInputTypes = Object.keys(blockTypes[destBlockType]["maps"]);
+                if (!(srcOutputType === "none") && (
+                    (destAssignedInputType === srcOutputType) ||
+                    (destAssignedInputType === "none" && destAvailableInputTypes.includes(srcOutputType))
+                )
+                ) {
+                    var _classes = []
+                    if (srcOutputType === "multi") {
+                        _classes.push("multi")
                     }
+                    cy.add([{
+                        "group": 'edges',
+                        "data": {
+                            "id": state.selectedNode.id() + event.target.id(),
+                            "source": state.selectedNode.id(),
+                            "target": event.target.id()
+                        },
+                        "classes": _classes
+                    }]);
+                    event.target.data("input-type", srcOutputType);
                 } else {
-                    state.selectedNode = event.target;
-                    state.selectedNode.toggleClass("selected");
+                    notify("Incompatible blocks");
                 }
             }
+            state.selectedNode.removeClass("selected");
+            state.selectedNode = null;
         }
     }
 
@@ -232,6 +230,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     layout: { name: 'grid' }
                 });
                 cy.json(data["cytoscape"]);
+                cy.on('cxttap', handleBlockSelection);
+                cy.on('taphold', handleBlockSelection);
                 cy.nodes().forEach((block) => {
                     // Run creation hook, but don't import data (already there)
                     blockFuncs[block.data("block-type")].create(block.data());
@@ -360,8 +360,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         if (state.selectedNode) {
             state.selectedNode.removeClass("selected");
-            state.selectedNode = null;
         }
+        state.selectedNode = null;
     }
 
     function getBlocksOfType(blockType) {
