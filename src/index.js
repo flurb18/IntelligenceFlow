@@ -284,10 +284,22 @@ document.addEventListener('DOMContentLoaded', function () {
                             });
                             blockFuncs[blockType].create(_data).forEach((desc) => {
                                 if (desc["group"] === "nodes") {
-                                    var pos = nodesData[nodeKey]["position"];
+                                    var pos = {
+                                        x: nodesData[nodeKey]["position"]["x"],
+                                        y: nodesData[nodeKey]["position"]["y"]
+                                    }
                                     if (blockTypes[desc["data"]["block-type"]]["hidden"]) {
                                         var oldId = desc["data"]["id"].replace(_data["id"], nodeData["id"]);
                                         idMap[oldId] = desc["data"]["id"];
+                                        //Find old node and take position
+                                        Object.keys(nodesData).forEach((nodeSearchKey) => {
+                                            if (nodesData[nodeSearchKey]["data"]["id"] === oldId) {
+                                                pos = {
+                                                    x: nodesData[nodeSearchKey]["position"]["x"],
+                                                    y: nodesData[nodeSearchKey]["position"]["y"]
+                                                };
+                                            }
+                                        });
                                     }
                                     newEles.push({
                                         ...desc,
