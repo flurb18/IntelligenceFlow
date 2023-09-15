@@ -1,7 +1,7 @@
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
 import { removeElement, insertBefore } from "./utils.js";
-import { apiFuncs } from "./apicall.js";
+import { apiFuncs } from "./apifuncs.js";
 
 export var blockFuncs = {
     "INPUT": {
@@ -113,7 +113,7 @@ export var blockFuncs = {
         exec: function (input, blockData, state, resolve, reject) {
             var prompt = blockData.parameters["LLM-query"].replace("_INPUT_", input);
             if (!Object.keys(apiFuncs).includes(state.apiType)) {
-                reject("API error")
+                reject("API error");
             }
             apiFuncs[state.apiType](prompt, state.apiParams).then((output) => {
                 resolve(output);

@@ -1,6 +1,0 @@
-{
-    "imports": {
-        "openai": "/node_modules/openai/index.mjs",
-        "openai/_shims/agent": "/node_modules/openai/_shims/agent.mjs"
-    }
-}
