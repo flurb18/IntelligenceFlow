@@ -260,6 +260,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     var nodesData = data["cytoscape"]["elements"]["nodes"];
                     var newEles = [];
                     var idMap = {};
+                    var idNumMap = {};
                     Object.keys(nodesData).forEach((nodeKey) => {
                         var nodeData = nodesData[nodeKey]["data"];
                         var blockType = nodeData["block-type"];
@@ -267,6 +268,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             var newIdNum = Math.max(...state.blockTypeIdNums[blockType]) + 1;
                             var newId = blockType + newIdNum;
                             idMap[nodeData["id"]] = newId;
+                            idNumMap[nodeData["id"]] = newIdNum;
                             state.blockTypeIdNums[blockType].push(newId);
                         }
                     });
@@ -274,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         var nodeData = nodesData[nodeKey]["data"];
                         var blockType = nodeData["block-type"];
                         if (!blockTypes[blockType]["hidden"]) {
-                            var _data = newBlockData(blockType, idMap[nodeData["id"]], nodeData["barelabel"]);
+                            var _data = newBlockData(blockType, idNumMap[nodeData["id"]], nodeData["barelabel"]);
                             _data["input-type"] = nodeData["input-type"];
                             _data["parameters"] = nodeData["parameters"];
                             nodeData["waits-for"].forEach((oldId) => {
@@ -282,9 +284,14 @@ document.addEventListener('DOMContentLoaded', function () {
                             });
                             blockFuncs[blockTypes].create(_data).forEach((desc) => {
                                 if (desc["group"] === "nodes") {
+                                    var pos = nodesData[nodeKey]["position"];
+                                    if (blockTypes[desc["data"]["block-type"]]["hidden"]) {
+                                        var oldId = desc["data"]["id"].replace(_data["id"], nodeData["id"]);
+                                        idMap[oldId] = desc["data"]["id"];
+                                    }
                                     newEles.push({
                                         ...desc,
-                                        "position": nodesData[nodeKey]["position"]
+                                        "position": pos
                                     });
                                 } else {
                                     newEles.push(desc);
