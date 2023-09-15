@@ -67,7 +67,7 @@ export var blockFuncs = {
     },
     "COPY": {
         exec: function (input, blockData, state, resolve, reject) {
-            var numCopies = blockData.parameters["COPY-num-copies"];
+            var numCopies = parseInt(blockData.parameters["COPY-num-copies"]);
             resolve(Array(numCopies).fill(input));
         },
         create: function (blockData) {
@@ -100,7 +100,7 @@ export var blockFuncs = {
     },
     "COMBINE": {
         exec: function (input, blockData, state, resolve, reject) {
-            resolve(input.join("\n"));
+            resolve(input.join(" "));
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];
