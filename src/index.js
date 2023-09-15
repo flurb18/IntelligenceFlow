@@ -162,6 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
         for (var param of Object.keys(apiTypes[state.apiType]["parameters"])) {
             state.apiParams[param] = apiSettingsForm.elements[param].value;
         }
+        notify("API settings saved.");
     });
 
     // Handle execute form submission
