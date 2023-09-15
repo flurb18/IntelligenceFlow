@@ -216,6 +216,7 @@ document.addEventListener('DOMContentLoaded', function () {
         reader.onload = function (evt) {
             var data = JSON.parse(evt.target.result);
             if (confirm("Import file? Current flow will be lost!")) {
+                reset();
                 state = data["state"];
                 cy.nodes().forEach((block) => {
                     blockFuncs[block.data("block-type")].destroy(block.data());
