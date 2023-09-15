@@ -287,6 +287,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     var pos = nodesData[nodeKey]["position"];
                                     if (blockTypes[desc["data"]["block-type"]]["hidden"]) {
                                         var oldId = desc["data"]["id"].replace(_data["id"], nodeData["id"]);
+                                        console.log(oldId);
                                         idMap[oldId] = desc["data"]["id"];
                                     }
                                     newEles.push({
