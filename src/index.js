@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
     createSubmenusByType(apiTypes, document.getElementById("api-settings-type"));
 
     // Run Cytoscape
-    const cy = cytoscape({
+    var cy = cytoscape({
         container: document.getElementById('flow-diagram'),
         zoom: 1,
         minZoom: 0.4,
