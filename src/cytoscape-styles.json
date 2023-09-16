@@ -45,11 +45,9 @@
         }
     },
     {
-        "selector": ":parent.selected",
+        "selector": "node.selected",
         "style": {
-            "background-color": "#5df",
-            "border-width": 1,
-            "border-color": "#444"
+            "background-color": "#5df"
         }
     }
 ]
