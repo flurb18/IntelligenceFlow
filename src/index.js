@@ -89,7 +89,6 @@ document.addEventListener('DOMContentLoaded', function () {
             state.selectedNode.removeClass("selected");
             state.selectedNode = event.target;
             state.selectedNode.addClass("selected");
-            console.log(state.selectedNode.classes())
             return;
         }
         if (!(state.selectedNode.id() === event.target.id())) {

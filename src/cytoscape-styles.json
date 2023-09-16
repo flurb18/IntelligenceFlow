@@ -19,6 +19,12 @@
         }
     },
     {
+        "selector": "node.selected",
+        "style": {
+            "background-color": "#5df"
+        }
+    },
+    {
         "selector": ":parent",
         "style": {
             "background-color": "#ffa",
@@ -37,17 +43,17 @@
         }
     },
     {
+        "selector": "edge.selected",
+        "style": {
+            "background-color": "#5df"
+        }
+    },
+    {
         "selector": "edge.multi",
         "style": {
             "width": 15,
             "line-style": "dashed",
             "arrow-scale": 0.8
-        }
-    },
-    {
-        "selector": "node.selected",
-        "style": {
-            "background-color": "#5df"
         }
     }
 ]
