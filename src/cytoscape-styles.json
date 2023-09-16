@@ -19,7 +19,7 @@
         }
     },
     {
-        "selector": "node.selected",
+        "selector": "node.targeted",
         "style": {
             "background-color": "#5df"
         }
@@ -43,9 +43,10 @@
         }
     },
     {
-        "selector": "edge.selected",
+        "selector": "edge.targeted",
         "style": {
-            "background-color": "#5df"
+            "line-color": "#5df",
+            "target-arrow-color": "#5df"
         }
     },
     {

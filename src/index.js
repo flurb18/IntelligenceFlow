@@ -69,26 +69,26 @@ document.addEventListener('DOMContentLoaded', function () {
     function handleBlockSelection(event) {
         if (event.target === cy || state.running) {
             if (state.selectedNode) {
-                state.selectedNode.removeClass("selected");
+                state.selectedNode.removeClass("targeted");
                 state.selectedNode = null;
             }
             return;
         }
         if (!state.selectedNode) {
             state.selectedNode = event.target;
-            state.selectedNode.addClass("selected");
+            state.selectedNode.addClass("targeted");
             return;
         }
-        if ((!event.target.isNode() || !state.selectedNode.isNode())) {
-            state.selectedNode.removeClass("selected");
+        if ((event.target.isEdge() || state.selectedNode.isEdge())) {
+            state.selectedNode.removeClass("targeted");
             state.selectedNode = event.target;
-            state.selectedNode.addClass("selected");
+            state.selectedNode.addClass("targeted");
             return;
         }
-        if (!state.selectedNode.isChildless() || !event.target.isChildless()) {
-            state.selectedNode.removeClass("selected");
+        if (state.selectedNode.isParent() || event.target.isParent()) {
+            state.selectedNode.removeClass("targeted");
             state.selectedNode = event.target;
-            state.selectedNode.addClass("selected");
+            state.selectedNode.addClass("targeted");
             return;
         }
         if (!(state.selectedNode.id() === event.target.id())) {
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     notify("Incompatible blocks");
                 }
             }
-            state.selectedNode.removeClass("selected");
+            state.selectedNode.removeClass("targeted");
             state.selectedNode = null;
         }
     }
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         state.running = true;
         if (state.selectedNode) {
-            state.selectedNode.toggleClass("selected");
+            state.selectedNode.removeClass("targeted");
             state.selectedNode = null;
         }
         reset();
@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function () {
             resetBlock(block);
         });
         if (state.selectedNode) {
-            state.selectedNode.removeClass("selected");
+            state.selectedNode.removeClass("targeted");
         }
         state.selectedNode = null;
     }
