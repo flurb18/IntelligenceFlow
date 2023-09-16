@@ -7,12 +7,6 @@
         }
     },
     {
-        "selector": "node.selected",
-        "style": {
-            "background-color": "#5df"
-        }
-    },
-    {
         "selector": "node.active",
         "style": {
             "background-color": "#8f8"
@@ -30,6 +24,12 @@
             "background-color": "#ffa",
             "border-width": 1,
             "border-color": "#444"
+        }
+    },
+    {
+        "selector": "node.selected",
+        "style": {
+            "background-color": "#5df"
         }
     },
     {

@@ -79,11 +79,16 @@ document.addEventListener('DOMContentLoaded', function () {
             state.selectedNode.addClass("selected");
             return;
         }
-        if (!event.target.isNode() || !state.selectedNode.isNode() || (event.target.isNode() && !event.target.isChildless())) {
+        if ((!event.target.isNode() || !state.selectedNode.isNode())) {
             state.selectedNode.removeClass("selected");
             state.selectedNode = event.target;
             state.selectedNode.addClass("selected");
             return;
+        }
+        if (!state.selectedNode.isChildless() || !event.target.isChildless()) {
+            state.selectedNode.removeClass("selected");
+            state.selectedNode = event.target;
+            state.selectedNode.addClass("selected");
         }
         if (!(state.selectedNode.id() === event.target.id())) {
             var srcBlockType = state.selectedNode.data("block-type");
