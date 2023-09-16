@@ -65,30 +65,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
     cy.on('cxttap', handleBlockSelection);
     cy.on('taphold', handleBlockSelection);
+
+    function selectNode(node) {
+        state.selectedNode = node;
+        node.classes(["targeted"]);
+    }
+
+    function deselectNode() {
+        if (state.selectedNode) {
+            state.selectedNode.classes([]);
+            state.selectedNode = null;
+        }
+    }
     
     function handleBlockSelection(event) {
         if (event.target === cy || state.running) {
             if (state.selectedNode) {
-                state.selectedNode.removeClass("targeted");
-                state.selectedNode = null;
+                deselectNode();
             }
             return;
         }
         if (!state.selectedNode) {
-            state.selectedNode = event.target;
-            state.selectedNode.addClass("targeted");
+            selectNode(event.target);
             return;
         }
         if ((event.target.isEdge() || state.selectedNode.isEdge())) {
-            state.selectedNode.removeClass("targeted");
-            state.selectedNode = event.target;
-            state.selectedNode.addClass("targeted");
+            deselectNode();
+            selectNode(event.target);
             return;
         }
         if (state.selectedNode.isParent() || event.target.isParent()) {
-            state.selectedNode.removeClass("targeted");
-            state.selectedNode = event.target;
-            state.selectedNode.addClass("targeted");
+            deselectNode();
+            selectNode(event.target);
             return;
         }
         if (!(state.selectedNode.id() === event.target.id())) {
@@ -123,8 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     notify("Incompatible blocks");
                 }
             }
-            state.selectedNode.removeClass("targeted");
-            state.selectedNode = null;
+            deselectNode();
         }
     }
 
@@ -490,7 +497,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (state.selectedNode) {
             state.selectedNode.removeClass("targeted");
         }
-        state.selectedNode = null;
+        deselectNode();
     }
 
     function getBlocksOfType(blockType) {
