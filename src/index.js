@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         return;
                     }
                     reset();
-                    state = data["state"];
+                    state.blockTypeIdNums = data["state"].blockTypeIdNums;
                     cy.nodes().forEach((block) => {
                         blockFuncs[block.data("block-type")].destroy(block.data());
                     })
