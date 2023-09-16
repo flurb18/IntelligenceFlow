@@ -212,7 +212,7 @@ export var blockFuncs = {
     },
     "REGEX": {
         exec: function (input, blockData, state, resolve, reject) {
-            regex = new RegExp(blockData.parameters["REGEX-regex"], "g");
+            var regex = new RegExp(blockData.parameters["REGEX-regex"], "g");
             resolve(input.match(regex));
         },
         create: function (blockData) {
