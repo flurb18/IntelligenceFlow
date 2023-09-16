@@ -11,7 +11,7 @@
         "parameters": {
             "Oobabooga-URL": {
                 "label": "API URL",
-                "type": "text"
+                "type": "url"
             }
         },
         "request-template": {

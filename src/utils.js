@@ -77,10 +77,11 @@ export function createSubmenusByType(config, selectElement) {
                     break;
                 //Textline
                 case "text":
+                case "url":
                     var paramText = document.createElement("input");
                     paramText.setAttribute("id", param);
                     paramText.setAttribute("name", param);
-                    paramText.setAttribute("type", "text");
+                    paramText.setAttribute("type", params[param]["type"]);
                     typeSubmenu.appendChild(paramText);
                     typeSubmenu.appendChild(document.createElement("br"));
                     break;
