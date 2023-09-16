@@ -28,6 +28,7 @@
 
 #flow-diagram {
     position: absolute;
+    border-left: 2px solid black;
     margin-left: 33%;
     width: 67%;
     height: 100%;
@@ -39,7 +40,6 @@
     width: 33%;
     height: 100%;
     background-color: #ffffff;
-    border-right: 2px solid black;
     overflow-y: scroll;
     overflow-wrap: break-word;
 }
