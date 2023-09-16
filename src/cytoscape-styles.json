@@ -55,9 +55,7 @@
     {
         "selector": "$node.selected > node",
         "style": {
-            "background-color": "#ffa",
-            "border-width": 1,
-            "border-color": "#444"
+            "background-color": "#5df"
         }
     }
 ]
