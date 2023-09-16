@@ -53,7 +53,7 @@
         }
     },
     {
-        "selector": "($node > node).selected",
+        "selector": "$node.selected > node",
         "style": {
             "background-color": "#ffa",
             "border-width": 1,
