@@ -122,15 +122,27 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function destroyElement(e) {
+        if (e.isNode()) {
+            e.children.forEach((child) => {
+                destroyElement(child);
+            });
+            var blockType = e.data("block-type");
+            blockFuncs[blockType].destroy(e.data());
+            var idx = state.blockTypeIdNums[blockType].indexOf(e.data("idNum"));
+            if (idx > -1) {
+                state.blockTypeIdNums[blockType].splice(idx, 1);
+            }
+        }
+        e.remove();
+    }
+
     // Handle delete block button
     document.getElementById("delete-block-button").addEventListener("click", function(e) {
         if (state.selectedNode) {
             if (!state.selectedNode.isNode() || !state.selectedNode.isChild()) {
                 if (confirm("Are you sure you want to delete the selection?")) {
-                    if (state.selectedNode.isNode()) {
-                        blockFuncs[state.selectedNode.data("block-type")].destroy(state.selectedNode.data());
-                    }
-                    state.selectedNode.remove();
+                    destroyElement(state.selectedNode);
                     state.selectedNode = null;
                 }
             }
