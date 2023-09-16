@@ -27,14 +27,6 @@
         }
     },
     {
-        "selector": ".selected",
-        "style": {
-            "background-color": "#5df",
-            "line-color": "#5df",
-            "target-arrow-color": "#5df"
-        }
-    },
-    {
         "selector": "edge",
         "style": {
             "width": 5,
@@ -50,6 +42,22 @@
             "width": 15,
             "line-style": "dashed",
             "arrow-scale": 0.8
+        }
+    },
+    {
+        "selector": ".selected",
+        "style": {
+            "background-color": "#5df",
+            "line-color": "#5df",
+            "target-arrow-color": "#5df"
+        }
+    },
+    {
+        "selector": "($node > node).selected",
+        "style": {
+            "background-color": "#ffa",
+            "border-width": 1,
+            "border-color": "#444"
         }
     }
 ]
