@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function destroyElement(e) {
         if (e.isNode()) {
-            e.children.forEach((child) => {
+            e.children().forEach((child) => {
                 destroyElement(child);
             });
             var blockType = e.data("block-type");
