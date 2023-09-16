@@ -79,7 +79,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     function handleBlockSelection(event) {
-        if (event.target === cy || state.running) {
+        if (state.running) {
+            return;
+        }
+        if (event.target === cy) {
             if (state.selectedNode) {
                 deselectNode();
             }
