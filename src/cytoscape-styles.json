@@ -33,6 +33,14 @@
         }
     },
     {
+        "selector": ":parent.targeted",
+        "style": {
+            "background-color": "#5df",
+            "border-width": 1,
+            "border-color": "#444"
+        }
+    },
+    {
         "selector": "edge",
         "style": {
             "width": 5,

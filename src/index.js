@@ -156,7 +156,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Handle delete block button
     document.getElementById("delete-block-button").addEventListener("click", function(e) {
         if (state.selectedNode) {
-            if (!state.selectedNode.isNode() || !state.selectedNode.isChild()) {
+            if ((!state.selectedNode.isNode() && state.selectedNode.data("user-created")) ||
+                (state.selectedNode.isNode() && !state.selectedNode.isChild())) {
                 if (confirm("Are you sure you want to delete the selection?")) {
                     destroyElement(state.selectedNode);
                     state.selectedNode = null;
