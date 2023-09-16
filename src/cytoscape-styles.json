@@ -49,5 +49,12 @@
             "line-style": "dashed",
             "arrow-scale": 0.8
         }
+    },
+    {
+        "selector": "edge.selected",
+        "style": {
+            "line-color": "#5df",
+            "target-arrow-color": "#5df"
+        }
     }
 ]
