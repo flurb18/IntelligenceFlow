@@ -160,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var label = inputLabel ? idString + "-" + inputLabel : idString;
         return {
             "id": idString,
+            "idNum": idNum,
             "label": label,
             "barelabel": inputLabel,
             "block-type": blockType,
@@ -318,9 +319,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             var _data = newBlockData(blockType, idNumMap[nodeData["id"]], nodeData["barelabel"]);
                             _data["input-type"] = nodeData["input-type"];
                             _data["parameters"] = nodeData["parameters"];
-                            nodeData["waits-for"].forEach((oldId) => {
-                                _data["waits-for"].push(idMap[oldId]);
-                            });
                             blockFuncs[blockType].create(_data).forEach((desc) => {
                                 if (desc["group"] === "nodes") {
                                     var pos = {
