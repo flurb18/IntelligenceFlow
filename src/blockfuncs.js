@@ -213,7 +213,12 @@ export var blockFuncs = {
     "REGEX": {
         exec: function (input, blockData, state, resolve, reject) {
             var regex = new RegExp(blockData.parameters["REGEX-regex"], "g");
-            resolve(input.match(regex));
+            var res = input.match(regex);
+            if (res) {
+                resolve(res);
+            } else {
+                resolve([]);
+            }
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];
