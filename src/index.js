@@ -68,12 +68,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function selectNode(node) {
         state.selectedNode = node;
-        node.classes(["targeted"]);
+        node.addClass("targeted");
     }
 
     function deselectNode() {
         if (state.selectedNode) {
-            state.selectedNode.classes([]);
+            state.selectedNode.removeClass("targeted");
             state.selectedNode = null;
         }
     }

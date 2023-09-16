@@ -45,9 +45,6 @@
             ],
             "single": [
                 "multi"
-            ],
-            "multi": [
-                "multi"
             ]
         },
         "parameters": {
@@ -160,13 +157,28 @@
     "SYNTHESIZE-OUTPUT": {
         "maps": {
             "none": [
-                "none"
-            ],
-            "single": [
                 "single"
             ]
         },
         "parameters": {},
         "hidden": true
+    },
+    "REGEX": {
+        "info": "The REGEX block takes as a parameter a regular experssion. Upon execution, it matches this regular expression against its input, and outputs an array of matches.",
+        "maps": {
+            "none": [
+                "none"
+            ],
+            "single": [
+                "multi"
+            ]
+        },
+        "parameters": {
+            "REGEX-regex": {
+                "label": "Regular Expression",
+                "type": "text"
+            }
+        },
+        "hidden": false
     }
 }

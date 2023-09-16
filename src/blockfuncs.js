@@ -209,5 +209,17 @@ export var blockFuncs = {
         destroy: function (blockData) {
 
         }
+    },
+    "REGEX": {
+        exec: function (input, blockData, state, resolve, reject) {
+            regex = new RegExp(blockData.parameters["REGEX-regex"], "g");
+            resolve(input.match(regex));
+        },
+        create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
+        },
+        destroy: function (blockData) {
+
+        }
     }
 };
