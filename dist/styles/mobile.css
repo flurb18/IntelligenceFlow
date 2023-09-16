@@ -17,7 +17,8 @@
 #flow-diagram {
     position: absolute;
     margin-top: 33%;
-    margin-right: 0%;
+    margin-left: 0%;
+    margin-bottom: 0%;
     height: 67%;
     width: 100%;
     background-color: #f0f0f0;
