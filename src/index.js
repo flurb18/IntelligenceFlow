@@ -162,6 +162,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     destroyElement(state.selectedNode);
                     state.selectedNode = null;
                 }
+            } else {
+                notify("You can only delete top-level blocks and edges.");
             }
         }
     });
