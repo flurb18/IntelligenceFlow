@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
             state.selectedNode.removeClass("selected");
             state.selectedNode = event.target;
             state.selectedNode.addClass("selected");
+            return;
         }
         if (!(state.selectedNode.id() === event.target.id())) {
             var srcBlockType = state.selectedNode.data("block-type");
