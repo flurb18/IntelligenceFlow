@@ -11,19 +11,22 @@
 
 <body id="body">
     <div id="sidebar">
-        <button class="sidebar-submenu-expand-button">New Block</button>
-        <form id="new-block-form" class="sidebar-submenu-expand">
-            <label for="new-block-label">Block Label</label>
-            <input type="text" id="new-block-label" name="new-block-label">
-            <br>
-            <label for="new-block-type">Block Type</label>
-            <select id="new-block-type" name="new-block-type">
+        <button class="sidebar-submenu-expand-button">Block Menu</button>
+        <div id="block-menu" class="sidebar-submenu-expand">
+            <form id="new-block-form" class="sidebar-submenu">
+                <label for="new-block-label">Block Label</label>
+                <input type="text" id="new-block-label" name="new-block-label">
+                <br>
+                <label for="new-block-type">Block Type</label>
+                <select id="new-block-type" name="new-block-type">
+                    <!--Dynamically generated-->
+                </select>
                 <!--Dynamically generated-->
-            </select>
-            <!--Dynamically generated-->
-            <br>
-            <div class="center"><input type="submit" value="Create New Block" class="sidebar-submit"></div>
-        </form>
+                <br>
+                <div class="center"><input type="submit" value="Create New Block" class="sidebar-submit"></div>
+            </form>
+            <button id="delete-block-button" class="sidebar-button">Delete Selection</button>
+        </div>
         <button class="sidebar-submenu-expand-button">API Settings</button>
         <form id="api-settings-form" class="sidebar-submenu-expand">
             <label for="api-settings-type">API Type</label>
@@ -50,7 +53,7 @@
         <div class="sidebar-submenu-expand">
             <div class="sidebar-info" id="sidebar-info">
                 <p>Welcome to Intelligence Flow.</p>
-                <p>Create a block with the "New Block" menu. Select a block for attachment by right click or long pressing it.
+                <p>Create a block with in the Block Menu. Select a block for attachment by right click or long pressing it.
                     Attach two blocks by selecting the source and then the
                     target. </p>
                 <strong id="info-block-types-header">Block Types</strong>

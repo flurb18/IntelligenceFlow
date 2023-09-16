@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
     cy.on('taphold', handleBlockSelection);
     
     function handleBlockSelection(event) {
-        if (event.target === cy || !(event.target.isNode()) || state.running) {
+        if (event.target === cy || (event.target.isNode() && !event.target.isChildless()) || state.running) {
             if (state.selectedNode) {
                 state.selectedNode.removeClass("selected");
                 state.selectedNode = null;
@@ -75,6 +75,12 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         if (!state.selectedNode) {
+            state.selectedNode = event.target;
+            state.selectedNode.addClass("selected");
+            return;
+        }
+        if (!event.target.isNode() || !state.selectedNode.isNode()) {
+            state.selectedNode.removeClass("selected");
             state.selectedNode = event.target;
             state.selectedNode.addClass("selected");
             return;
@@ -115,6 +121,19 @@ document.addEventListener('DOMContentLoaded', function () {
             state.selectedNode = null;
         }
     }
+
+    // Handle delete block button
+    document.getElementById("delete-block-button").addEventListener("click", function(e) {
+        if (state.selectedNode) {
+            if (!state.selectedNode.isNode() || !state.selectedNode.isChild()) {
+                if (confirm("Are you sure you want to delete the selection?")) {
+                    blockFuncs[state.selectedNode.data("block-type")].destroy(state.selectedNode.data());
+                    state.selectedNode.remove();
+                    state.selectedNode = null;
+                }
+            }
+        }
+    });
 
     function newBlockData(blockType, idNum, inputLabel) {
         var idString = blockType + idNum;
