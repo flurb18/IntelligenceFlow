@@ -27,7 +27,7 @@
         }
     },
     {
-        "selector": "selected",
+        "selector": ".selected",
         "style": {
             "background-color": "#5df",
             "line-color": "#5df",
