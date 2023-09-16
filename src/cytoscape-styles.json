@@ -19,7 +19,7 @@
         }
     },
     {
-        "selector": "$node > node",
+        "selector": ":parent",
         "style": {
             "background-color": "#ffa",
             "border-width": 1,
