@@ -42,7 +42,7 @@ export var blockFuncs = {
     "OUTPUT": {
         exec: function (input, blockData, state, resolve, reject) {
             document.getElementById(blockData.id + "-output").value = input;
-            resolve();
+            resolve([]);
         },
         create: function (blockData) {
             var outputIdString = blockData.id + "-output";
