@@ -105,8 +105,8 @@ document.addEventListener('DOMContentLoaded', function () {
             state.selectedNode = null;
         }
         var editMenu = document.getElementById("edit-block-menu");
-        while (editMenu.firstChild.nextSibling) {
-            editMenu.removeChild(editMenu.firstChild.nextSibling);
+        while (editMenu.firstElementChild.nextElementSibling) {
+            editMenu.removeChild(editMenu.firstElementChild.nextElementSibling);
         }
     }
     
