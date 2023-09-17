@@ -108,6 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
         while (editInfo.nextElementSibling) {
             document.getElementById("edit-block-menu").removeChild(editInfo.nextElementSibling);
         }
+        editInfo.style.display = "block";
     }
     
     function handleBlockSelection(event) {
