@@ -456,7 +456,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }).then((statuses) => {
             var activationPromises = [];
+            console.log("here1");
             statuses.forEach((status) => {
+                console.log("here2");
                 if (status.done) {
                     if (status.hasOwnProperty("for")) { 
                         neighborActivationPromises.push(activateBlock(status.output, cy.getElementById(status.for), block.id()));
