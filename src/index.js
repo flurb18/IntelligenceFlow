@@ -459,7 +459,7 @@ document.addEventListener('DOMContentLoaded', function () {
             statuses.forEach((status) => {
                 if (status.done) {
                     if (status.hasOwnProperty("for")) { 
-                        neighborActivationPromises.push(activateBlock(status.output, cy.getElementById(status.for), block.id()));
+                        activationPromises.push(activateBlock(status.output, cy.getElementById(status.for), block.id()));
                     } else {
                         var neighborActivationPromises = [];
                         block.outgoers('node').forEach((outNeighbor) => {

@@ -299,7 +299,6 @@ export var blockFuncs = {
                     for: blockData.parent + "OUTPUT" + i 
                 });
             }
-            console.log("here!!!!");
             resolve(_output);
         },
         create: function(blockData) {
