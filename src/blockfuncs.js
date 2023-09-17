@@ -217,7 +217,7 @@ export var blockFuncs = {
             if (res) {
                 resolve([{done: true, output:res}]);
             } else {
-                resolve([]);
+                resolve([{done: true, output:[]}]);
             }
         },
         create: function (blockData) {
@@ -310,7 +310,7 @@ export var blockFuncs = {
     },
     "REGEX-CAPTURE-OUTPUT": {
         exec: function (input, blockData, state, resolve, reject) {
-            resolve(input);
+            resolve([{done: true, output: input}]);
         },
         create: function(blockData) {
             return [{ group: 'nodes', data: blockData }];
