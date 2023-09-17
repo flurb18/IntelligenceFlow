@@ -8,7 +8,8 @@ RUN npm run build
 FROM python as api
 RUN pip install --upgrade pip && \
     pip install playwright asyncio aiohttp && \
-    playwright install
+    playwright install && \
+    playwright install-deps
 ADD ./api/ /api
 RUN mkdir /api/web
 COPY --from=builder /build/dist /api/web/
