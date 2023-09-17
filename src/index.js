@@ -295,6 +295,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         Promise.all(promises).then((responses) => { 
             notify("Done!");
+            document.dispatchEvent("flowExecutionDone");
             reset();
             state.running = false;
         }).catch(error => {

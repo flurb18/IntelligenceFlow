@@ -47,8 +47,7 @@
         <button class="sidebar-submenu-expand-button">Execute</button>
         <form id="execute-form" class="sidebar-submenu-expand">
             <!--Dynamically generated-->
-            <div id="execute-form-submit" class="center"><input type="submit" value="Execute Flow"
-                    class="sidebar-submit"></div>
+            <input id="execute-form-submit" type="submit" value="Execute Flow" class="sidebar-submit">
             <button id="execute-form-cancel" class="sidebar-button">Cancel Execution</button>
         </form>
         <button class="sidebar-submenu-expand-button">Output</button>
@@ -75,7 +74,7 @@
                     <option value="new" selected>Import as New Flow</option>
                     <option value="copy">Copy to Current Flow</option>
                 </select>
-                <input type="submit" value="Import" class="sidebar-submit">
+                <input id="import-submit" type="submit" value="Import" class="sidebar-submit">
             </form>
             <form id="export-form" class="sidebar-submenu">
                 <input type="submit" value="Export" class="sidebar-submit">

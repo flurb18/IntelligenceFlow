@@ -2,4 +2,4 @@ conditional block
 javascript block
 rework input typing
 test splits
-phantomjs api for running flows from terminal
+headless api for running flows from terminal
