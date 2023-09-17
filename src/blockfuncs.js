@@ -286,10 +286,10 @@ export var blockFuncs = {
         exec: function (input, blockData, state, resolve, reject) {
             var n_groups = (new RegExp(blockData.parameters["REGEX-CAPTURE-regex"] + '|')).exec('').length - 1;
             var regex = new RegExp(blockData.parameters["REGEX-CAPTURE-regex"], "g");
-            _output = [];
+            var _output = [];
             for (var i = 1; i <= n_groups; i++) {
                 var matches = input.match_all(regex);
-                groupOutput = [];
+                var groupOutput = [];
                 matches.forEach((match) => {
                     groupOutput.push(match[i]);
                 });
