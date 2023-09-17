@@ -11,9 +11,10 @@
 
 <body id="body">
     <div id="sidebar">
-        <button class="sidebar-submenu-expand-button">Block Menu</button>
+        <button class="sidebar-submenu-expand-button">Edit</button>
         <div id="block-menu" class="sidebar-submenu-expand">
-            <form id="new-block-form" class="sidebar-submenu">
+            <button class="sidebar-submenu-expand-button">New Block</button>
+            <form id="new-block-form" class="sidebar-submenu-expand">
                 <label for="new-block-label">Block Label</label>
                 <input type="text" id="new-block-label" name="new-block-label">
                 <br>
@@ -25,9 +26,13 @@
                 <br>
                 <div class="center"><input type="submit" value="Create New Block" class="sidebar-submit"></div>
             </form>
-            <div class="sidebar-submenu">
-                <button id="delete-block-button" class="sidebar-button">Delete Selection</button>
-            </div>
+            <button class="sidebar-submenu-expand-button">View / Edit Block</button>
+            <form id="edit-block-menu" class="sidebar-submenu-expand">
+                <div id="edit-block-info">Select a block by right clicking or long pressing it, and its parameters will appear here.</div>
+                <!--Dynamically generated-->
+                
+            </form>
+            <button id="delete-block-button" class="sidebar-button">Delete Selection</button>
         </div>
         <button class="sidebar-submenu-expand-button">API Settings</button>
         <form id="api-settings-form" class="sidebar-submenu-expand">

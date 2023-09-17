@@ -40,7 +40,7 @@
         "hidden": false
     },
     "SAVE": {
-        "info": "The SAVE block saves the first input it receives, with no output. Every time it is activated after that it outputs the saved first input.",
+        "info": "The SAVE block saves the first input it receives and forwards it. Every time it is activated after that it outputs the saved first input.",
         "maps": {
             "none": "none",
             "single": "single",

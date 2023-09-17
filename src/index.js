@@ -1,6 +1,6 @@
 import cytoscape from 'cytoscape';
 
-import { notify, createSubmenusByType } from './utils.js';
+import { notify, createSubmenusByType, addParametersToMenu } from './utils.js';
 import { blockFuncs } from './blockfuncs.js';
 
 import blockTypes from './blocktypes.json';
@@ -66,15 +66,50 @@ document.addEventListener('DOMContentLoaded', function () {
     cy.on('cxttap', handleBlockSelection);
     cy.on('taphold', handleBlockSelection);
 
+    document.getElementById("edit-block-menu").addEventListener("submit", (e) => {e.preventDefault()});
+
     function selectNode(node) {
+        deselectNode();
         state.selectedNode = node;
         node.addClass("targeted");
+        document.getElementById("edit-block-info").style.display = "none";
+        var editMenu = document.getElementById("edit-block-menu");
+        addParametersToMenu(blockTypes[node.data("block-type")]["parameters"], editMenu, node.data("label"));
+
+        for (var paramName of Object.keys(node.data("parameters"))) {
+            var inputElement = document.getElementById(editMenu.id + paramName);
+            inputElement.value = node.data("parameters")[paramName];
+            if (blockTypes[node.data("block-type")][paramName].final) {
+                inputElement.setAttribute("disabled");
+            }
+        }
+        var editButton = document.createElement("input");
+        editButton.setAttribute("type", "submit");
+        editButton.setAttribute("value", "Apply Edits");
+        editButton.setAttribute("class", "sidebar-submit");
+        editMenu.appendChild(editButton);
+        editButton.addEventListener("click", function(e) {
+            if (confirm("Are you sure you want to apply the parameter edits? Old parameters will be lost!")) {
+                for (var paramName of Object.keys(node.data("parameters"))) {
+                    var inputElement = document.getElementById(editMenu.id + paramName);
+                    node.data("parameters")[paramName] = inputElement.value;
+                }
+            }
+        });
     }
 
     function deselectNode() {
         if (state.selectedNode) {
             state.selectedNode.removeClass("targeted");
             state.selectedNode = null;
+        }
+        var editMenu = document.getElementById("edit-block-menu");
+        for (var child of editMenu.children) {
+            if (child.id === "edit-block-info") { 
+                child.style.display = "block";
+            } else {
+                editMenu.removeChild(child);
+            }
         }
     }
     
@@ -93,12 +128,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         if ((event.target.isEdge() || state.selectedNode.isEdge())) {
-            deselectNode();
             selectNode(event.target);
             return;
         }
         if (state.selectedNode.isParent() || event.target.isParent()) {
-            deselectNode();
             selectNode(event.target);
             return;
         }
