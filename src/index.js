@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
         deselectNode();
         state.selectedNode = node;
         node.addClass("targeted");
+        if (node.isEdge()) { return; }
         document.getElementById("edit-block-info").style.display = "none";
         var editMenu = document.getElementById("edit-block-menu");
         if (node.isChild()) {
