@@ -15,7 +15,8 @@
         "parameters": {
             "INPUT-FIXED-text": {
                 "label": "Fixed Text Input",
-                "type": "textbox"
+                "type": "textbox",
+                "final": false
             }
         },
         "hidden": false
@@ -61,7 +62,8 @@
                 "type": "num",
                 "min": "2",
                 "max": "100",
-                "default": "10"
+                "default": "10",
+                "final": false
             }
         },
         "hidden": false
@@ -78,14 +80,16 @@
                 "type": "num",
                 "min": "100",
                 "max": "10000",
-                "default": "500"
+                "default": "500",
+                "final": false
             },
             "SPLIT-chunk-overlap": {
                 "label": "Chunk Overlap",
                 "type": "num",
                 "min": "0",
                 "max": "100",
-                "default": "0"
+                "default": "0",
+                "final": false
             }
         },
         "hidden": false
@@ -110,7 +114,8 @@
                 "type": "num",
                 "min": "1",
                 "max": "10",
-                "default": "5"
+                "default": "5",
+                "final": true
             }
         },
         "hidden": false
@@ -140,7 +145,8 @@
         "parameters": {
             "LLM-query": {
                 "label": "Query for LLM",
-                "type": "textbox"
+                "type": "textbox",
+                "final": false
             }
         },
         "hidden": false
@@ -156,11 +162,13 @@
                 "type": "num",
                 "min": "1",
                 "max": "10",
-                "default": "2"
+                "default": "2",
+                "final": true
             },
             "SYNTHESIZE-output-format": {
                 "label": "Output Format",
-                "type": "textbox"
+                "type": "textbox",
+                "final": false
             }
         },
         "hidden": false
@@ -189,7 +197,8 @@
         "parameters": {
             "REGEX-regex": {
                 "label": "Regular Expression",
-                "type": "text"
+                "type": "text",
+                "final": false
             }
         },
         "hidden": false
@@ -202,7 +211,8 @@
         "parameters": {
             "REGEX-CAPTURE-regex" : {
                 "label": "Regular Expression",
-                "type": "text"
+                "type": "text",
+                "final": true
             }
         },
         "hidden": false

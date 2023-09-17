@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var editMenu = document.getElementById("edit-block-menu");
         addParametersToMenu(blockTypes[node.data("block-type")]["parameters"], editMenu, node.data("label"));
 
-        for (var paramName of Object.keys(node.data("parameters"))) {
+        for (var paramName of Object.keys(blockTypes[node.data("block-type")]["parameters"])) {
             var inputElement = document.getElementById(editMenu.id + paramName);
             inputElement.value = node.data("parameters")[paramName];
             if (blockTypes[node.data("block-type")][paramName].final) {
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
         editMenu.appendChild(editButton);
         editButton.addEventListener("click", function(e) {
             if (confirm("Are you sure you want to apply the parameter edits? Old parameters will be lost!")) {
-                for (var paramName of Object.keys(node.data("parameters"))) {
+                for (var paramName of Object.keys(blockTypes[node.data("block-type")]["parameters"])) {
                     var inputElement = document.getElementById(editMenu.id + paramName);
                     node.data("parameters")[paramName] = inputElement.value;
                 }
@@ -118,9 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         if (event.target === cy) {
-            if (state.selectedNode) {
-                deselectNode();
-            }
+            deselectNode();
             return;
         }
         if (!state.selectedNode) {
