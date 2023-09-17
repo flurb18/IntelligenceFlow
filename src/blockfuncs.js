@@ -41,7 +41,7 @@ export var blockFuncs = {
     },
     "OUTPUT": {
         exec: function (input, blockData, state, resolve, reject) {
-            document.getElementById(blockData.id + "-output").value = input;
+            document.getElementById(blockData.id + "-output").value += input;
             resolve([]);
         },
         create: function (blockData) {
@@ -54,15 +54,24 @@ export var blockFuncs = {
             labelElement.setAttribute("for", outputIdString);
             labelElement.setAttribute("id", outputIdString + "-label");
             labelElement.innerText = blockData.label;
+            var buttonElement = document.createElement("button");
+            buttonElement.setAttribute("id", outputIdString+"-clear-button");
+            buttonElement.setAttribute("class", "sidebar-button");
+            buttonElement.innerText = "Clear "+ blockData.label;
+            buttonElement.addEventListener("click", function (e) {
+                outputElement.value = "";
+            });
             var outputDiv = document.getElementById("output-div");
             outputDiv.appendChild(labelElement);
             outputDiv.appendChild(outputElement);
+            outputDiv.appendChild(buttonElement);
             return [{ group: 'nodes', data: blockData }];
         },
         destroy: function (blockData) {
             var outputIdString = blockData.id + "-output";
             removeElement(document.getElementById(outputIdString));
             removeElement(document.getElementById(outputIdString + "-label"));
+            removeElement(document.getElementById(outputIdString + "-clear-button"));
         }
     },
     "COPY": {
@@ -192,16 +201,23 @@ export var blockFuncs = {
     },
     "LLM": {
         exec: function (input, blockData, state, resolve, reject) {
-            var prompt = blockData.parameters["LLM-query"].replace("_INPUT_", input);
-            if (!Object.keys(apiFuncs).includes(state.apiType)) {
-                reject("API error");
+            function apiCall(_input) {
+                var prompt = blockData.parameters["LLM-query"].replace("_INPUT_", _input);
+                if (!Object.keys(apiFuncs).includes(state.apiType)) {
+                    reject("API error");
+                }
+                apiFuncs[state.apiType](prompt, state.apiParams).then((_output) => {
+                    resolve([{ done: true, output: _output }]);
+                }).catch((error) => {
+                    reject("API error");
+                    console.log(error);
+                });
             }
-            apiFuncs[state.apiType](prompt, state.apiParams).then((_output) => {
-                resolve([{done: true, output: _output}]);
-            }).catch((error) => {
-                reject("API error");
-                console.log(error);
-            });
+            if (Array.isArray(input)) {
+                input.forEach((text)=> { apiCall(text); });
+            } else {
+                apiCall(input);
+            }
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];
