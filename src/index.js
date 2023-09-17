@@ -104,9 +104,9 @@ document.addEventListener('DOMContentLoaded', function () {
             state.selectedNode.removeClass("targeted");
             state.selectedNode = null;
         }
-        var editMenu = document.getElementById("edit-block-menu");
-        while (editMenu.firstElementChild.nextElementSibling) {
-            editMenu.removeChild(editMenu.firstElementChild.nextElementSibling);
+        var editInfo = document.getElementById("edit-block-info");
+        while (editInfo.nextElementSibling) {
+            document.getElementById("edit-block-menu").removeChild(editInfo.nextElementSibling);
         }
     }
     
