@@ -90,6 +90,9 @@ export var blockFuncs = {
             if (!blockData.hasOwnProperty("save")) {
                 blockData["save"] = input;
             }
+            if (!blockData["save"]) {
+                blockData["save"] = input;
+            }
             resolve([{done: true, output: blockData["save"]}]);
         },
         create: function(blockData) {

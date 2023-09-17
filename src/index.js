@@ -538,6 +538,9 @@ document.addEventListener('DOMContentLoaded', function () {
             "waiting-for": [...block.data("waits-for")],
             "queued-inputs": {}
         });
+        if (block.data("block-type") === "SAVE") {
+            block.data("save", null);
+        }
     }
 
     function reset() {
