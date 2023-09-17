@@ -39,6 +39,16 @@
         "parameters": {},
         "hidden": false
     },
+    "SAVE": {
+        "info": "The SAVE block saves the first input it receives, with no output. Every time it is activated after that it outputs the saved first input.",
+        "maps": {
+            "none": "none",
+            "single": "single",
+            "multi": "multi"
+        },
+        "parameters": {},
+        "hidden": false
+    },
     "COPY": {
         "info": "The COPY block creates an array of n copies of its input, where n is a parameter chosen when the block is created. Note that the COPY block outputs an array.",
         "maps": {

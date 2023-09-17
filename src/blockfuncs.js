@@ -85,6 +85,20 @@ export var blockFuncs = {
 
         }
     },
+    "SAVE": {
+        exec: function(input, blockData, state, resolve, reject) {
+            if (!blockData.hasOwnProperty("save")) {
+                blockData["save"] = input;
+            }
+            resolve([{done: true, output: blockData["save"]}]);
+        },
+        create: function(blockData) {
+            return [{ group: 'nodes', data: blockData }];
+        },
+        destroy: function(blockData) {
+
+        }
+    },
     "COPY": {
         exec: function (input, blockData, state, resolve, reject) {
             var numCopies = parseInt(blockData.parameters["COPY-num-copies"]);
