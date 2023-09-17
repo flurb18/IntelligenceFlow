@@ -1,6 +1,7 @@
 #body {
     overflow: hidden;
     margin: 0;
+    padding: 0;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
@@ -42,6 +43,7 @@
     margin: 0;
     width: 33%;
     height: 100%;
+    padding: 0;
     background-color: #ffffff;
     overflow-y: auto;
 }
