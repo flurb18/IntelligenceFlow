@@ -80,11 +80,18 @@ document.addEventListener('DOMContentLoaded', function () {
             editMenu.appendChild(childInfo);
             return;   
         }
-        addParametersToMenu(blockTypes[node.data("block-type")]["parameters"], editMenu, node.data("label"));
-        for (var paramName of Object.keys(blockTypes[node.data("block-type")]["parameters"])) {
+        const blockTypeParams = blockTypes[node.data("block-type")]["parameters"]
+        if (Object.keys(blockTypeParams).length === 0) {
+            var noParamInfo = document.createElement("div");
+            noParamInfo.innerText = "No parameters to show."
+            editMenu.appendChild(noParamInfo);
+            return;
+        }
+        addParametersToMenu(blockTypeParams, editMenu, node.data("label"));
+        for (var paramName of Object.keys(blockTypeParams)) {
             var inputElement = document.getElementById(editMenu.id + "-" + paramName);
             inputElement.value = node.data().parameters[paramName];
-            if (blockTypes[node.data("block-type")]["parameters"][paramName].final) {
+            if (blockTypeParams[paramName].final) {
                 inputElement.disabled = true;
             }
         }
@@ -96,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
         editButton.addEventListener("click", function(e) {
             if (confirm("Are you sure you want to apply the parameter edits? Old parameters will be lost!")) {
                 var params = node.data("parameters");
-                for (var paramName of Object.keys(blockTypes[node.data("block-type")]["parameters"])) {
+                for (var paramName of Object.keys(blockTypeParams)) {
                     var inputElement = document.getElementById(editMenu.id + "-" + paramName);
                     params[paramName] = inputElement.value
                 }
