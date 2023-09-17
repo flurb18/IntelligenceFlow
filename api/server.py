@@ -32,7 +32,7 @@ async def handle_post(request):
             await page.locator("#execute-form-submit").click()
 
         await page.goto("file:///api/web/index.html")
-        await page.once("load", on_load)
+        page.once("load", on_load)
         async with page.expect_event("flowExecutionDone") as event_info:
             for output_element in await page.locator("textarea[id$='-output']").all():
                 response[output_element.id().removesuffix("-output")] = output_element.input_value()
