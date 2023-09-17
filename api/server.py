@@ -24,7 +24,7 @@ async def handle_post(request):
             await page.locator("#api-settings-type").selectOption(apiType)
             if apiType == "Oobabooga":
                 await page.locator("#Oobabooga-submenu-Oobabooga-URL").fill(data["api"]["Oobabooga-URL"])
-            else if apiType == "OpenAI":
+            elif apiType == "OpenAI":
                 await page.locator("#OpenAI-submenu-OpenAI-APIkey").fill(data["api"]["OpenAI-APIkey"])
             for i in range(len(data["inputs"].keys())):
                 await page.locator(f"#INPUT{i}-input").fill(data["inputs"][data["inputs"].keys()[i]])
