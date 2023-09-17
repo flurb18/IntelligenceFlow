@@ -71,13 +71,44 @@
         "hidden": false
     },
     "COMBINE": {
-        "info": "The COMBINE block exclusively takes arrays as input and concatenates them for its output.",
+        "info": "The COMBINE block takes arrays as input and concatenates them for its output.",
         "maps": {
             "none": "none",
             "multi": "single"
         },
         "parameters": {},
         "hidden": false
+    },
+    "SEPARATE": {
+        "info": "The SEPARATE block is a special compound block. It is used for turning arrays into text by array index. It takes as a parameter n, the number of outputs it should have, and takes an array as input; then, entry i of the array is sent to the output node in the block labeled i, for each i from 1 to n.",
+        "maps": {
+            "none": "unavailable"
+        },
+        "parameters": {
+            "SEPARATE-num-outputs": {
+                "label": "Number of Outputs",
+                "type": "num",
+                "min": "1",
+                "max": "25",
+                "default": "10"
+            }
+        },
+        "hidden": false
+    },
+    "SEPARATE-INPUT": {
+        "maps": {
+            "none": "unavailable",
+            "multi": "unavailable"
+        },
+        "parameters": {},
+        "hidden": true
+    },
+    "SEPARATE-OUTPUT": {
+        "maps": {
+            "unavailable": "single"
+        },
+        "parameters": {},
+        "hidden": true
     },
     "LLM": {
         "info": "The LLM block calls a Large Language Model according to your API settings and its parameters in order to answer a query. The block has a fixed query, set when it is created; however, if the fixed query contains the string '_INPUT_', then that string is substituted for the input to the block. This acts similarly to a one-input SYNTHESIZE block. The model's response to the constructed query is the output.",
@@ -129,7 +160,7 @@
         "hidden": true
     },
     "REGEX": {
-        "info": "The REGEX block takes as a parameter a regular experssion. Upon execution, it matches this regular expression against its input, and outputs an array of matches.",
+        "info": "The REGEX block takes as a parameter a regular expression. Upon execution, it matches this regular expression against its input, and outputs an array of matches.",
         "maps": {
             "none": "none",
             "single": "multi"

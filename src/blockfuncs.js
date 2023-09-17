@@ -109,6 +109,87 @@ export var blockFuncs = {
 
         }
     },
+    "SEPARATE": {
+        exec: function (input, blockData, state, resolve, reject) {
+            reject("This block is a container and shouldn't ever run");
+        },
+        create: function (blockData) {
+            var inputId = blockData.id + "INPUT";
+            var elements = [
+                { group: 'nodes', data: blockData },
+                { 
+                    group: 'nodes',
+                    data: {
+                        "id": inputId,
+                        "parent": blockData.id,
+                        "label": blockData.label + "-INPUT",
+                        "block-type": "SEPARATE-INPUT",
+                        "input-type": "none",
+                        "parameters": blockData.parameters,
+                        "waits-for": []
+                    }
+                }
+            ];
+            for (var i = 1; i <= blockData.parameters["SEPARATE-num-ouputs"]; i++) {
+                var outputId = blockData.id + "OUTPUT" + i;
+                elements.push({
+                    group: "nodes",
+                    data: {
+                        "id": outputId,
+                        "parent": blockData.id,
+                        "label": blockData.label + "-OUTPUT" + i,
+                        "block-type": "SEPARATE-OUTPUT",
+                        "input-type": "unavailable",
+                        "parameters": blockData.parameters,
+                        "waits-for": []
+                    }
+                });
+                elements.push({
+                    group: "edges",
+                    data: {
+                        "id": inputId + outputId,
+                        "source": inputId,
+                        "target": outputId,
+                        "user-created": false
+                    }
+                });
+            }
+            return elements;
+        },
+        destroy: function (blockData) {
+
+        }
+    },
+    "SEPARATE-INPUT": {
+        exec: function (input, blockData, state, resolve, reject) {
+            var _output = [];
+            for (var i = 1; i <= blockData.parameters["SEPARATE-num-outputs"]; i++) {
+                _output.push({
+                    done: true,
+                    output: input[i-1],
+                    for: blockData.parent + "OUTPUT" + i
+                });
+            }
+            resolve(_output);
+        },
+        create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
+        },
+        destroy: function (blockData) {
+
+        }
+    },
+    "SEPARATE-OUTPUT": {
+        exec: function (input, blockData, state, resolve, reject) {
+            resolve([{done:true, output: input}]);
+        },
+        create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
+        },
+        destroy: function (blockData) {
+
+        }
+    },
     "LLM": {
         exec: function (input, blockData, state, resolve, reject) {
             var prompt = blockData.parameters["LLM-query"].replace("_INPUT_", input);
@@ -162,7 +243,7 @@ export var blockFuncs = {
                     }
                 });
             }
-            var output = {
+            elements.push({
                 group: 'nodes',
                 data: {
                     "id": outputId,
@@ -177,8 +258,8 @@ export var blockFuncs = {
                     "waiting-for": [...inputIds],
                     "queued-inputs": {}
                 }
-            };
-            return [...elements, output];
+            });
+            return elements;
         },
         destroy: function (blockData) {
 
