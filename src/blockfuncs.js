@@ -163,7 +163,7 @@ export var blockFuncs = {
     "SEPARATE-INPUT": {
         exec: function (input, blockData, state, resolve, reject) {
             var _output = [];
-            for (var i = 1; i <= blockData.parameters["SEPARATE-num-outputs"]; i++) {
+            for (var i = 1; i <= Math.min(blockData.parameters["SEPARATE-num-outputs"], input.length); i++) {
                 _output.push({
                     done: true,
                     output: input[i-1],
