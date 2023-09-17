@@ -105,34 +105,31 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!(state.selectedNode.id() === event.target.id())) {
             var srcBlockType = state.selectedNode.data("block-type");
             var destBlockType = event.target.data("block-type");
-            var srcOutputTypes = blockTypes[srcBlockType]["maps"][state.selectedNode.data("input-type")];
-            if (srcOutputTypes.length === 1) {
-                var srcOutputType = srcOutputTypes[0];
-                var destAssignedInputType = event.target.data("input-type");
-                var destAvailableInputTypes = Object.keys(blockTypes[destBlockType]["maps"]);
-                if (!(srcOutputType === "none") && (
-                    (destAssignedInputType === srcOutputType) ||
-                    (destAssignedInputType === "none" && destAvailableInputTypes.includes(srcOutputType))
-                )
-                ) {
-                    var _classes = []
-                    if (srcOutputType === "multi") {
-                        _classes.push("multi")
-                    }
-                    cy.add([{
-                        "group": 'edges',
-                        "data": {
-                            "id": state.selectedNode.id() + event.target.id(),
-                            "source": state.selectedNode.id(),
-                            "target": event.target.id(),
-                            "user-created": true
-                        },
-                        "classes": _classes
-                    }]);
-                    event.target.data("input-type", srcOutputType);
-                } else {
-                    notify("Incompatible blocks");
+            var srcOutputType = blockTypes[srcBlockType]["maps"][state.selectedNode.data("input-type")];
+            var destAssignedInputType = event.target.data("input-type");
+            var destAvailableInputTypes = Object.keys(blockTypes[destBlockType]["maps"]);
+            if (!(srcOutputType === "none" || srcOutputType === "unavailable" || destAssignedInputType === "unavailable") && (
+                (destAssignedInputType === srcOutputType) ||
+                (destAssignedInputType === "none" && destAvailableInputTypes.includes(srcOutputType))
+            )
+            ) {
+                var _classes = []
+                if (srcOutputType === "multi") {
+                    _classes.push("multi")
                 }
+                cy.add([{
+                    "group": 'edges',
+                    "data": {
+                        "id": state.selectedNode.id() + event.target.id(),
+                        "source": state.selectedNode.id(),
+                        "target": event.target.id(),
+                        "user-created": true
+                    },
+                    "classes": _classes
+                }]);
+                event.target.data("input-type", srcOutputType);
+            } else {
+                notify("Incompatible blocks");
             }
             deselectNode();
         }
@@ -428,10 +425,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         setTimeout(() => {
                             executeBlock(queuedInputs, block).then(executeOutput => {
                                 resetBlock(block);
-                                resolve({
-                                    done: true,
-                                    output: executeOutput
-                                });
+                                resolve(executeOutput);
                             }).catch(error => {
                                 resetBlock(block);
                                 reject(error);
@@ -453,28 +447,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 setTimeout(() => {
                     executeBlock(input, block).then(executeOutput => {
                         block.removeClass("active");
-                        resolve({
-                            done: true,
-                            output: executeOutput
-                        });
+                        resolve(executeOutput);
                     }).catch(error => {
                         block.removeClass("active");
                         reject(error);
                     });
                 }, 500);
             }
-        }).then((status) => {
-            if (status.done) {
-                var promises = [];
-                block.outgoers('node').forEach((outNeighbor) => {
-                    promises.push(activateBlock(status.output, outNeighbor, block.id()));
-                });
-                return Promise.all(promises);
-            } else {
-                return Promise.resolve();
-            }
+        }).then((statuses) => {
+            var activationPromises = [];
+            statuses.forEach((status) => {
+                if (status.done) {
+                    if (status.hasOwnProperty("for")) { 
+                        neighborActivationPromises.push(activateBlock(status.output, cy.getElementById(status.for), block.id()));
+                    } else {
+                        var neighborActivationPromises = [];
+                        block.outgoers('node').forEach((outNeighbor) => {
+                            neighborActivationPromises.push(activateBlock(status.output, outNeighbor, block.id()));
+                        });
+                        activationPromises.push(Promise.all(neighborActivationPromises));
+                    }
+                } else {
+                    activationPromises.push(Promise.resolve());
+                }
+            });
+            return Promise.all(activationPromises);
         });
     }
+    
 
     function executeBlock(input, block) {
         if (!state.running) {

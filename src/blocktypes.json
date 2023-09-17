@@ -2,9 +2,7 @@
     "INPUT": {
         "info": "The INPUT block takes user input before the flow is executed and passes it to its outgoing neighbors at the start of execution. All chains of execution start with either an INPUT block, or an INPUT-FIXED block.",
         "maps": {
-            "none": [
-                "single"
-            ]
+            "none": "single"
         },
         "parameters": {},
         "hidden": false
@@ -12,9 +10,7 @@
     "INPUT-FIXED": {
         "info": "The INPUT-FIXED block takes a fixed input as a parameter when it is created. When execution is started it passes the input to its outgoing neighbors.",
         "maps": {
-            "none": [
-                "single"
-            ]
+            "none": "single"
         },
         "parameters": {
             "INPUT-FIXED-text": {
@@ -27,12 +23,8 @@
     "OUTPUT": {
         "info": "The OUTPUT block forwards any text passed to it to its corresponding text box in the Output section of the sidebar.",
         "maps": {
-            "none": [
-                "none"
-            ],
-            "single": [
-                "none"
-            ]
+            "none": "none",
+            "single": "none"
         },
         "parameters": {},
         "hidden": false
@@ -40,12 +32,8 @@
     "COPY": {
         "info": "The COPY block creates an array of n copies of its input, where n is a parameter chosen when the block is created. Note that the COPY block outputs an array.",
         "maps": {
-            "none": [
-                "none"
-            ],
-            "single": [
-                "multi"
-            ]
+            "none": "none",
+            "single": "multi"
         },
         "parameters": {
             "COPY-num-copies": {
@@ -61,12 +49,8 @@
     "SPLIT": {
         "info": "The SPLIT block splits its input into overlapping chunks, where the chunk size and overlap is set when the block is created, and outputs these chunks as an array.",
         "maps": {
-            "none": [
-                "none"
-            ],
-            "single": [
-                "multi"
-            ]
+            "none": "none",
+            "single": "multi"
         },
         "parameters": {
             "SPLIT-chunk-size": {
@@ -89,12 +73,8 @@
     "COMBINE": {
         "info": "The COMBINE block exclusively takes arrays as input and concatenates them for its output.",
         "maps": {
-            "none": [
-                "none"
-            ],
-            "multi": [
-                "single"
-            ]
+            "none": "none",
+            "multi": "single"
         },
         "parameters": {},
         "hidden": false
@@ -102,15 +82,8 @@
     "LLM": {
         "info": "The LLM block calls a Large Language Model according to your API settings and its parameters in order to answer a query. The block has a fixed query, set when it is created; however, if the fixed query contains the string '_INPUT_', then that string is substituted for the input to the block. This acts similarly to a one-input SYNTHESIZE block. The model's response to the constructed query is the output.",
         "maps": {
-            "none": [
-                "none"
-            ],
-            "single": [
-                "single"
-            ],
-            "multi": [
-                "multi"
-            ]
+            "none": "none",
+            "single": "single"
         },
         "parameters": {
             "LLM-query": {
@@ -123,9 +96,7 @@
     "SYNTHESIZE": {
         "info": "The SYNTHESIZE block is a special compound block. It takes an output format as a paramter, which is a string. It consists of n+1 sub-blocks, where n is another parameter set when the block is created. The sub-blocks consist of n numbered inputs all pointing to one output; this output will wait for all of its inputs to come in before executing, entering a yellow waiting state when it has received some inputs but not all. Once all inputs are in, the block will output the result of replacing all instances of the string '_INPUTi_' in the output format parameter with the input from the sub-block labeled input i, for each i from 1 to n. As an example, if n=2 and the output format is '_INPUT1_ (hi!) _INPUT2_', and the inputs are 'Hello' and 'World!', the output will be 'Hello (hi!) World!'.",
         "maps": {
-            "none": [
-                "none"
-            ]
+            "none": "unavailable"
         },
         "parameters": {
             "SYNTHESIZE-num-inputs": {
@@ -144,21 +115,15 @@
     },
     "SYNTHESIZE-INPUT": {
         "maps": {
-            "none": [
-                "none"
-            ],
-            "single": [
-                "none"
-            ]
+            "none": "unavailable",
+            "single": "unavailable"
         },
         "parameters": {},
         "hidden": true
     },
     "SYNTHESIZE-OUTPUT": {
         "maps": {
-            "none": [
-                "single"
-            ]
+            "unavailable": "single"
         },
         "parameters": {},
         "hidden": true
@@ -166,12 +131,8 @@
     "REGEX": {
         "info": "The REGEX block takes as a parameter a regular experssion. Upon execution, it matches this regular expression against its input, and outputs an array of matches.",
         "maps": {
-            "none": [
-                "none"
-            ],
-            "single": [
-                "multi"
-            ]
+            "none": "none",
+            "single": "multi"
         },
         "parameters": {
             "REGEX-regex": {
@@ -180,5 +141,33 @@
             }
         },
         "hidden": false
+    },
+    "REGEX-CAPTURE": {
+        "info": "The REGEX-CAPTURE block is a special compound block. It takes a parameter a regular expression that has at least one capture group. It consists of one input block and an output block for each capture group. Upon execution, each output block will return an array, corresponding to that block's capture group for each match.",
+        "maps": {
+            "none": "unavailable"
+        },
+        "parameters": {
+            "REGEX-CAPTURE-regex" : {
+                "label": "Regular Expression",
+                "type": "text"
+            }
+        },
+        "hidden": false
+    },
+    "REGEX-CAPTURE-INPUT": {
+        "maps": {
+            "none": "unavailable",
+            "single": "unavailable"
+        },
+        "parameters": {},
+        "hidden": true
+    },
+    "REGEX-CAPTURE-OUTPUT": {
+        "maps": {
+            "unavailable": "multi"
+        },
+        "parameters": {},
+        "hidden": true
     }
 }

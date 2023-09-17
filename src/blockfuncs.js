@@ -1,12 +1,12 @@
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
-import { removeElement, insertBefore } from "./utils.js";
+import { removeElement, insertBefore, notify } from "./utils.js";
 import { apiFuncs } from "./apifuncs.js";
 
 export var blockFuncs = {
     "INPUT": {
         exec: function (input, blockData, state, resolve, reject) {
-            resolve(input);
+            resolve([{done:true, output: input}]);
         },
         create: function (blockData) {
             var inputIdString = blockData.id + "-input";
@@ -30,7 +30,7 @@ export var blockFuncs = {
     },
     "INPUT-FIXED": {
         exec: function (input, blockData, state, resolve, reject) {
-            resolve(input);
+            resolve([{done: true, output: input}]);
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];
@@ -68,7 +68,7 @@ export var blockFuncs = {
     "COPY": {
         exec: function (input, blockData, state, resolve, reject) {
             var numCopies = parseInt(blockData.parameters["COPY-num-copies"]);
-            resolve(Array(numCopies).fill(input));
+            resolve([{done:true, output: Array(numCopies).fill(input)}]);
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];
@@ -84,11 +84,11 @@ export var blockFuncs = {
                 chunkOverlap: blockData.parameters["SPLIT-chunk-overlap"]
             });
             splitter.createDocuments([input]).then((docs) => {
-                output = []
+                _output = []
                 for (var doc of docs) {
-                    output.push(doc.pageContent);
+                    _output.push(doc.pageContent);
                 }
-                resolve(output);
+                resolve([{done: true, output: _output}]);
             }).catch((error) => { reject(error); });
         },
         create: function (blockData) {
@@ -100,7 +100,7 @@ export var blockFuncs = {
     },
     "COMBINE": {
         exec: function (input, blockData, state, resolve, reject) {
-            resolve(input.join(" "));
+            resolve([{done: true, output: input.join(" ")}]);
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];
@@ -115,8 +115,8 @@ export var blockFuncs = {
             if (!Object.keys(apiFuncs).includes(state.apiType)) {
                 reject("API error");
             }
-            apiFuncs[state.apiType](prompt, state.apiParams).then((output) => {
-                resolve(output);
+            apiFuncs[state.apiType](prompt, state.apiParams).then((_output) => {
+                resolve([{done: true, output: _output}]);
             }).catch((error) => {
                 reject("API error");
                 console.log(error);
@@ -169,7 +169,7 @@ export var blockFuncs = {
                     "parent": blockData.id,
                     "label": blockData.label + "-OUTPUT",
                     "block-type": "SYNTHESIZE-OUTPUT",
-                    "input-type": "single",
+                    "input-type": "unavailable",
                     "parameters": blockData.parameters,
                     "waits-for": inputIds
                 },
@@ -186,7 +186,7 @@ export var blockFuncs = {
     },
     "SYNTHESIZE-INPUT": {
         exec: function (input, blockData, state, resolve, reject) {
-            resolve(input);
+            resolve([{done: true, output: input}]);
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];
@@ -197,11 +197,11 @@ export var blockFuncs = {
     },
     "SYNTHESIZE-OUTPUT": {
         exec: function (input, blockData, state, resolve, reject) {
-            var output = blockData.parameters["SYNTHESIZE-output-format"];
+            var _output = blockData.parameters["SYNTHESIZE-output-format"];
             for (var i = 1; i <= blockData.parameters["SYNTHESIZE-num-inputs"]; i++) {
-                output = output.replace("_INPUT" + i + "_", input[blockData.parent + "INPUT" + i]);
+                _output = _output.replace("_INPUT" + i + "_", input[blockData.parent + "INPUT" + i]);
             }
-            resolve(output);
+            resolve([{done:true, output:_output}]);
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];
@@ -215,12 +215,104 @@ export var blockFuncs = {
             var regex = new RegExp(blockData.parameters["REGEX-regex"], "g");
             var res = input.match(regex);
             if (res) {
-                resolve(res);
+                resolve([{done: true, output:res}]);
             } else {
                 resolve([]);
             }
         },
         create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
+        },
+        destroy: function (blockData) {
+
+        }
+    },
+    "REGEX-CAPTURE": {
+        exec: function (input, blockData, state, resolve, reject) {
+            reject("This block is a container and shouldn't ever run");
+        },
+        create: function(blockData) {
+            var n_groups = (new RegExp(blockData.parameters["REGEX-CAPTURE-regex"] + '|')).exec('').length - 1;
+            if (n_groups === 0) {
+                notify("Regex must contain at least one capture group.");
+                return [];
+            }
+            var inputId = blockData.id + "INPUT";
+            var elements = [
+                { group: 'nodes', data: blockData },
+                {
+                    group: 'nodes',
+                    data: {
+                        "id": inputId,
+                        "parent": blockData.id,
+                        "label": blockData.label + "-INPUT",
+                        "block-type": "REGEX-CAPTURE-INPUT",
+                        "input-type": "none",
+                        "parameters": blockData.parameters,
+                        "waits-for": []
+                    }
+                }
+            ];
+            for (var i = 1; i <= n_groups; i++) {
+                var outputId = blockData.id + "OUTPUT" + i;
+                elements.push({
+                    group: 'nodes',
+                    data: {
+                        "id": outputId,
+                        "parent": blockData.id,
+                        "label": blockData.label + "-OUTPUT" + i,
+                        "block-type": "REGEX-CAPTURE-OUTPUT",
+                        "input-type": "unavailable",
+                        "parameters": blockData.parameters,
+                        "waits-for": []
+                    }
+                });
+                elements.push({
+                    group: 'edges',
+                    data: {
+                        "id": inputId + outputId,
+                        "source": inputId,
+                        "target": outputId
+                    }
+                })
+            }
+            return elements;
+        },
+        destroy: function (blockData) {
+
+        }
+    },
+    "REGEX-CAPTURE-INPUT": {
+        exec: function (input, blockData, state, resolve, reject) {
+            var n_groups = (new RegExp(blockData.parameters["REGEX-CAPTURE-regex"] + '|')).exec('').length - 1;
+            var regex = new RegExp(blockData.parameters["REGEX-CAPTURE-regex"], "g");
+            _output = [];
+            for (var i = 1; i <= n_groups; i++) {
+                var matches = input.match_all(regex);
+                groupOutput = [];
+                matches.forEach((match) => {
+                    groupOutput.push(match[i]);
+                });
+                _output.push({
+                    done: true,
+                    output: groupOutput,
+                    for: blockData.parent + "OUTPUT" + i 
+                });
+            }
+            resolve(_output);
+        },
+        create: function(blockData) {
+            return [{ group: 'nodes', data: blockData }];
+        },
+        destroy: function (blockData) {
+
+        }
+    },
+    "REGEX-CAPTURE-OUTPUT": {
+        exec: function (input, blockData, state, resolve, reject) {
+            resolve(input);
+        },
+        create: function(blockData) {
             return [{ group: 'nodes', data: blockData }];
         },
         destroy: function (blockData) {
