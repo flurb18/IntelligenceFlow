@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
         addParametersToMenu(blockTypes[node.data("block-type")]["parameters"], editMenu, node.data("label"));
 
         for (var paramName of Object.keys(blockTypes[node.data("block-type")]["parameters"])) {
-            var inputElement = document.getElementById(editMenu.id + paramName);
+            var inputElement = document.getElementById(editMenu.id + "-" + paramName);
             inputElement.value = node.data("parameters")[paramName];
             if (blockTypes[node.data("block-type")][paramName].final) {
                 inputElement.setAttribute("disabled");
