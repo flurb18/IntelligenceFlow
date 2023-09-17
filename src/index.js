@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         for (var paramName of Object.keys(blockTypes[node.data("block-type")]["parameters"])) {
             var inputElement = document.getElementById(editMenu.id + "-" + paramName);
-            inputElement.value = node.data("parameters")[paramName];
+            inputElement.value = node.data().parameters[paramName];
             if (blockTypes[node.data("block-type")][paramName].final) {
                 inputElement.setAttribute("disabled");
             }
@@ -90,10 +90,12 @@ document.addEventListener('DOMContentLoaded', function () {
         editMenu.appendChild(editButton);
         editButton.addEventListener("click", function(e) {
             if (confirm("Are you sure you want to apply the parameter edits? Old parameters will be lost!")) {
+                var params = node.data("parameters");
                 for (var paramName of Object.keys(blockTypes[node.data("block-type")]["parameters"])) {
                     var inputElement = document.getElementById(editMenu.id + paramName);
-                    node.data("parameters")[paramName] = inputElement.value;
+                    params[paramName] = inputElement.value
                 }
+                node.data("parameters", params);
             }
         });
     }
