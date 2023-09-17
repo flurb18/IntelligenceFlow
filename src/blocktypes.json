@@ -29,6 +29,16 @@
         "parameters": {},
         "hidden": false
     },
+    "FORWARD": {
+        "info": "The FORWARD block just forwards input to all of its outputs. Useful for creating delays or cycles.",
+        "maps": {
+            "none": "none",
+            "single": "single",
+            "multi": "multi"
+        },
+        "parameters": {},
+        "hidden": false
+    },
     "COPY": {
         "info": "The COPY block creates an array of n copies of its input, where n is a parameter chosen when the block is created. Note that the COPY block outputs an array.",
         "maps": {

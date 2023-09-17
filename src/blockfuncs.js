@@ -74,6 +74,17 @@ export var blockFuncs = {
             removeElement(document.getElementById(outputIdString + "-clear-button"));
         }
     },
+    "FORWARD":{
+        exec: function(input, blockData, state, resolve, reject) {
+            resolve([{done:true, output:input}]);
+        },
+        create: function(blockData) {
+            return [{ group: 'nodes', data: blockData }];
+        },
+        destroy: function(blockData) {
+
+        }
+    },
     "COPY": {
         exec: function (input, blockData, state, resolve, reject) {
             var numCopies = parseInt(blockData.parameters["COPY-num-copies"]);
