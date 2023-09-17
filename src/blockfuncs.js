@@ -130,7 +130,7 @@ export var blockFuncs = {
                     }
                 }
             ];
-            for (var i = 1; i <= blockData.parameters["SEPARATE-num-ouputs"]; i++) {
+            for (var i = 1; i <= blockData.parameters["SEPARATE-num-outputs"]; i++) {
                 var outputId = blockData.id + "OUTPUT" + i;
                 elements.push({
                     group: "nodes",
