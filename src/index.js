@@ -105,12 +105,8 @@ document.addEventListener('DOMContentLoaded', function () {
             state.selectedNode = null;
         }
         var editMenu = document.getElementById("edit-block-menu");
-        for (var child of editMenu.children) {
-            if (child.id === "edit-block-info") { 
-                child.style.display = "block";
-            } else {
-                editMenu.removeChild(child);
-            }
+        while (editMenu.firstChild.nextSibling) {
+            editMenu.removeChild(editMenu.firstChild.nextSibling);
         }
     }
     
