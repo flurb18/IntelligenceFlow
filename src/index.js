@@ -77,7 +77,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (node.isChild()) {
             var childInfo = document.createElement("div");
             childInfo.innerText = "Cannot edit parameters of child node; select parent node to edit parameters."
-            editMenu.appendChild("div")   
+            editMenu.appendChild(childInfo);
+            return;   
         }
         addParametersToMenu(blockTypes[node.data("block-type")]["parameters"], editMenu, node.data("label"));
         for (var paramName of Object.keys(blockTypes[node.data("block-type")]["parameters"])) {
