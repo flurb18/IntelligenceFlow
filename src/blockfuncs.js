@@ -41,7 +41,7 @@ export var blockFuncs = {
     },
     "OUTPUT": {
         exec: function (input, blockData, state, resolve, reject) {
-            document.getElementById(blockData.id + "-output").value += "\n"+input;
+            document.getElementById(blockData.id + "-output").value += input+"\n";
             resolve([]);
         },
         create: function (blockData) {
