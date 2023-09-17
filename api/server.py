@@ -5,8 +5,7 @@ from playwright.async_api import async_playwright
 from aiohttp import web
 
 async def handle_post(request):
-    request = await request.post()
-    data = await request.json()
+    data = await request.post()
     response = {}
     async with async_playwright() as p:
         browser = await p.chromium.launch()
