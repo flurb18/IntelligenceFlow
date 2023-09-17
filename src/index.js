@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var inputElement = document.getElementById(editMenu.id + "-" + paramName);
             inputElement.value = node.data().parameters[paramName];
             if (blockTypes[node.data("block-type")]["parameters"][paramName].final) {
-                inputElement.setAttribute("disabled");
+                inputElement.disabled = true;
             }
         }
         var editButton = document.createElement("input");
