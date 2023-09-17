@@ -33,7 +33,10 @@ async def handle_post(request):
 
         await page.goto("file:///api/web/index.html")
         page.once("load", on_load)
-        async with page.expect_event("flowExecutionDone") as event_info:
+        async with page.expect_console_message() as msg_info:
+            pass
+        msg = await msg_info.value
+        if (await msg.args[0].json_value() == "Done!"):
             for output_element in await page.locator("textarea[id$='-output']").all():
                 response[output_element.id().removesuffix("-output")] = output_element.input_value()
         await browser.close()
