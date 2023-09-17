@@ -74,6 +74,11 @@ document.addEventListener('DOMContentLoaded', function () {
         node.addClass("targeted");
         document.getElementById("edit-block-info").style.display = "none";
         var editMenu = document.getElementById("edit-block-menu");
+        if (node.isChild()) {
+            var childInfo = document.createElement("div");
+            childInfo.innerText = "Cannot edit parameters of child node; select parent node to edit parameters."
+            editMenu.appendChild("div")   
+        }
         addParametersToMenu(blockTypes[node.data("block-type")]["parameters"], editMenu, node.data("label"));
         for (var paramName of Object.keys(blockTypes[node.data("block-type")]["parameters"])) {
             var inputElement = document.getElementById(editMenu.id + "-" + paramName);
@@ -91,10 +96,15 @@ document.addEventListener('DOMContentLoaded', function () {
             if (confirm("Are you sure you want to apply the parameter edits? Old parameters will be lost!")) {
                 var params = node.data("parameters");
                 for (var paramName of Object.keys(blockTypes[node.data("block-type")]["parameters"])) {
-                    var inputElement = document.getElementById(editMenu.id + paramName);
+                    var inputElement = document.getElementById(editMenu.id + "-" + paramName);
                     params[paramName] = inputElement.value
                 }
                 node.data("parameters", params);
+                if (node.isParent()) {
+                    node.children().forEach((childNode) => {
+                        childNode.data("parameters", params);
+                    });
+                }
             }
         });
     }
