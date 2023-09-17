@@ -75,7 +75,8 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById("edit-block-info").style.display = "none";
         var editMenu = document.getElementById("edit-block-menu");
         addParametersToMenu(blockTypes[node.data("block-type")]["parameters"], editMenu, node.data("label"));
-
+        console.log(node.data("block-type"));
+        console.log(blockTypes);
         for (var paramName of Object.keys(blockTypes[node.data("block-type")]["parameters"])) {
             var inputElement = document.getElementById(editMenu.id + "-" + paramName);
             inputElement.value = node.data().parameters[paramName];
