@@ -461,14 +461,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (status.hasOwnProperty("for")) { 
                         activationPromises.push(activateBlock(status.output, cy.getElementById(status.for), block.id()));
                     } else {
-                        var neighborActivationPromises = [];
                         block.outgoers('node').forEach((outNeighbor) => {
-                            neighborActivationPromises.push(activateBlock(status.output, outNeighbor, block.id()));
+                            activationPromises.push(activateBlock(status.output, outNeighbor, block.id()));
                         });
-                        activationPromises.push(Promise.all(neighborActivationPromises));
                     }
-                } else {
-                    activationPromises.push(Promise.resolve());
                 }
             });
             return Promise.all(activationPromises);
