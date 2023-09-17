@@ -17,7 +17,7 @@
     border-radius: 25px;
     border: 2px solid black;
     font-size: 1.5em;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 #notification-text {
@@ -43,7 +43,7 @@
     width: 33%;
     height: 100%;
     background-color: #ffffff;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-wrap: break-word;
 }
 
