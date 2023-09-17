@@ -288,7 +288,7 @@ export var blockFuncs = {
             var regex = new RegExp(blockData.parameters["REGEX-CAPTURE-regex"], "g");
             var _output = [];
             for (var i = 1; i <= n_groups; i++) {
-                var matches = input.matchAll(regex);
+                var matches = [...input.matchAll(regex)];
                 var groupOutput = [];
                 matches.forEach((match) => {
                     groupOutput.push(match[i]);
