@@ -6,8 +6,8 @@ ADD . /build
 RUN npm run build
 
 FROM python:3.12 as api
-RUN pip install --upgrade pip &&
-    pip install playwright asyncio aiohttp &&
+RUN pip install --upgrade pip && \
+    pip install playwright asyncio aiohttp && \
     playwright install
 ADD ./api/ /api
 RUN mkdir /api/web
