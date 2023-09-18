@@ -224,7 +224,8 @@ document.addEventListener('DOMContentLoaded', function () {
             "block-type": blockType,
             "input-type": "none",
             "parameters": {},
-            "waits-for": []
+            "waits-for": [],
+            "default-input-queue": []
         };
     }
 
@@ -340,17 +341,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log("Waiting block" + block.id() + " got extra input");
                 }
             } else {
-                // Run block immediately
-                block.addClass("active");
-                setTimeout(() => {
-                    executeBlock(input, block).then(executeOutput => {
-                        block.removeClass("active");
-                        resolve(executeOutput);
-                    }).catch(error => {
-                        block.removeClass("active");
-                        reject(error);
+                block.data("default-input-queue").push({
+                    "input": input,
+                    "resolve": resolve,
+                    "reject": reject
+                });
+                if (!block.hasClass("running")) {
+                    block.addClass("running");
+                    executeBlockQueue(block).then((out) => {
+                        block.removeClass("running");
+                    }).catch((reason) => {
+                        block.removeClass("running");
                     });
-                }, 500);
+                }
             }
         }).then((statuses) => {
             var activationPromises = [];
@@ -366,6 +369,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
             return Promise.all(activationPromises);
+        });
+    }
+
+    function executeBlockQueue(block) {
+        return new Promise((resolve, reject) => {
+            const queueItem = block.data("default-input-queue").shift();
+            block.addClass("active");
+            setTimeout(() => {
+                executeBlock(queueItem["input"], block).then(executeOutput => {
+                    block.removeClass("active");
+                    queueItem["resolve"](executeOutput);
+                    resolve();
+                }).catch(error => {
+                    block.removeClass("active");
+                    queueItem["reject"](error);
+                    reject();
+                });
+            }, 500);
+        }).then((out) => {
+            if (block.data("default-input-queue").length == 0) {
+                return Promise.resolve();
+            } else {
+                return executeBlockQueue(block);
+            }
         });
     }
     
