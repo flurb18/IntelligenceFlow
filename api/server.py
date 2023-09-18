@@ -21,6 +21,8 @@ async def handle_post(request):
                 ]
             )
             await page.locator("#import-submit").click()
+            async with page.expect_event("dialog"):
+                pass
             apiType = data["api"]["type"]
             await page.locator("#api-settings-type").selectOption(apiType)
             if apiType == "Oobabooga":
@@ -32,6 +34,7 @@ async def handle_post(request):
             await page.locator("#execute-form-submit").click()
 
         await page.goto("file:///api/web/index.html")
+        page.on('dialog', lambda dialog: dialog.accept())
         page.once("load", on_load)
         async with page.expect_console_message() as msg_info:
             pass
