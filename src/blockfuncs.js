@@ -121,7 +121,7 @@ export var blockFuncs = {
                 chunkOverlap: blockData.parameters["SPLIT-chunk-overlap"]
             });
             splitter.createDocuments([input]).then((docs) => {
-                _output = []
+                var _output = [];
                 for (var doc of docs) {
                     _output.push(doc.pageContent);
                 }
