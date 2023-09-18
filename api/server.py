@@ -6,7 +6,7 @@ from aiohttp import web
 
 async def handle_post(request):
     data = await request.post()
-    print(data)
+    print(data, flush=True)
     response = {}
     async with async_playwright() as p:
         browser = await p.chromium.launch()
