@@ -29,6 +29,9 @@ async def handle_post(request):
                 await page.locator("#Oobabooga-submenu-Oobabooga-URL").fill(data["api"]["Oobabooga-URL"])
             elif apiType == "OpenAI":
                 await page.locator("#OpenAI-submenu-OpenAI-APIkey").fill(data["api"]["OpenAI-APIkey"])
+            await page.locator("#api-settings-submit").click()
+            async with page.expect_event("dialog"):
+                pass
             for i in range(len(data["inputs"])):
                 await page.locator(f"#INPUT{i}-input").fill(data["inputs"][i])
             await page.locator("#execute-form-submit").click()
