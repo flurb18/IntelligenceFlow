@@ -114,13 +114,51 @@ export var blockFuncs = {
     },
     "SPLIT": {
         exec: function (input, blockData, state, resolve, reject) {
+            const breaks = ['\n', '.', ',',' '];
+
+            function findBreakPos(str, center_idx, search_radius) {
+                var breakingPos = -1;
+                if (center_idx < 0) {
+                    center_idx = 0;
+                }
+                for (var breakingChar of breaks) {
+                    for (var r = 0; r < search_radius; r++) {
+                        if (center_idx + r < str.length) {
+                            if (str.substring(center_idx + r, center_idx + r + 1) === breakingChar) {
+                                breakingPos = center_idx + r + 1;
+                                break;
+                            }
+                        }
+                        if (center_idx - r >= 0) {
+                            if (str.substring(center_idx - r, center_idx - r + 1) === breakingChar) {
+                                breakingPos = center_idx - r + 1;
+                                break;
+                            }
+                        }
+                    }
+                    if (breakingPos > 0) {
+                        break;
+                    }
+                }
+                if (breakingPos < 0) {
+                    breakingPos = Math.min(str.length, center_idx);
+                }
+                return breakingPos;
+            }
+
             var _output = [];
             var remaining = input;
             const c_size = parseInt(blockData.parameters["SPLIT-chunk-size"]);
             const c_overlap = parseInt(blockData.parameters["SPLIT-chunk-overlap"]);
+            const c_deviation = parseInt(blockData.parameters["SPLIT-chunk-deviation"]);
+            var breakingPos = -1;
+            var breakingPos = c_size;
+
             while (remaining) {
-                _output.push(remaining.substring(0, c_size));
-                remaining = remaining.substring(c_size - c_overlap, remaining.length);
+                var breakpoint = findBreakPos(remaining, c_size, c_deviation);
+                _output.push(remaining.substring(0, breakpoint));
+                var laggingBreakpoint = findBreakPos(remaining, breakpoint - c_overlap, c_deviation);
+                remaining = remaining.substring(laggingBreakpoint, remaining.length);
             }
             resolve([{done: true, output: _output}]);
         },

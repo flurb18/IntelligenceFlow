@@ -69,7 +69,7 @@
         "hidden": false
     },
     "SPLIT": {
-        "info": "The SPLIT block splits its input into overlapping chunks, where the chunk size and overlap is set when the block is created, and outputs these chunks as an array.",
+        "info": "The SPLIT block splits its input into overlapping chunks, where the chunk size and overlap is set when the block is created. It attempts to break the chunks on newlines, periods, commas, or spaces, in that order. The chunk deviation parameter controls how far it searchs for those break elements. The block outputs these chunks as an array.",
         "maps": {
             "none": "none",
             "single": "multi"
@@ -80,15 +80,23 @@
                 "type": "num",
                 "min": "100",
                 "max": "10000",
-                "default": "500",
+                "default": "1000",
                 "final": false
             },
             "SPLIT-chunk-overlap": {
                 "label": "Chunk Overlap",
                 "type": "num",
                 "min": "0",
-                "max": "100",
+                "max": "500",
                 "default": "0",
+                "final": false
+            },
+            "SPLIT-chunk-deviation": {
+                "label": "Chunk Deviation",
+                "type": "num",
+                "min": "0",
+                "max": "200",
+                "default": "50",
                 "final": false
             }
         },
