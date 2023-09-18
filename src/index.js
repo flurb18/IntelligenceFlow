@@ -568,6 +568,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (block.data("block-type") === "SAVE") {
             block.data("save", null);
         }
+        block.data("default-input-queue", []);
     }
 
     function reset() {
