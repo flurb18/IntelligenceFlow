@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function () {
             promises.push(activateBlock(textIn, inputBlock, "UserInput"));
         });
         getBlocksOfType("INPUT-FIXED").forEach((inputBlock) => {
-            var textIn = inputBlock.data("parameters")["INPUT-FIXED-text"];
+            var textIn = inputBlock.data()["parameters"]["INPUT-FIXED-text"];
             promises.push(activateBlock(textIn, inputBlock, "FixedInput"));
         });
         Promise.all(promises).then((responses) => { 
