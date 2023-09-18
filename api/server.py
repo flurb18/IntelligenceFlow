@@ -29,7 +29,7 @@ async def handle_post(request):
                 await page.locator("#OpenAI-submenu-OpenAI-APIkey").fill(data["api"]["OpenAI-APIkey"])
             await page.locator("#api-settings-submit").click()
             for i in range(len(data["inputs"])):
-                await page.locator(f"#INPUT{i}-input").fill(data["inputs"][i])
+                await page.locator(f"#INPUT{i+1}-input").fill(data["inputs"][i])
             await page.locator("#execute-form-submit").click()
 
         async def accept_dialog(dialog):
