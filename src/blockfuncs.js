@@ -1,5 +1,3 @@
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-
 import { removeElement, insertBefore, notify } from "./utils.js";
 import { apiFuncs } from "./apifuncs.js";
 
@@ -116,17 +114,15 @@ export var blockFuncs = {
     },
     "SPLIT": {
         exec: function (input, blockData, state, resolve, reject) {
-            const splitter = new RecursiveCharacterTextSplitter({
-                chunkSize: blockData.parameters["SPLIT-chunk-size"],
-                chunkOverlap: blockData.parameters["SPLIT-chunk-overlap"]
-            });
-            splitter.createDocuments([input]).then((docs) => {
-                var _output = [];
-                for (var doc of docs) {
-                    _output.push(doc.pageContent);
-                }
-                resolve([{done: true, output: _output}]);
-            }).catch((error) => { reject(error); });
+            var _output = [];
+            var remaining = input;
+            const c_size = parseInt(blockData.parameters["SPLIT-chunk-size"]);
+            const c_overlap = parseInt(blockData.parameters["SPLIT-chunk-overlap"]);
+            while (remaining) {
+                _output.push(remaining.substring(0, c_size));
+                remaining = remaining.substring(c_size - c_overlap, remaining.length);
+            }
+            resolve([{done: true, output: _output}]);
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];

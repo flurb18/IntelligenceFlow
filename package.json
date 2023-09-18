@@ -10,7 +10,6 @@
     "license": "MIT",
     "dependencies": {
         "cytoscape": "^3.26.0",
-        "langchain": "^0.0.147",
         "openai": "^4.7.0",
         "webpack": "^5.88.2",
         "webpack-cli": "^5.1.4"
