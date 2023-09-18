@@ -36,6 +36,8 @@ for (var i = 0; i < expands.length; i++) {
     });
 }
 
+document.getElementById("edit-block-menu").addEventListener("submit", (e) => {e.preventDefault()});
+
 document.addEventListener('DOMContentLoaded', function () {
     createSubmenusByType(blockTypes, document.getElementById("new-block-type"));
     createSubmenusByType(apiTypes, document.getElementById("api-settings-type"));
@@ -65,8 +67,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     cy.on('cxttap', handleBlockSelection);
     cy.on('taphold', handleBlockSelection);
-
-    document.getElementById("edit-block-menu").addEventListener("submit", (e) => {e.preventDefault()});
 
     function selectNode(node) {
         deselectNode();
@@ -289,9 +289,8 @@ document.addEventListener('DOMContentLoaded', function () {
             var textIn = document.getElementById(inputBlock.id() + "-input").value;
             promises.push(activateBlock(textIn, inputBlock, "UserInput"));
         });
-        getBlocksOfType("INPUT-FIXED").forEach((inputBlock) => {
-            var textIn = inputBlock.data()["parameters"]["INPUT-FIXED-text"];
-            promises.push(activateBlock(textIn, inputBlock, "FixedInput"));
+        getBlocksOfType("FIXED-INPUT").forEach((inputBlock) => {
+            promises.push(activateBlock("", inputBlock, "FixedInput"));
         });
         Promise.all(promises).then((responses) => { 
             notify("Done!");
@@ -305,6 +304,82 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    function activateBlock(input, block, srcId) {
+        if (!state.running) {
+            return new Promise((resolve, reject) => reject("Stopped"));
+        }
+        return new Promise((resolve, reject) => {
+            if (!(block.data("waits-for").length == 0)) {
+                var waitIds = [...block.scratch("waiting-for")];
+                var queuedInputs = block.scratch("queued-inputs");
+                var idx = waitIds.indexOf(srcId);
+                if (idx > -1) {
+                    block.addClass("waiting");
+                    waitIds.splice(idx, 1);
+                    queuedInputs[srcId] = input;
+                    if (waitIds.length == 0) {
+                        block.removeClass("waiting")
+                        block.addClass("active");
+                        setTimeout(() => {
+                            executeBlock(queuedInputs, block).then(executeOutput => {
+                                resetBlock(block);
+                                resolve(executeOutput);
+                            }).catch(error => {
+                                resetBlock(block);
+                                reject(error);
+                            });
+                        }, 500);
+                    } else {
+                        block.scratch("queued-inputs", queuedInputs);
+                        block.scratch("waiting-for", waitIds);
+                        resolve([{
+                            done: false
+                        }]);
+                    }
+                } else {
+                    console.log("Waiting block" + block.id() + " got extra input");
+                }
+            } else {
+                // Run block immediately
+                block.addClass("active");
+                setTimeout(() => {
+                    executeBlock(input, block).then(executeOutput => {
+                        block.removeClass("active");
+                        resolve(executeOutput);
+                    }).catch(error => {
+                        block.removeClass("active");
+                        reject(error);
+                    });
+                }, 500);
+            }
+        }).then((statuses) => {
+            var activationPromises = [];
+            statuses.forEach((status) => {
+                if (status.done) {
+                    if (status.hasOwnProperty("for")) { 
+                        activationPromises.push(activateBlock(status.output, cy.getElementById(status.for), block.id()));
+                    } else {
+                        block.outgoers('node').forEach((outNeighbor) => {
+                            activationPromises.push(activateBlock(status.output, outNeighbor, block.id()));
+                        });
+                    }
+                }
+            });
+            return Promise.all(activationPromises);
+        });
+    }
+    
+    function executeBlock(input, block) {
+        if (!state.running) {
+            return new Promise((resolve, reject) => reject("Stopped"));
+        }
+        return new Promise((resolve, reject) => {
+            var blockType = block.data("block-type");
+            // Run block
+            blockFuncs[blockType].exec(input, block.data(), state, resolve, reject);
+        });
+    }
+
     // Handle running cancelation
     document.getElementById("execute-form-cancel").addEventListener("click", function(e) {
         e.preventDefault();
@@ -313,8 +388,8 @@ document.addEventListener('DOMContentLoaded', function () {
         notify("Cancelled");
     });
 
-    // Handle file import
-    document.getElementById("import-form").addEventListener("submit", function(e) {
+     // Handle file import
+     document.getElementById("import-form").addEventListener("submit", function(e) {
         e.preventDefault();
         if (state.running) { notify("Can't import while running"); return; }
         var file = document.getElementById('import-file').files[0];
@@ -455,82 +530,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.removeChild(element);
     });
 
-    function activateBlock(input, block, srcId) {
-        if (!state.running) {
-            return new Promise((resolve, reject) => reject("Stopped"));
-        }
-        return new Promise((resolve, reject) => {
-            if (!(block.data("waits-for").length == 0)) {
-                var waitIds = [...block.scratch("waiting-for")];
-                var queuedInputs = block.scratch("queued-inputs");
-                var idx = waitIds.indexOf(srcId);
-                if (idx > -1) {
-                    block.addClass("waiting");
-                    waitIds.splice(idx, 1);
-                    queuedInputs[srcId] = input;
-                    if (waitIds.length == 0) {
-                        block.removeClass("waiting")
-                        block.addClass("active");
-                        setTimeout(() => {
-                            executeBlock(queuedInputs, block).then(executeOutput => {
-                                resetBlock(block);
-                                resolve(executeOutput);
-                            }).catch(error => {
-                                resetBlock(block);
-                                reject(error);
-                            });
-                        }, 500);
-                    } else {
-                        block.scratch("queued-inputs", queuedInputs);
-                        block.scratch("waiting-for", waitIds);
-                        resolve([{
-                            done: false
-                        }]);
-                    }
-                } else {
-                    console.log("Waiting block" + block.id() + " got extra input");
-                }
-            } else {
-                // Run block immediately
-                block.addClass("active");
-                setTimeout(() => {
-                    executeBlock(input, block).then(executeOutput => {
-                        block.removeClass("active");
-                        resolve(executeOutput);
-                    }).catch(error => {
-                        block.removeClass("active");
-                        reject(error);
-                    });
-                }, 500);
-            }
-        }).then((statuses) => {
-            var activationPromises = [];
-            statuses.forEach((status) => {
-                if (status.done) {
-                    if (status.hasOwnProperty("for")) { 
-                        activationPromises.push(activateBlock(status.output, cy.getElementById(status.for), block.id()));
-                    } else {
-                        block.outgoers('node').forEach((outNeighbor) => {
-                            activationPromises.push(activateBlock(status.output, outNeighbor, block.id()));
-                        });
-                    }
-                }
-            });
-            return Promise.all(activationPromises);
-        });
-    }
-    
-
-    function executeBlock(input, block) {
-        if (!state.running) {
-            return new Promise((resolve, reject) => reject("Stopped"));
-        }
-        return new Promise((resolve, reject) => {
-            var blockType = block.data("block-type");
-            // Run block
-            blockFuncs[blockType].exec(input, block.data(), state, resolve, reject);
-        });
-    }
 
     function resetBlock(block) {
         block.removeClass("active");

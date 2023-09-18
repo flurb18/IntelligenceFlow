@@ -7,13 +7,13 @@
         "parameters": {},
         "hidden": false
     },
-    "INPUT-FIXED": {
-        "info": "The INPUT-FIXED block takes a fixed input as a parameter when it is created. When execution is started it passes the input to its outgoing neighbors.",
+    "FIXED-INPUT": {
+        "info": "The FIXED-INPUT block takes a text input as a parameter when it is created. When execution is started it passes the input to its outgoing neighbors.",
         "maps": {
             "none": "single"
         },
         "parameters": {
-            "INPUT-FIXED-text": {
+            "FIXED-INPUT-text": {
                 "label": "Fixed Text Input",
                 "type": "textbox",
                 "final": false

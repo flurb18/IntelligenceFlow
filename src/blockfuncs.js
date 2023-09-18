@@ -28,9 +28,9 @@ export var blockFuncs = {
             removeElement(document.getElementById(inputIdString + "-label"));
         }
     },
-    "INPUT-FIXED": {
+    "FIXED-INPUT": {
         exec: function (input, blockData, state, resolve, reject) {
-            resolve([{done: true, output: input}]);
+            resolve([{done: true, output: blockData.parameters["FIXED-INPUT-text"]}]);
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];
