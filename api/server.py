@@ -34,8 +34,11 @@ async def handle_post(request):
                 await page.locator(f"#INPUT{i}-input").fill(data["inputs"][i])
             await page.locator("#execute-form-submit").click()
 
+        async def accept_dialog(dialog):
+            await dialog.accpet()
+
         await page.goto("file:///api/web/index.html")
-        page.on('dialog', async lambda dialog: await dialog.accept())
+        page.on('dialog', accept_dialog)
         page.once("load", on_load)
         async with page.expect_console_message() as msg_info:
             pass
