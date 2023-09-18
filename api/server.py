@@ -33,7 +33,7 @@ async def handle_post(request):
             await page.locator("#execute-form-submit").click()
 
         async def accept_dialog(dialog):
-            await dialog.accpet()
+            await dialog.accept()
 
         await page.goto("file:///api/web/index.html")
         page.on('dialog', accept_dialog)
