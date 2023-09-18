@@ -7,6 +7,12 @@
         }
     },
     {
+        "selector": "node.running",
+        "style": {
+            "background-color": "#3f3"
+        }
+    },
+    {
         "selector": "node.active",
         "style": {
             "background-color": "#8f8"
