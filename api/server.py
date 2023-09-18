@@ -21,8 +21,6 @@ async def handle_post(request):
                 ]
             )
             await page.locator("#import-submit").click()
-            async with page.expect_event("dialog"):
-                pass
             apiType = data["api"]["type"]
             await page.locator("#api-settings-type").selectOption(apiType)
             if apiType == "Oobabooga":
