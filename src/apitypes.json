@@ -1,20 +1,4 @@
 {
-    "global-parameters": {
-        "temperature": {
-            "label": "Temperature",
-            "type": "num",
-            "min": "0.00",
-            "max": "2.00",
-            "default": "0.70"
-        },
-        "max-new-tokens": {
-            "label": "Max new tokens",
-            "type": "num",
-            "min": "10",
-            "max": "8192",
-            "default": 1024
-        }
-    },
     "OpenAI": {
         "parameters": {
             "OpenAI-APIkey": {
@@ -71,6 +55,22 @@
                 "label": "API URL",
                 "type": "url"
             }
+        }
+    },
+    "global-parameters": {
+        "temperature": {
+            "label": "Temperature",
+            "type": "num",
+            "min": "0.00",
+            "max": "2.00",
+            "default": "0.70"
+        },
+        "max-new-tokens": {
+            "label": "Max new tokens",
+            "type": "num",
+            "min": "10",
+            "max": "8192",
+            "default": 1024
         }
     }
 }
