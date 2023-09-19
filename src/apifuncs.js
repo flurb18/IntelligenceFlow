@@ -29,7 +29,7 @@ export var apiFuncs = {
             },
             body: JSON.stringify(request)
         }).then((response) => response.json()).then((responseJSON) => {
-            var _ouput = "";
+            var _output = "";
             for (var result of responseJSON["results"]) {
                 _output += result["text"];
             }
@@ -51,7 +51,7 @@ export var apiFuncs = {
             },
             body: JSON.stringify(request)
         }).then((response) => response.json()).then((responseJSON) => {
-            var _ouput = "";
+            var _output = "";
             for (var result of responseJSON["results"]) {
                 _output += result["text"];
             }
