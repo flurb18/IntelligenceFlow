@@ -40,7 +40,7 @@ export var apiFuncs = {
         var request = {
             prompt: _prompt
         };
-        var url = params["KoblodCPP-URL"];
+        var url = params["KoboldCPP-URL"];
         if (!url.endsWith("/api/v1/generate") && !url.endsWith("/api/v1/generate/")) {
             url = url + "/api/v1/generate";
         }
