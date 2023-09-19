@@ -36,11 +36,12 @@ for (var i = 0; i < expands.length; i++) {
     });
 }
 
+createSubmenusByType(blockTypes, document.getElementById("new-block-type"));
+createSubmenusByType(apiTypes, document.getElementById("api-settings-type"));
+
 document.getElementById("edit-block-menu").addEventListener("submit", (e) => {e.preventDefault()});
 
 document.addEventListener('DOMContentLoaded', function () {
-    createSubmenusByType(blockTypes, document.getElementById("new-block-type"));
-    createSubmenusByType(apiTypes, document.getElementById("api-settings-type"));
 
     // Run Cytoscape
     var cy = cytoscape({

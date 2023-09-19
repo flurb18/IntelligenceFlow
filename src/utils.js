@@ -31,10 +31,12 @@ export function addParametersToMenu(parameters, menu, type) {
         menu.appendChild(document.createElement("br"));
         return;   
     }
-    var header = document.createElement("strong");
-    header.innerText = type + " Parameters";
-    menu.appendChild(header);
-    menu.appendChild(document.createElement("br"));
+    if (type) {
+        var header = document.createElement("strong");
+        header.innerText = type + " Parameters";
+        menu.appendChild(header);
+        menu.appendChild(document.createElement("br"));
+    }
     for (var param of Object.keys(parameters)) {
         var paramLabel = document.createElement("label");
         paramLabel.setAttribute("for", param);
@@ -112,6 +114,9 @@ export function addParametersToMenu(parameters, menu, type) {
 // the field in the submenu.
 export function createSubmenusByType(config, selectElement) {
     for (var type of Object.keys(config)) {
+        if (type === "global-parameters") {
+            continue;
+        }
         if (config[type]["hidden"]) {
             continue;
         }
@@ -128,6 +133,13 @@ export function createSubmenusByType(config, selectElement) {
         typeSubmenu.setAttribute("class", "sidebar-submenu " + selectElement.getAttribute("name") + "-submenu")
         typeSubmenu.style.display = "none";
         addParametersToMenu(params, typeSubmenu, type);
+        if (config.hasOwnProperty("global-parameters")) {
+            var typeGlobalParams = {};
+            for (var key of Object.keys(config["global-parameters"])) {
+                typeGlobalParams[type + "-" + key] = config["global-parameters"][key];
+            }
+            addParametersToMenu(typeGlobalParams, typeSubmenu, null);
+        }
         insertAfter(typeSubmenu, selectElement);
     }
     var firstType = Object.keys(config)[0];

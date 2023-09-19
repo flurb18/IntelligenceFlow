@@ -15,8 +15,9 @@ export var apiFuncs = {
     },
     Oobabooga: function(_prompt, params) {
         var request = {
-            prompt: _prompt//,
-            //...apiTypes["Oobabooga"]["request-template"]
+            prompt: _prompt,
+            temperature: params["Oobabooga-temperature"],
+            max_new_tokens: params["Oobabooga-max-new-tokens"]
         };
         var url = params["Oobabooga-URL"];
         if (!url.endsWith("/api/v1/generate") || !url.endsWith("/api/v1/generate/")) {
