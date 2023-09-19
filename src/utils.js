@@ -152,6 +152,9 @@ export function createSubmenusByType(config, selectElement) {
     selectElement.addEventListener("change", function () {
         let selectedValue = selectElement.options[selectElement.selectedIndex].value;
         for (var type of Object.keys(config)) {
+            if (type === "global-parameters") {
+                continue;
+            }
             if (config[type]["hidden"]) {
                 continue;
             }
