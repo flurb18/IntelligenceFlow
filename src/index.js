@@ -224,15 +224,17 @@ document.addEventListener('DOMContentLoaded', function () {
     // Handle delete block button
     document.getElementById("delete-block-button").addEventListener("click", function(e) {
         if (state.selectedNode) {
-            if ((!state.selectedNode.isNode() && state.selectedNode.data("user-created")) ||
-                (state.selectedNode.isNode() && !state.selectedNode.isChild())) {
+            var toDestroy = state.selectedNode;
+            deselectNode();
+            if ((!toDestroy.isNode() && toDestroy.data("user-created")) ||
+                (toDestroy.isNode() && !toDestroy.isChild())) {
                 if (confirm("Are you sure you want to delete the selection?")) {
-                    destroyElement(state.selectedNode);
-                    state.selectedNode = null;
+                    destroyElement(toDestroy);
                 }
             } else {
                 notify("You can only delete top-level blocks and edges.");
             }
+            
         }
     });
 
