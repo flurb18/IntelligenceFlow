@@ -4,8 +4,25 @@ import { notify, createSubmenusByType, addParametersToMenu } from './utils.js';
 import { blockFuncs } from './blockfuncs.js';
 
 import blockTypes from './blocktypes.json';
-import apiTypes from './apitypes.json';
 import cytostyle from './cytoscape-styles.json';
+
+function addApiType(type) {
+    var selectElement = document.getElementById("settings-api-type");
+    var choiceOption = document.createElement("option");
+    choiceOption.setAttribute("value", type);
+    choiceOption.innerText = type;
+    selectElement.appendChild(choiceOption);
+}
+
+if (ENABLE_OPENAI) {
+    addApiType("OpenAI");
+}
+if (ENABLE_OOBABOOGA) {
+    addApiType("Oobabooga");
+}
+if (ENABLE_KOBOLDCPP) {
+    addApiType("KoboldCPP");
+}
 
 // Generate block type info
 var infoSection = document.getElementById("sidebar-info");
@@ -36,8 +53,8 @@ for (var i = 0; i < expands.length; i++) {
     });
 }
 
+
 createSubmenusByType(blockTypes, document.getElementById("new-block-type"));
-createSubmenusByType(apiTypes, document.getElementById("api-settings-type"));
 
 document.getElementById("edit-block-menu").addEventListener("submit", (e) => {e.preventDefault()});
 
@@ -57,10 +74,14 @@ document.addEventListener('DOMContentLoaded', function () {
     var state = {
         selectedNode: null,
         blockTypeIdNums: {},
-        apiType: "none",
-        apiParams: {},
-        running: false
+        running: false,
+        apiType: document.getElementById("settings-api-type").value
     }
+
+    document.getElementById("settings-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        state.apiType = document.getElementById("settings-api-type").value;
+    });
 
     for (var blockType of Object.keys(blockTypes)) {
         state.blockTypeIdNums[blockType] = [0];
@@ -254,22 +275,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 y: ((extent.y1 + extent.y2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD
             }
         });
-    });
-
-    // Handle API settings form submission
-    var apiSettingsForm = document.getElementById("api-settings-form");
-    apiSettingsForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-        if (state.running) {
-            notify("Cannot save API settings while running");
-            return;
-        }
-        state.apiType = apiSettingsForm.elements["api-settings-type"].value;
-        state.apiParams = {};
-        for (var param of Object.keys(apiTypes[state.apiType]["parameters"])) {
-            state.apiParams[param] = apiSettingsForm.elements[param].value;
-        }
-        notify("API settings saved.");
     });
 
     // Handle execute form submission
@@ -543,8 +548,6 @@ document.addEventListener('DOMContentLoaded', function () {
             "state": {
                 selectedNode: null,
                 blockTypeIdNums: state.blockTypeIdNums,
-                apiType: "none",
-                apiParams: {},
                 running: false
             },
             "cytoscape": cy.json()

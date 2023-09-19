@@ -7,6 +7,7 @@
     <title>Intelligence Flow</title>
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/mobile.css" media="(max-aspect-ratio: 1/1)">
+    <script src="config.js"></script>
 </head>
 
 <body id="body">
@@ -34,16 +35,6 @@
             </form>
             <button id="delete-block-button" class="sidebar-button">Delete Selection</button>
         </div>
-        <button class="sidebar-submenu-expand-button">API Settings</button>
-        <form id="api-settings-form" class="sidebar-submenu-expand">
-            <label for="api-settings-type">API Type</label>
-            <select id="api-settings-type" name="api-settings-type">
-                <!--Dynamically generated-->
-            </select>
-            <!--Dynamically generated-->
-            <br>
-            <input id="api-settings-submit" type="submit" value="Save API Settings" class="sidebar-submit">
-        </form>
         <button class="sidebar-submenu-expand-button">Execute</button>
         <form id="execute-form" class="sidebar-submenu-expand">
             <!--Dynamically generated-->
@@ -80,7 +71,14 @@
                 <input type="submit" value="Export" class="sidebar-submit">
             </form>
         </div>
-
+        <button class="sidebar-submenu-expand-button">Settings</button>
+        <form class="sidebar-submenu-expand" id="settings-form">
+            <select id="settings-api-type">
+                <!--Generated at start-->
+            </select>
+            <input type="submit" value="Save Settings" class="sidebar-submit">
+        </form>
+        
         <br><br><br>
     </div>
     <div id="flow-diagram"></div>

@@ -155,6 +155,23 @@
                 "label": "Query for LLM",
                 "type": "textbox",
                 "final": false
+            },
+            "LLM-temperature": {
+                "label": "Temperature",
+                "type": "num",
+                "min": "0.00",
+                "max": "2.00",
+                "step": "0.01",
+                "default": "0.70",
+                "final": false
+            },
+            "LLM-max-new-tokens": {
+                "label": "Max new tokens",
+                "type": "num",
+                "min": "10",
+                "max": "8192",
+                "default": 1024,
+                "final": false
             }
         },
         "hidden": false

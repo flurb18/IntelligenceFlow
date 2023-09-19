@@ -1,11 +1,9 @@
 import OpenAI from 'openai';
 
-import apiTypes from './apitypes.json';
-
 export var apiFuncs = {
     OpenAI: function(_prompt, params) {
         const oa = new OpenAI({
-            apiKey: params["OpenAI-APIkey"],
+            apiKey: OPENAI_API_KEY,
             dangerouslyAllowBrowser: true
         });
         return oa.chat.completions.create({
@@ -16,10 +14,10 @@ export var apiFuncs = {
     Oobabooga: function(_prompt, params) {
         var request = {
             prompt: _prompt,
-            temperature: params["Oobabooga-temperature"],
-            max_new_tokens: params["Oobabooga-max-new-tokens"]
+            temperature: params["LLM-temperature"],
+            max_new_tokens: params["LLM-max-new-tokens"]
         };
-        var url = params["Oobabooga-URL"];
+        var url = OOBABOOGA_API_URL;
         if (!url.endsWith("/api/v1/generate") || !url.endsWith("/api/v1/generate/")) {
             url = url + "/api/v1/generate";
         }
@@ -39,7 +37,9 @@ export var apiFuncs = {
     },
     KoboldCPP: function(_prompt, params) {
         var request = {
-            prompt: _prompt
+            prompt: _prompt,
+            temperature: params["LLM-temperature"],
+            max_new_tokens: params["LLM-max-new-tokens"]
         };
         var url = params["KoboldCPP-URL"];
         if (!url.endsWith("/api/v1/generate") && !url.endsWith("/api/v1/generate/")) {
