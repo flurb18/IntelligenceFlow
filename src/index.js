@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("settings-form").addEventListener("submit", function(e) {
         e.preventDefault();
         state.apiType = document.getElementById("settings-api-type").value;
+        notify("Settings saved");
     });
 
     for (var blockType of Object.keys(blockTypes)) {
