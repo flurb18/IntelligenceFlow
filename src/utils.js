@@ -83,6 +83,9 @@ export function addParametersToMenu(parameters, menu, type) {
                 paramNum.setAttribute("type", "range");
                 paramNum.setAttribute("min", parameters[param]["min"]);
                 paramNum.setAttribute("max", parameters[param]["max"]);
+                if (parameters[param].hasOwnProperty("step")) {
+                    paramNum.setAttribute("step", parameters[param]["step"]);
+                }
                 paramNum.setAttribute("value", parameters[param]["default"]);
                 paramNumDisplay.textContent = paramNum.value;
                 paramNum.addEventListener("input", function () {
