@@ -48,5 +48,13 @@
             "skip_special_tokens": true,
             "stopping_strings": []
         }
+    },
+    "KoboldCPP": {
+        "parameters": {
+            "KoboldCPP-URL": {
+                "label": "API URL",
+                "type": "url"
+            }
+        }
     }
 }
