@@ -7,7 +7,6 @@ export function activateBlock(input, block, srcId, state) {
         return new Promise((resolve, reject) => reject("Stopped"));
     }
     return new Promise((resolve, reject) => {
-        console.log("here1");
         if (!(block.data("waits-for").length == 0)) {
             var waitIds = [...block.scratch("waiting-for")];
             var queuedInputs = block.scratch("queued-inputs");
@@ -39,7 +38,6 @@ export function activateBlock(input, block, srcId, state) {
                 console.log("Waiting block" + block.id() + " got extra input");
             }
         } else {
-            console.log("here2");
             block.data("default-input-queue").push({
                 "input": input,
                 "resolve": resolve,
