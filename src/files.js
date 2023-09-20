@@ -1,7 +1,7 @@
 import cytoscape from 'cytoscape';
 
 import { blockFuncs } from "./blockfuncs.js";
-import { addSelectionHandlers, deselectNode, resetBlock, newBlockData } from './utils.js';
+import { addSelectionHandlers, deselectNode, resetBlock, newBlockData, notify } from './utils.js';
 
 import blockTypes from "./blocktypes.json";
 import cytostyle from "./cytoscape-styles.json";
