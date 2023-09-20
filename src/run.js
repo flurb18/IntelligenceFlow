@@ -21,8 +21,10 @@ export function activateBlock(input, block, srcId, state) {
                     setTimeout(() => {
                         executeBlock(queuedInputs, block, state).then(executeOutput => {
                             resolve(executeOutput);
+                            resetBlock(block);
                         }).catch(error => {
                             reject(error);
+                            resetBlock(block);
                         });
                     }, 500);
                 } else {
@@ -54,7 +56,6 @@ export function activateBlock(input, block, srcId, state) {
         var activationPromises = [];
         statuses.forEach((status) => {
             if (status.done) {
-                resetBlock(block);
                 if (status.hasOwnProperty("for")) { 
                     activationPromises.push(activateBlock(status.output, block.cy().getElementById(status.for), block.id(), state));
                 } else {
