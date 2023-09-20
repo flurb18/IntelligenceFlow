@@ -75,7 +75,8 @@ var state = {
     selectedNode: null,
     blockTypeIdNums: {},
     running: false,
-    apiType: document.getElementById("settings-api-type").value
+    apiType: document.getElementById("settings-api-type").value,
+    cy: null
 }
 
 for (var blockType of Object.keys(blockTypes)) {
@@ -91,7 +92,7 @@ document.getElementById("settings-form").addEventListener("submit", function(e) 
 document.addEventListener('DOMContentLoaded', function () {
 
     // Run Cytoscape
-    var cy = cytoscape({
+    state.cy = cytoscape({
         container: document.getElementById('flow-diagram'),
         zoom: 1,
         minZoom: 0.4,
@@ -101,9 +102,9 @@ document.addEventListener('DOMContentLoaded', function () {
         layout: { name: 'grid' }
     });
     
-    addSelectionHandlers(cy, state);
-    addFileImportHandler(cy, state);
-    addFileExportHandler(cy, state);
+    addSelectionHandlers(state);
+    addFileImportHandler(state);
+    addFileExportHandler(state);
 
     // Handle delete block button
     document.getElementById("delete-block-button").addEventListener("click", function(e) {
@@ -137,10 +138,10 @@ document.addEventListener('DOMContentLoaded', function () {
         for (var param of Object.keys(blockTypes[blockType]["parameters"])) {
             _data["parameters"][param] = newBlockForm.elements[param].value;
         }
-        var extent = cy.extent();
+        var extent = state.cy.extent();
         var maxD = Math.floor(Math.min(extent.w, extent.h) / 6);
         // Block creation hook
-        cy.add(blockFuncs[blockType].create(_data)).nodes().positions((node, i) => {
+        state.cy.add(blockFuncs[blockType].create(_data)).nodes().positions((node, i) => {
             return {
                 x: ((extent.x1 + extent.x2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD,
                 y: ((extent.y1 + extent.y2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD
@@ -191,14 +192,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function reset() {
-        cy.nodes().forEach((block) => {
+        state.cy.nodes().forEach((block) => {
             resetBlock(block);
         });
         deselectNode(state);
     }
 
     function getBlocksOfType(blockType) {
-        return cy.nodes('[id ^= "' + blockType+'"]');
+        return state.cy.nodes('[id ^= "' + blockType+'"]');
     }
 });
 

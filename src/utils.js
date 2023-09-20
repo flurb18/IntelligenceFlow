@@ -271,12 +271,12 @@ export function destroyNode(e, state) {
     e.remove();
 }
 
-export function addSelectionHandlers(cy, state) {
+export function addSelectionHandlers(state) {
     function handleBlockSelection(event) {
         if (state.running) {
             return;
         }
-        if (event.target === cy) {
+        if (event.target === state.cy) {
             deselectNode(state);
             return;
         }
@@ -307,7 +307,7 @@ export function addSelectionHandlers(cy, state) {
                 if (srcOutputType === "multi") {
                     _classes.push("multi")
                 }
-                cy.add([{
+                state.cy.add([{
                     "group": 'edges',
                     "data": {
                         "id": state.selectedNode.id() + event.target.id(),
@@ -325,7 +325,7 @@ export function addSelectionHandlers(cy, state) {
         }
     }
 
-    cy.on('cxttap', handleBlockSelection);
-    cy.on('taphold', handleBlockSelection);
+    state.cy.on('cxttap', handleBlockSelection);
+    state.cy.on('taphold', handleBlockSelection);
 }
 

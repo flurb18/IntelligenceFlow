@@ -6,14 +6,14 @@ import { addSelectionHandlers, deselectNode, resetBlock, newBlockData, notify } 
 import blockTypes from "./blocktypes.json";
 import cytostyle from "./cytoscape-styles.json";
 
-function resetState(cy, state) {
-    cy.nodes().forEach((block) => {
+function resetState(state) {
+    state.cy.nodes().forEach((block) => {
         resetBlock(block);
     });
     deselectNode(state);
 }
 
-export function addFileImportHandler(cy, state) {
+export function addFileImportHandler(state) {
     // Handle file import
     document.getElementById("import-form").addEventListener("submit", function (e) {
         e.preventDefault();
@@ -29,13 +29,13 @@ export function addFileImportHandler(cy, state) {
                     if (!confirm("Import file? Current flow will be lost!")) {
                         return;
                     }
-                    resetState(cy, state);
+                    resetState(state);
                     state.blockTypeIdNums = data["state"].blockTypeIdNums;
-                    cy.nodes().forEach((block) => {
+                    state.cy.nodes().forEach((block) => {
                         blockFuncs[block.data("block-type")].destroy(block.data());
                     })
-                    cy.destroy();
-                    cy = cytoscape({
+                    state.cy.destroy();
+                    state.cy = cytoscape({
                         container: document.getElementById('flow-diagram'),
                         zoom: 1,
                         minZoom: 0.4,
@@ -44,13 +44,13 @@ export function addFileImportHandler(cy, state) {
                         style: cytostyle,
                         layout: { name: 'grid' }
                     });
-                    cy.json(data["cytoscape"]);
-                    addSelectionHandlers(cy, state);
-                    cy.nodes().forEach((block) => {
+                    state.cy.json(data["cytoscape"]);
+                    addSelectionHandlers(state);
+                    state.cy.nodes().forEach((block) => {
                         // Run creation hook, but don't import data (already there)
                         blockFuncs[block.data("block-type")].create(block.data());
                     });
-                    resetState(cy, state);
+                    resetState(state);
                     break;
                 case "copy":
                     if (!confirm("Import file into current flow?")) {
@@ -124,27 +124,27 @@ export function addFileImportHandler(cy, state) {
                             });
                         }
                     });
-                    cy.add(newEles);
-                    resetState(cy, state);
+                    state.cy.add(newEles);
+                    resetState(state);
                     break;
             }
         }
     });
 }
 
-export function addFileExportHandler(cy, state) {
+export function addFileExportHandler(state) {
     // Handle export form submission
     document.getElementById("export-form").addEventListener("submit", function(e) {
         e.preventDefault();
         if (state.running) { notify("Can't export while running"); return; }
-        resetState(cy, state);
+        resetState(state);
         var text = JSON.stringify({
             "state": {
                 selectedNode: null,
                 blockTypeIdNums: state.blockTypeIdNums,
                 running: false
             },
-            "cytoscape": cy.json()
+            "cytoscape": state.cy.json()
         });
         var element = document.createElement('a');
         element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text));
