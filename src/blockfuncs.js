@@ -272,11 +272,7 @@ export var blockFuncs = {
                     console.log(error);
                 });
             }
-            if (Array.isArray(input)) {
-                input.forEach((text)=> { apiCall(text); });
-            } else {
-                apiCall(input);
-            }
+            apiCall(input);
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];

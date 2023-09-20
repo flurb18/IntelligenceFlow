@@ -147,8 +147,7 @@
         "info": "The LLM block calls a Large Language Model according to your API settings and its parameters in order to answer a query. The block has a fixed query, set when it is created; however, if the fixed query contains the string '_INPUT_', then that string is substituted for the input to the block. This acts similarly to a one-input SYNTHESIZE block. The model's response to the constructed query is the output.",
         "maps": {
             "none": "none",
-            "single": "single",
-            "multi": "multi"
+            "single": "single"
         },
         "parameters": {
             "LLM-query": {
