@@ -87,11 +87,11 @@ export function addExecuteHandler(state) {
         state.running = true;
         resetState(state);
         var promises = [];
-        getBlocksOfType("INPUT").forEach((inputBlock) => {
+        getBlocksOfType("INPUT", state).forEach((inputBlock) => {
             var textIn = document.getElementById(inputBlock.id() + "-input").value;
             promises.push(activateBlock(textIn, inputBlock, "UserInput", state));
         });
-        getBlocksOfType("FIXED-INPUT").forEach((inputBlock) => {
+        getBlocksOfType("FIXED-INPUT", state).forEach((inputBlock) => {
             promises.push(activateBlock("", inputBlock, "FixedInput", state));
         });
         Promise.all(promises).then((responses) => { 
