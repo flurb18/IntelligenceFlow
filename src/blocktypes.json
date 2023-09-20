@@ -143,6 +143,15 @@
         "parameters": {},
         "hidden": true
     },
+    "EMIT": {
+        "info": "The EMIT block takes an array as input and outputs each item in it in order. Thus every outgoing neighbor of the EMIT block will be activated with the items of the array queued as separate inputs.",
+        "maps": {
+            "none": "none",
+            "multi": "single"
+        },
+        "parameters": {},
+        "hidden": false
+    },
     "LLM": {
         "info": "The LLM block calls a Large Language Model according to your API settings and its parameters in order to answer a query. The block has a fixed query, set when it is created; however, if the fixed query contains the string '_INPUT_', then that string is substituted for the input to the block. This acts similarly to a one-input SYNTHESIZE block. The model's response to the constructed query is the output.",
         "maps": {

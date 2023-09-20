@@ -261,6 +261,21 @@ export var blockFuncs = {
 
         }
     },
+    "EMIT": {
+        exec: function (input, blockData, state, resolve, reject) {
+            _output = [];
+            for (var inp of input) {
+                _output.push({done:true, output: inp});
+            }
+            resolve(_output);
+        },
+        create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
+        },
+        destroy: function (blockData) {
+
+        }
+    },
     "LLM": {
         exec: function (input, blockData, state, resolve, reject) {
             function apiCall(_input) {
