@@ -44,6 +44,19 @@ export function newBlockData(blockType, idNum, inputLabel) {
     };
 }
 
+export function resetBlock(block) {
+    block.removeClass("active");
+    block.removeClass("waiting");
+    block.scratch({
+        "waiting-for": [...block.data("waits-for")],
+        "queued-inputs": {}
+    });
+    if (block.data("block-type") === "SAVE") {
+        block.data("save", null);
+    }
+    block.data("default-input-queue", []);
+}
+
 export function addParametersToMenu(parameters, menu, type) {
     if (Object.keys(parameters).length === 0) {
         menu.appendChild(document.createElement("br"));

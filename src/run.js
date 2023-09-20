@@ -1,3 +1,5 @@
+import { resetBlock } from './utils.js';
+
 import { blockFuncs } from './blockfuncs.js';
 
 export function activateBlock(input, block, srcId, state) {
@@ -18,10 +20,8 @@ export function activateBlock(input, block, srcId, state) {
                     block.addClass("active");
                     setTimeout(() => {
                         executeBlock(queuedInputs, block, state).then(executeOutput => {
-                            resetBlock(block);
                             resolve(executeOutput);
                         }).catch(error => {
-                            resetBlock(block);
                             reject(error);
                         });
                     }, 500);
@@ -51,6 +51,7 @@ export function activateBlock(input, block, srcId, state) {
             }
         }
     }).then((statuses) => {
+        resetBlock(block);
         var activationPromises = [];
         statuses.forEach((status) => {
             if (status.done) {

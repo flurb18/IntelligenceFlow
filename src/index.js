@@ -6,7 +6,8 @@ import {
     selectNode,
     deselectNode,
     destroyNode,
-    newBlockData
+    newBlockData,
+    resetBlock
 } from './utils.js';
 
 import { activateBlock } from './run.js';
@@ -379,20 +380,6 @@ document.addEventListener('DOMContentLoaded', function () {
         element.click();
         document.body.removeChild(element);
     });
-
-
-    function resetBlock(block) {
-        block.removeClass("active");
-        block.removeClass("waiting");
-        block.scratch({
-            "waiting-for": [...block.data("waits-for")],
-            "queued-inputs": {}
-        });
-        if (block.data("block-type") === "SAVE") {
-            block.data("save", null);
-        }
-        block.data("default-input-queue", []);
-    }
 
     function reset() {
         cy.nodes().forEach((block) => {
