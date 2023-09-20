@@ -185,6 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Handle running cancelation
     document.getElementById("execute-form-cancel").addEventListener("click", function(e) {
         e.preventDefault();
+        resetState(state);
         if (state.running) {
             state.cancel = true;
         }
