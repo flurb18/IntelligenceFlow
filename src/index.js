@@ -2,9 +2,7 @@ import cytoscape from 'cytoscape';
 
 import { 
     notify,
-    createSubmenusByType,
-    newBlockData,
-    resetState
+    createSubmenusByType
 } from './utils.js';
 
 import { 
@@ -12,10 +10,10 @@ import {
     addFileExportHandler,
     addSelectionHandler,
     addExecuteHandler,
-    addDeletionHandler
+    addDeletionHandler,
+    addNewBlockHandler,
+    addCancellationHandler
 } from './handlers.js';
-
-import { blockFuncs } from './blockfuncs.js';
 
 import blockTypes from './blocktypes.json';
 import cytostyle from './cytoscape-styles.json';
@@ -103,48 +101,15 @@ document.addEventListener('DOMContentLoaded', function () {
         layout: { name: 'grid' }
     });
     
+    // selectionHandler adds event listeners to cy - if cy is destroyed must re-add selectionHandler
     addSelectionHandler(state);
+    // The rest add event listeners to normal html elements
     addExecuteHandler(state);
+    addCancellationHandler(state);
     addDeletionHandler(state);
+    addNewBlockHandler(state);
     addFileImportHandler(state);
     addFileExportHandler(state);
-   
-    // Handle new block form submission
-    var newBlockForm = document.getElementById("new-block-form");
-    newBlockForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-        if (state.running) {
-            notify("Cannot create new block while running");
-            return;
-        }
-        var blockType = newBlockForm.elements["new-block-type"].value;
-        var newId = Math.max(...state.blockTypeIdNums[blockType]) + 1;
-        var _data = newBlockData(blockType, newId, newBlockForm.elements["new-block-label"].value);
-        state.blockTypeIdNums[blockType].push(newId);
-        for (var param of Object.keys(blockTypes[blockType]["parameters"])) {
-            _data["parameters"][param] = newBlockForm.elements[param].value;
-        }
-        var extent = state.cy.extent();
-        var maxD = Math.floor(Math.min(extent.w, extent.h) / 6);
-        // Block creation hook
-        state.cy.add(blockFuncs[blockType].create(_data)).nodes().positions((node, i) => {
-            return {
-                x: ((extent.x1 + extent.x2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD,
-                y: ((extent.y1 + extent.y2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD
-            }
-        });
-    });
-
-    // Handle running cancelation
-    document.getElementById("execute-form-cancel").addEventListener("click", function(e) {
-        e.preventDefault();
-        resetState(state);
-        if (state.running) {
-            state.cancel = true;
-        }
-        notify("Cancelled");
-    });
-
     
 });
 

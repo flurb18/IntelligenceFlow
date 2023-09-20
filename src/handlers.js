@@ -17,6 +17,45 @@ import { activateBlock } from './run.js';
 import blockTypes from "./blocktypes.json";
 import cytostyle from "./cytoscape-styles.json";
 
+export function addCancellationHandler(state) {
+    // Handle running cancelation
+    document.getElementById("execute-form-cancel").addEventListener("click", function(e) {
+        e.preventDefault();
+        resetState(state);
+        if (state.running) {
+            state.cancel = true;
+        }
+        notify("Cancelled");
+    });
+}
+
+export function addNewBlockHandler(state) {
+    var newBlockForm = document.getElementById("new-block-form");
+    newBlockForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (state.running) {
+            notify("Cannot create new block while running");
+            return;
+        }
+        var blockType = newBlockForm.elements["new-block-type"].value;
+        var newId = Math.max(...state.blockTypeIdNums[blockType]) + 1;
+        var _data = newBlockData(blockType, newId, newBlockForm.elements["new-block-label"].value);
+        state.blockTypeIdNums[blockType].push(newId);
+        for (var param of Object.keys(blockTypes[blockType]["parameters"])) {
+            _data["parameters"][param] = newBlockForm.elements[param].value;
+        }
+        var extent = state.cy.extent();
+        var maxD = Math.floor(Math.min(extent.w, extent.h) / 6);
+        // Block creation hook
+        state.cy.add(blockFuncs[blockType].create(_data)).nodes().positions((node, i) => {
+            return {
+                x: ((extent.x1 + extent.x2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD,
+                y: ((extent.y1 + extent.y2) / 2) + Math.floor(Math.random() * 2 * maxD) - maxD
+            }
+        });
+    });
+}
+
 export function addDeletionHandler(state) {
      // Handle delete block button
      document.getElementById("delete-block-button").addEventListener("click", function(e) {
