@@ -173,17 +173,18 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log("Done!");
             resetState(state);
             state.running = false;
+            state.cancel = false;
         }).catch(error => {
             notify(error);
             resetState(state);
             state.running = false;
+            state.cancel = false;
         });
     });
 
     // Handle running cancelation
     document.getElementById("execute-form-cancel").addEventListener("click", function(e) {
         e.preventDefault();
-        resetState(state);
         if (state.running) {
             state.cancel = true;
         }
