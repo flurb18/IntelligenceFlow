@@ -159,7 +159,7 @@ export function createSubmenusByType(config, selectElement) {
 
 // State altering functions
 
-export function selectNode(node) {
+export function selectNode(node, state) {
     deselectNode();
     state.selectedNode = node;
     node.addClass("targeted");
@@ -213,7 +213,7 @@ export function selectNode(node) {
     });
 }
 
-export function deselectNode() {
+export function deselectNode(state) {
     if (state.selectedNode) {
         state.selectedNode.removeClass("targeted");
         state.selectedNode = null;

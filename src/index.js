@@ -97,19 +97,19 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         if (event.target === cy) {
-            deselectNode();
+            deselectNode(state);
             return;
         }
         if (!state.selectedNode) {
-            selectNode(event.target);
+            selectNode(event.target, state);
             return;
         }
         if ((event.target.isEdge() || state.selectedNode.isEdge())) {
-            selectNode(event.target);
+            selectNode(event.target, state);
             return;
         }
         if (state.selectedNode.isParent() || event.target.isParent()) {
-            selectNode(event.target);
+            selectNode(event.target, state);
             return;
         }
         if (!(state.selectedNode.id() === event.target.id())) {
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 notify("Incompatible blocks");
             }
-            deselectNode();
+            deselectNode(state);
         }
     }
 
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("delete-block-button").addEventListener("click", function(e) {
         if (state.selectedNode) {
             var toDestroy = state.selectedNode;
-            deselectNode();
+            deselectNode(state);
             if ((!toDestroy.isNode() && toDestroy.data("user-created")) ||
                 (toDestroy.isNode() && !toDestroy.isChild())) {
                 if (confirm("Are you sure you want to delete the selection?")) {
@@ -524,7 +524,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (state.selectedNode) {
             state.selectedNode.removeClass("targeted");
         }
-        deselectNode();
+        deselectNode(state);
     }
 
     function getBlocksOfType(blockType) {
