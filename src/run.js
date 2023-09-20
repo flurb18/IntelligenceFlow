@@ -51,10 +51,10 @@ export function activateBlock(input, block, srcId, state) {
             }
         }
     }).then((statuses) => {
-        resetBlock(block);
         var activationPromises = [];
         statuses.forEach((status) => {
             if (status.done) {
+                resetBlock(block);
                 if (status.hasOwnProperty("for")) { 
                     activationPromises.push(activateBlock(status.output, block.cy().getElementById(status.for), block.id(), state));
                 } else {
