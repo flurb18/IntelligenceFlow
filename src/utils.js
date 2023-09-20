@@ -1,3 +1,5 @@
+import { blockFuncs } from './blockfuncs.js';
+
 import blockTypes from './blocktypes.json';
 
 // Append a immediately after e
