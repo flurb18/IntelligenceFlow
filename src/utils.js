@@ -19,6 +19,11 @@ export function removeElement(e) {
     e.parentNode.removeChild(e);
 }
 
+// Collect blocks of a certain type
+export function getBlocksOfType(blockType, state) {
+    return state.cy.nodes('[id ^= "' + blockType+'"]');
+}
+
 // Notify the user of text
 var timeoutHandle = null;
 export function notify(text) {
@@ -282,62 +287,3 @@ export function destroyNode(e, state) {
     }
     e.remove();
 }
-
-export function addSelectionHandlers(state) {
-    function handleBlockSelection(event) {
-        if (state.running) {
-            return;
-        }
-        if (event.target === state.cy) {
-            deselectNode(state);
-            return;
-        }
-        if (!state.selectedNode) {
-            selectNode(event.target, state);
-            return;
-        }
-        if ((event.target.isEdge() || state.selectedNode.isEdge())) {
-            selectNode(event.target, state);
-            return;
-        }
-        if (state.selectedNode.isParent() || event.target.isParent()) {
-            selectNode(event.target, state);
-            return;
-        }
-        if (!(state.selectedNode.id() === event.target.id())) {
-            var srcBlockType = state.selectedNode.data("block-type");
-            var destBlockType = event.target.data("block-type");
-            var srcOutputType = blockTypes[srcBlockType]["maps"][state.selectedNode.data("input-type")];
-            var destAssignedInputType = event.target.data("input-type");
-            var destAvailableInputTypes = Object.keys(blockTypes[destBlockType]["maps"]);
-            if (!(srcOutputType === "none" || srcOutputType === "unavailable" || destAssignedInputType === "unavailable") && (
-                (destAssignedInputType === srcOutputType) ||
-                (destAssignedInputType === "none" && destAvailableInputTypes.includes(srcOutputType))
-            )
-            ) {
-                var _classes = []
-                if (srcOutputType === "multi") {
-                    _classes.push("multi")
-                }
-                state.cy.add([{
-                    "group": 'edges',
-                    "data": {
-                        "id": state.selectedNode.id() + event.target.id(),
-                        "source": state.selectedNode.id(),
-                        "target": event.target.id(),
-                        "user-created": true
-                    },
-                    "classes": _classes
-                }]);
-                event.target.data("input-type", srcOutputType);
-            } else {
-                notify("Incompatible blocks");
-            }
-            deselectNode(state);
-        }
-    }
-
-    state.cy.on('cxttap', handleBlockSelection);
-    state.cy.on('taphold', handleBlockSelection);
-}
-

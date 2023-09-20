@@ -1,10 +1,74 @@
 import cytoscape from 'cytoscape';
 
 import { blockFuncs } from "./blockfuncs.js";
-import { addSelectionHandlers, newBlockData, notify, resetState } from './utils.js';
+
+import {
+    newBlockData,
+    notify,
+    resetState,
+    selectNode,
+    deselectNode,
+    destroyNode,
+    getBlocksOfType
+} from './utils.js';
+
+import { activateBlock } from './run.js';
 
 import blockTypes from "./blocktypes.json";
 import cytostyle from "./cytoscape-styles.json";
+
+export function addDeletionHandler(state) {
+     // Handle delete block button
+     document.getElementById("delete-block-button").addEventListener("click", function(e) {
+        if (state.selectedNode) {
+            var toDestroy = state.selectedNode;
+            deselectNode(state);
+            if ((!toDestroy.isNode() && toDestroy.data("user-created")) ||
+                (toDestroy.isNode() && !toDestroy.isChild())) {
+                if (confirm("Are you sure you want to delete the selection?")) {
+                    destroyNode(toDestroy, state);
+                }
+            } else {
+                notify("You can only delete top-level blocks and edges.");
+            }
+            
+        }
+    });
+}
+
+// Handle execute form submission
+export function addExecuteHandler(state) {
+    var executeForm = document.getElementById("execute-form");
+    executeForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (state.running) {
+            notify("Already running");
+            return;
+        }
+        state.running = true;
+        resetState(state);
+        var promises = [];
+        getBlocksOfType("INPUT").forEach((inputBlock) => {
+            var textIn = document.getElementById(inputBlock.id() + "-input").value;
+            promises.push(activateBlock(textIn, inputBlock, "UserInput", state));
+        });
+        getBlocksOfType("FIXED-INPUT").forEach((inputBlock) => {
+            promises.push(activateBlock("", inputBlock, "FixedInput", state));
+        });
+        Promise.all(promises).then((responses) => { 
+            notify("Done!");
+            console.log("Done!");
+            resetState(state);
+            state.running = false;
+            state.cancel = false;
+        }).catch(error => {
+            notify(error);
+            resetState(state);
+            state.running = false;
+            state.cancel = false;
+        });
+    });
+}
 
 export function addFileImportHandler(state) {
     // Handle file import
@@ -38,7 +102,7 @@ export function addFileImportHandler(state) {
                         layout: { name: 'grid' }
                     });
                     state.cy.json(data["cytoscape"]);
-                    addSelectionHandlers(state);
+                    addSelectionHandler(state);
                     state.cy.nodes().forEach((block) => {
                         // Run creation hook, but don't import data (already there)
                         blockFuncs[block.data("block-type")].create(block.data());
@@ -148,3 +212,62 @@ export function addFileExportHandler(state) {
         document.body.removeChild(element);
     });
 }
+
+export function addSelectionHandler(state) {
+    function handleBlockSelection(event) {
+        if (state.running) {
+            return;
+        }
+        if (event.target === state.cy) {
+            deselectNode(state);
+            return;
+        }
+        if (!state.selectedNode) {
+            selectNode(event.target, state);
+            return;
+        }
+        if ((event.target.isEdge() || state.selectedNode.isEdge())) {
+            selectNode(event.target, state);
+            return;
+        }
+        if (state.selectedNode.isParent() || event.target.isParent()) {
+            selectNode(event.target, state);
+            return;
+        }
+        if (!(state.selectedNode.id() === event.target.id())) {
+            var srcBlockType = state.selectedNode.data("block-type");
+            var destBlockType = event.target.data("block-type");
+            var srcOutputType = blockTypes[srcBlockType]["maps"][state.selectedNode.data("input-type")];
+            var destAssignedInputType = event.target.data("input-type");
+            var destAvailableInputTypes = Object.keys(blockTypes[destBlockType]["maps"]);
+            if (!(srcOutputType === "none" || srcOutputType === "unavailable" || destAssignedInputType === "unavailable") && (
+                (destAssignedInputType === srcOutputType) ||
+                (destAssignedInputType === "none" && destAvailableInputTypes.includes(srcOutputType))
+            )
+            ) {
+                var _classes = []
+                if (srcOutputType === "multi") {
+                    _classes.push("multi")
+                }
+                state.cy.add([{
+                    "group": 'edges',
+                    "data": {
+                        "id": state.selectedNode.id() + event.target.id(),
+                        "source": state.selectedNode.id(),
+                        "target": event.target.id(),
+                        "user-created": true
+                    },
+                    "classes": _classes
+                }]);
+                event.target.data("input-type", srcOutputType);
+            } else {
+                notify("Incompatible blocks");
+            }
+            deselectNode(state);
+        }
+    }
+
+    state.cy.on('cxttap', handleBlockSelection);
+    state.cy.on('taphold', handleBlockSelection);
+}
+

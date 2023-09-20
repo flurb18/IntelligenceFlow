@@ -3,16 +3,17 @@ import cytoscape from 'cytoscape';
 import { 
     notify,
     createSubmenusByType,
-    deselectNode,
-    destroyNode,
     newBlockData,
-    resetState,
-    addSelectionHandlers
+    resetState
 } from './utils.js';
 
-import { activateBlock } from './run.js';
-
-import { addFileImportHandler, addFileExportHandler } from './files.js';
+import { 
+    addFileImportHandler,
+    addFileExportHandler,
+    addSelectionHandler,
+    addExecuteHandler,
+    addDeletionHandler
+} from './handlers.js';
 
 import { blockFuncs } from './blockfuncs.js';
 
@@ -66,10 +67,9 @@ for (var i = 0; i < expands.length; i++) {
     });
 }
 
+document.getElementById("edit-block-menu").addEventListener("submit", (e) => {e.preventDefault()});
 
 createSubmenusByType(blockTypes, document.getElementById("new-block-type"));
-
-document.getElementById("edit-block-menu").addEventListener("submit", (e) => {e.preventDefault()});
 
 var state = {
     selectedNode: null,
@@ -103,27 +103,12 @@ document.addEventListener('DOMContentLoaded', function () {
         layout: { name: 'grid' }
     });
     
-    addSelectionHandlers(state);
+    addSelectionHandler(state);
+    addExecuteHandler(state);
+    addDeletionHandler(state);
     addFileImportHandler(state);
     addFileExportHandler(state);
-
-    // Handle delete block button
-    document.getElementById("delete-block-button").addEventListener("click", function(e) {
-        if (state.selectedNode) {
-            var toDestroy = state.selectedNode;
-            deselectNode(state);
-            if ((!toDestroy.isNode() && toDestroy.data("user-created")) ||
-                (toDestroy.isNode() && !toDestroy.isChild())) {
-                if (confirm("Are you sure you want to delete the selection?")) {
-                    destroyNode(toDestroy, state);
-                }
-            } else {
-                notify("You can only delete top-level blocks and edges.");
-            }
-            
-        }
-    });
-
+   
     // Handle new block form submission
     var newBlockForm = document.getElementById("new-block-form");
     newBlockForm.addEventListener("submit", function (e) {
@@ -150,38 +135,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Handle execute form submission
-    var executeForm = document.getElementById("execute-form");
-    executeForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-        if (state.running) {
-            notify("Already running");
-            return;
-        }
-        state.running = true;
-        resetState(state);
-        var promises = [];
-        getBlocksOfType("INPUT").forEach((inputBlock) => {
-            var textIn = document.getElementById(inputBlock.id() + "-input").value;
-            promises.push(activateBlock(textIn, inputBlock, "UserInput", state));
-        });
-        getBlocksOfType("FIXED-INPUT").forEach((inputBlock) => {
-            promises.push(activateBlock("", inputBlock, "FixedInput", state));
-        });
-        Promise.all(promises).then((responses) => { 
-            notify("Done!");
-            console.log("Done!");
-            resetState(state);
-            state.running = false;
-            state.cancel = false;
-        }).catch(error => {
-            notify(error);
-            resetState(state);
-            state.running = false;
-            state.cancel = false;
-        });
-    });
-
     // Handle running cancelation
     document.getElementById("execute-form-cancel").addEventListener("click", function(e) {
         e.preventDefault();
@@ -192,8 +145,6 @@ document.addEventListener('DOMContentLoaded', function () {
         notify("Cancelled");
     });
 
-    function getBlocksOfType(blockType) {
-        return state.cy.nodes('[id ^= "' + blockType+'"]');
-    }
+    
 });
 
