@@ -28,6 +28,22 @@ export function notify(text) {
     }, 4000);
 }
 
+export function newBlockData(blockType, idNum, inputLabel) {
+    var idString = blockType + idNum;
+    var label = inputLabel ? idString + "-" + inputLabel : idString;
+    return {
+        "id": idString,
+        "idNum": idNum,
+        "label": label,
+        "barelabel": inputLabel,
+        "block-type": blockType,
+        "input-type": "none",
+        "parameters": {},
+        "waits-for": [],
+        "default-input-queue": []
+    };
+}
+
 export function addParametersToMenu(parameters, menu, type) {
     if (Object.keys(parameters).length === 0) {
         menu.appendChild(document.createElement("br"));
@@ -226,3 +242,19 @@ export function deselectNode(state) {
     }
     editInfo.style.display = "block";
 }
+
+export function destroyNode(e, state) {
+    if (e.isNode()) {
+        e.children().forEach((child) => {
+            destroyNode(child, state);
+        });
+        var blockType = e.data("block-type");
+        blockFuncs[blockType].destroy(e.data());
+        var idx = state.blockTypeIdNums[blockType].indexOf(e.data("idNum"));
+        if (idx > -1) {
+            state.blockTypeIdNums[blockType].splice(idx, 1);
+        }
+    }
+    e.remove();
+}
+

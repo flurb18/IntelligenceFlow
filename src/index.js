@@ -1,6 +1,16 @@
 import cytoscape from 'cytoscape';
 
-import { notify, createSubmenusByType, selectNode, deselectNode } from './utils.js';
+import { 
+    notify,
+    createSubmenusByType,
+    selectNode,
+    deselectNode,
+    destroyNode,
+    newBlockData
+} from './utils.js';
+
+import { activateBlock } from './run.js';
+
 import { blockFuncs } from './blockfuncs.js';
 
 import blockTypes from './blocktypes.json';
@@ -65,6 +75,16 @@ var state = {
     apiType: document.getElementById("settings-api-type").value
 }
 
+for (var blockType of Object.keys(blockTypes)) {
+    state.blockTypeIdNums[blockType] = [0];
+}
+
+document.getElementById("settings-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+    state.apiType = document.getElementById("settings-api-type").value;
+    notify("Settings saved");
+});
+
 document.addEventListener('DOMContentLoaded', function () {
 
     // Run Cytoscape
@@ -77,17 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
         style: cytostyle,
         layout: { name: 'grid' }
     });
-
-    document.getElementById("settings-form").addEventListener("submit", function(e) {
-        e.preventDefault();
-        state.apiType = document.getElementById("settings-api-type").value;
-        notify("Settings saved");
-    });
-
-    for (var blockType of Object.keys(blockTypes)) {
-        state.blockTypeIdNums[blockType] = [0];
-    }
-
+    
     cy.on('cxttap', handleBlockSelection);
     cy.on('taphold', handleBlockSelection);
 
@@ -145,21 +155,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function destroyElement(e) {
-        if (e.isNode()) {
-            e.children().forEach((child) => {
-                destroyElement(child);
-            });
-            var blockType = e.data("block-type");
-            blockFuncs[blockType].destroy(e.data());
-            var idx = state.blockTypeIdNums[blockType].indexOf(e.data("idNum"));
-            if (idx > -1) {
-                state.blockTypeIdNums[blockType].splice(idx, 1);
-            }
-        }
-        e.remove();
-    }
-
     // Handle delete block button
     document.getElementById("delete-block-button").addEventListener("click", function(e) {
         if (state.selectedNode) {
@@ -168,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if ((!toDestroy.isNode() && toDestroy.data("user-created")) ||
                 (toDestroy.isNode() && !toDestroy.isChild())) {
                 if (confirm("Are you sure you want to delete the selection?")) {
-                    destroyElement(toDestroy);
+                    destroyNode(toDestroy, state);
                 }
             } else {
                 notify("You can only delete top-level blocks and edges.");
@@ -176,22 +171,6 @@ document.addEventListener('DOMContentLoaded', function () {
             
         }
     });
-
-    function newBlockData(blockType, idNum, inputLabel) {
-        var idString = blockType + idNum;
-        var label = inputLabel ? idString + "-" + inputLabel : idString;
-        return {
-            "id": idString,
-            "idNum": idNum,
-            "label": label,
-            "barelabel": inputLabel,
-            "block-type": blockType,
-            "input-type": "none",
-            "parameters": {},
-            "waits-for": [],
-            "default-input-queue": []
-        };
-    }
 
     // Handle new block form submission
     var newBlockForm = document.getElementById("new-block-form");
@@ -236,10 +215,10 @@ document.addEventListener('DOMContentLoaded', function () {
         var promises = [];
         getBlocksOfType("INPUT").forEach((inputBlock) => {
             var textIn = document.getElementById(inputBlock.id() + "-input").value;
-            promises.push(activateBlock(textIn, inputBlock, "UserInput"));
+            promises.push(activateBlock(textIn, inputBlock, "UserInput", state));
         });
         getBlocksOfType("FIXED-INPUT").forEach((inputBlock) => {
-            promises.push(activateBlock("", inputBlock, "FixedInput"));
+            promises.push(activateBlock("", inputBlock, "FixedInput", state));
         });
         Promise.all(promises).then((responses) => { 
             notify("Done!");
@@ -252,108 +231,6 @@ document.addEventListener('DOMContentLoaded', function () {
             state.running = false;
         });
     });
-
-    function activateBlock(input, block, srcId) {
-        if (!state.running) {
-            return new Promise((resolve, reject) => reject("Stopped"));
-        }
-        return new Promise((resolve, reject) => {
-            if (!(block.data("waits-for").length == 0)) {
-                var waitIds = [...block.scratch("waiting-for")];
-                var queuedInputs = block.scratch("queued-inputs");
-                var idx = waitIds.indexOf(srcId);
-                if (idx > -1) {
-                    block.addClass("waiting");
-                    waitIds.splice(idx, 1);
-                    queuedInputs[srcId] = input;
-                    if (waitIds.length == 0) {
-                        block.removeClass("waiting")
-                        block.addClass("active");
-                        setTimeout(() => {
-                            executeBlock(queuedInputs, block).then(executeOutput => {
-                                resetBlock(block);
-                                resolve(executeOutput);
-                            }).catch(error => {
-                                resetBlock(block);
-                                reject(error);
-                            });
-                        }, 500);
-                    } else {
-                        block.scratch("queued-inputs", queuedInputs);
-                        block.scratch("waiting-for", waitIds);
-                        resolve([{
-                            done: false
-                        }]);
-                    }
-                } else {
-                    console.log("Waiting block" + block.id() + " got extra input");
-                }
-            } else {
-                block.data("default-input-queue").push({
-                    "input": input,
-                    "resolve": resolve,
-                    "reject": reject
-                });
-                if (!block.hasClass("running")) {
-                    block.addClass("running");
-                    executeBlockQueue(block).then((out) => {
-                        block.removeClass("running");
-                    }).catch((reason) => {
-                        block.removeClass("running");
-                    });
-                }
-            }
-        }).then((statuses) => {
-            var activationPromises = [];
-            statuses.forEach((status) => {
-                if (status.done) {
-                    if (status.hasOwnProperty("for")) { 
-                        activationPromises.push(activateBlock(status.output, block.cy().getElementById(status.for), block.id()));
-                    } else {
-                        block.outgoers('node').forEach((outNeighbor) => {
-                            activationPromises.push(activateBlock(status.output, outNeighbor, block.id()));
-                        });
-                    }
-                }
-            });
-            return Promise.all(activationPromises);
-        });
-    }
-
-    function executeBlockQueue(block) {
-        return new Promise((resolve, reject) => {
-            const queueItem = block.data("default-input-queue").shift();
-            block.addClass("active");
-            setTimeout(() => {
-                executeBlock(queueItem["input"], block).then(executeOutput => {
-                    block.removeClass("active");
-                    queueItem["resolve"](executeOutput);
-                    resolve();
-                }).catch(error => {
-                    block.removeClass("active");
-                    queueItem["reject"](error);
-                    reject();
-                });
-            }, 500);
-        }).then((out) => {
-            if (block.data("default-input-queue").length == 0) {
-                return Promise.resolve();
-            } else {
-                return executeBlockQueue(block);
-            }
-        });
-    }
-    
-    function executeBlock(input, block) {
-        if (!state.running) {
-            return new Promise((resolve, reject) => reject("Stopped"));
-        }
-        return new Promise((resolve, reject) => {
-            var blockType = block.data("block-type");
-            // Run block
-            blockFuncs[blockType].exec(input, block.data(), state, resolve, reject);
-        });
-    }
 
     // Handle running cancelation
     document.getElementById("execute-form-cancel").addEventListener("click", function(e) {
