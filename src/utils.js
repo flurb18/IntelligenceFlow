@@ -271,3 +271,61 @@ export function destroyNode(e, state) {
     e.remove();
 }
 
+export function addSelectionHandlers(cy, state) {
+    function handleBlockSelection(event) {
+        if (state.running) {
+            return;
+        }
+        if (event.target === cy) {
+            deselectNode(state);
+            return;
+        }
+        if (!state.selectedNode) {
+            selectNode(event.target, state);
+            return;
+        }
+        if ((event.target.isEdge() || state.selectedNode.isEdge())) {
+            selectNode(event.target, state);
+            return;
+        }
+        if (state.selectedNode.isParent() || event.target.isParent()) {
+            selectNode(event.target, state);
+            return;
+        }
+        if (!(state.selectedNode.id() === event.target.id())) {
+            var srcBlockType = state.selectedNode.data("block-type");
+            var destBlockType = event.target.data("block-type");
+            var srcOutputType = blockTypes[srcBlockType]["maps"][state.selectedNode.data("input-type")];
+            var destAssignedInputType = event.target.data("input-type");
+            var destAvailableInputTypes = Object.keys(blockTypes[destBlockType]["maps"]);
+            if (!(srcOutputType === "none" || srcOutputType === "unavailable" || destAssignedInputType === "unavailable") && (
+                (destAssignedInputType === srcOutputType) ||
+                (destAssignedInputType === "none" && destAvailableInputTypes.includes(srcOutputType))
+            )
+            ) {
+                var _classes = []
+                if (srcOutputType === "multi") {
+                    _classes.push("multi")
+                }
+                cy.add([{
+                    "group": 'edges',
+                    "data": {
+                        "id": state.selectedNode.id() + event.target.id(),
+                        "source": state.selectedNode.id(),
+                        "target": event.target.id(),
+                        "user-created": true
+                    },
+                    "classes": _classes
+                }]);
+                event.target.data("input-type", srcOutputType);
+            } else {
+                notify("Incompatible blocks");
+            }
+            deselectNode(state);
+        }
+    }
+
+    cy.on('cxttap', handleBlockSelection);
+    cy.on('taphold', handleBlockSelection);
+}
+
