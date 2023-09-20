@@ -1,3 +1,5 @@
+import blockTypes from './blocktypes.json';
+
 // Append a immediately after e
 export function insertAfter(a, e) {
     if (e.nextSibling) {
