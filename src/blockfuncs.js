@@ -263,7 +263,7 @@ export var blockFuncs = {
     },
     "EMIT": {
         exec: function (input, blockData, state, resolve, reject) {
-            _output = [];
+            var _output = [];
             for (var inp of input) {
                 _output.push({done:true, output: inp});
             }
