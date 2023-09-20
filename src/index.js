@@ -1,6 +1,6 @@
 import cytoscape from 'cytoscape';
 
-import { notify, createSubmenusByType, addParametersToMenu } from './utils.js';
+import { notify, createSubmenusByType, selectNode, deselectNode } from './utils.js';
 import { blockFuncs } from './blockfuncs.js';
 
 import blockTypes from './blocktypes.json';
@@ -58,6 +58,13 @@ createSubmenusByType(blockTypes, document.getElementById("new-block-type"));
 
 document.getElementById("edit-block-menu").addEventListener("submit", (e) => {e.preventDefault()});
 
+var state = {
+    selectedNode: null,
+    blockTypeIdNums: {},
+    running: false,
+    apiType: document.getElementById("settings-api-type").value
+}
+
 document.addEventListener('DOMContentLoaded', function () {
 
     // Run Cytoscape
@@ -70,13 +77,6 @@ document.addEventListener('DOMContentLoaded', function () {
         style: cytostyle,
         layout: { name: 'grid' }
     });
-
-    var state = {
-        selectedNode: null,
-        blockTypeIdNums: {},
-        running: false,
-        apiType: document.getElementById("settings-api-type").value
-    }
 
     document.getElementById("settings-form").addEventListener("submit", function(e) {
         e.preventDefault();
@@ -91,71 +91,6 @@ document.addEventListener('DOMContentLoaded', function () {
     cy.on('cxttap', handleBlockSelection);
     cy.on('taphold', handleBlockSelection);
 
-    function selectNode(node) {
-        deselectNode();
-        state.selectedNode = node;
-        node.addClass("targeted");
-        if (node.isEdge()) { return; }
-        document.getElementById("edit-block-info").style.display = "none";
-        var editMenu = document.getElementById("edit-block-menu");
-        if (node.isChild()) {
-            var childInfo = document.createElement("div");
-            childInfo.innerText = "Cannot edit parameters of child node; select parent node to edit parameters."
-            editMenu.appendChild(childInfo);
-            return;   
-        }
-        const blockTypeParams = blockTypes[node.data("block-type")]["parameters"]
-        if (Object.keys(blockTypeParams).length === 0) {
-            var noParamInfo = document.createElement("div");
-            noParamInfo.innerText = "No parameters to show."
-            editMenu.appendChild(noParamInfo);
-            return;
-        }
-        addParametersToMenu(blockTypeParams, editMenu, node.data("label"));
-        for (var paramName of Object.keys(blockTypeParams)) {
-            var inputElement = document.getElementById(editMenu.id + "-" + paramName);
-            inputElement.value = node.data().parameters[paramName];
-            if (blockTypeParams[paramName].type === "num") {
-                var inputElementLabel = document.getElementById(editMenu.id + "-" + paramName + "-display");
-                inputElementLabel.textContent = node.data().parameters[paramName];
-            }
-            if (blockTypeParams[paramName].final) {
-                inputElement.disabled = true;
-            }
-        }
-        var editButton = document.createElement("input");
-        editButton.setAttribute("type", "submit");
-        editButton.setAttribute("value", "Apply Edits");
-        editButton.setAttribute("class", "sidebar-submit");
-        editMenu.appendChild(editButton);
-        editButton.addEventListener("click", function(e) {
-            if (confirm("Are you sure you want to apply the parameter edits? Old parameters will be lost!")) {
-                var params = node.data("parameters");
-                for (var paramName of Object.keys(blockTypeParams)) {
-                    var inputElement = document.getElementById(editMenu.id + "-" + paramName);
-                    params[paramName] = inputElement.value
-                }
-                node.data("parameters", params);
-                if (node.isParent()) {
-                    node.children().forEach((childNode) => {
-                        childNode.data("parameters", params);
-                    });
-                }
-            }
-        });
-    }
-
-    function deselectNode() {
-        if (state.selectedNode) {
-            state.selectedNode.removeClass("targeted");
-            state.selectedNode = null;
-        }
-        var editInfo = document.getElementById("edit-block-info");
-        while (editInfo.nextElementSibling) {
-            document.getElementById("edit-block-menu").removeChild(editInfo.nextElementSibling);
-        }
-        editInfo.style.display = "block";
-    }
     
     function handleBlockSelection(event) {
         if (state.running) {
@@ -298,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function () {
             state.selectedNode = null;
         }
         reset();
-        var promises = []
+        var promises = [];
         getBlocksOfType("INPUT").forEach((inputBlock) => {
             var textIn = document.getElementById(inputBlock.id() + "-input").value;
             promises.push(activateBlock(textIn, inputBlock, "UserInput"));
@@ -373,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
             statuses.forEach((status) => {
                 if (status.done) {
                     if (status.hasOwnProperty("for")) { 
-                        activationPromises.push(activateBlock(status.output, cy.getElementById(status.for), block.id()));
+                        activationPromises.push(activateBlock(status.output, block.cy().getElementById(status.for), block.id()));
                     } else {
                         block.outgoers('node').forEach((outNeighbor) => {
                             activationPromises.push(activateBlock(status.output, outNeighbor, block.id()));

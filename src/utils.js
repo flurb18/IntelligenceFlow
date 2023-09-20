@@ -118,9 +118,6 @@ export function addParametersToMenu(parameters, menu, type) {
 // the field in the submenu.
 export function createSubmenusByType(config, selectElement) {
     for (var type of Object.keys(config)) {
-        if (type === "global-parameters") {
-            continue;
-        }
         if (config[type]["hidden"]) {
             continue;
         }
@@ -137,13 +134,6 @@ export function createSubmenusByType(config, selectElement) {
         typeSubmenu.setAttribute("class", "sidebar-submenu " + selectElement.getAttribute("name") + "-submenu")
         typeSubmenu.style.display = "none";
         addParametersToMenu(params, typeSubmenu, type);
-        if (config.hasOwnProperty("global-parameters")) {
-            var typeGlobalParams = {};
-            for (var key of Object.keys(config["global-parameters"])) {
-                typeGlobalParams[type + "-" + key] = config["global-parameters"][key];
-            }
-            addParametersToMenu(typeGlobalParams, typeSubmenu, null);
-        }
         insertAfter(typeSubmenu, selectElement);
     }
     var firstType = Object.keys(config)[0];
@@ -153,9 +143,6 @@ export function createSubmenusByType(config, selectElement) {
     selectElement.addEventListener("change", function () {
         let selectedValue = selectElement.options[selectElement.selectedIndex].value;
         for (var type of Object.keys(config)) {
-            if (type === "global-parameters") {
-                continue;
-            }
             if (config[type]["hidden"]) {
                 continue;
             }
@@ -166,4 +153,74 @@ export function createSubmenusByType(config, selectElement) {
             }
         }
     });
+}
+
+
+
+// State altering functions
+
+export function selectNode(node) {
+    deselectNode();
+    state.selectedNode = node;
+    node.addClass("targeted");
+    if (node.isEdge()) { return; }
+    document.getElementById("edit-block-info").style.display = "none";
+    var editMenu = document.getElementById("edit-block-menu");
+    if (node.isChild()) {
+        var childInfo = document.createElement("div");
+        childInfo.innerText = "Cannot edit parameters of child node; select parent node to edit parameters."
+        editMenu.appendChild(childInfo);
+        return;   
+    }
+    const blockTypeParams = blockTypes[node.data("block-type")]["parameters"]
+    if (Object.keys(blockTypeParams).length === 0) {
+        var noParamInfo = document.createElement("div");
+        noParamInfo.innerText = "No parameters to show."
+        editMenu.appendChild(noParamInfo);
+        return;
+    }
+    addParametersToMenu(blockTypeParams, editMenu, node.data("label"));
+    for (var paramName of Object.keys(blockTypeParams)) {
+        var inputElement = document.getElementById(editMenu.id + "-" + paramName);
+        inputElement.value = node.data().parameters[paramName];
+        if (blockTypeParams[paramName].type === "num") {
+            var inputElementLabel = document.getElementById(editMenu.id + "-" + paramName + "-display");
+            inputElementLabel.textContent = node.data().parameters[paramName];
+        }
+        if (blockTypeParams[paramName].final) {
+            inputElement.disabled = true;
+        }
+    }
+    var editButton = document.createElement("input");
+    editButton.setAttribute("type", "submit");
+    editButton.setAttribute("value", "Apply Edits");
+    editButton.setAttribute("class", "sidebar-submit");
+    editMenu.appendChild(editButton);
+    editButton.addEventListener("click", function(e) {
+        if (confirm("Are you sure you want to apply the parameter edits? Old parameters will be lost!")) {
+            var params = node.data("parameters");
+            for (var paramName of Object.keys(blockTypeParams)) {
+                var inputElement = document.getElementById(editMenu.id + "-" + paramName);
+                params[paramName] = inputElement.value
+            }
+            node.data("parameters", params);
+            if (node.isParent()) {
+                node.children().forEach((childNode) => {
+                    childNode.data("parameters", params);
+                });
+            }
+        }
+    });
+}
+
+export function deselectNode() {
+    if (state.selectedNode) {
+        state.selectedNode.removeClass("targeted");
+        state.selectedNode = null;
+    }
+    var editInfo = document.getElementById("edit-block-info");
+    while (editInfo.nextElementSibling) {
+        document.getElementById("edit-block-menu").removeChild(editInfo.nextElementSibling);
+    }
+    editInfo.style.display = "block";
 }
