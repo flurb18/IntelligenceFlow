@@ -1,17 +1,10 @@
 import cytoscape from 'cytoscape';
 
 import { blockFuncs } from "./blockfuncs.js";
-import { addSelectionHandlers, deselectNode, resetBlock, newBlockData, notify } from './utils.js';
+import { addSelectionHandlers, newBlockData, notify, resetState } from './utils.js';
 
 import blockTypes from "./blocktypes.json";
 import cytostyle from "./cytoscape-styles.json";
-
-function resetState(state) {
-    state.cy.nodes().forEach((block) => {
-        resetBlock(block);
-    });
-    deselectNode(state);
-}
 
 export function addFileImportHandler(state) {
     // Handle file import

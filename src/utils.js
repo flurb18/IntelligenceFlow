@@ -20,10 +20,14 @@ export function removeElement(e) {
 }
 
 // Notify the user of text
+var timeoutHandle = null;
 export function notify(text) {
     document.getElementById("notification-text").innerText = text;
     document.getElementById("notification").style.display = "block";
-    setTimeout(function () {
+    if (timeoutHandle) {
+        clearTimeout(timeoutHandle);
+    }
+    timeoutHandle = setTimeout(function () {
         document.getElementById("notification").style.display = "none";
     }, 4000);
 }
@@ -42,6 +46,14 @@ export function newBlockData(blockType, idNum, inputLabel) {
         "waits-for": [],
         "default-input-queue": []
     };
+}
+
+// Reset global state
+export function resetState(state) {
+    state.cy.nodes().forEach((block) => {
+        resetBlock(block);
+    });
+    deselectNode(state);
 }
 
 export function resetBlock(block) {

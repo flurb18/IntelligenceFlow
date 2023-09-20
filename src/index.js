@@ -6,7 +6,7 @@ import {
     deselectNode,
     destroyNode,
     newBlockData,
-    resetBlock,
+    resetState,
     addSelectionHandlers
 } from './utils.js';
 
@@ -75,6 +75,7 @@ var state = {
     selectedNode: null,
     blockTypeIdNums: {},
     running: false,
+    cancel: false,
     apiType: document.getElementById("settings-api-type").value,
     cy: null
 }
@@ -158,11 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         state.running = true;
-        if (state.selectedNode) {
-            state.selectedNode.removeClass("targeted");
-            state.selectedNode = null;
-        }
-        reset();
+        resetState(state);
         var promises = [];
         getBlocksOfType("INPUT").forEach((inputBlock) => {
             var textIn = document.getElementById(inputBlock.id() + "-input").value;
@@ -174,11 +171,11 @@ document.addEventListener('DOMContentLoaded', function () {
         Promise.all(promises).then((responses) => { 
             notify("Done!");
             console.log("Done!");
-            reset();
+            resetState(state);
             state.running = false;
         }).catch(error => {
             notify(error);
-            reset();
+            resetState(state);
             state.running = false;
         });
     });
@@ -186,17 +183,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Handle running cancelation
     document.getElementById("execute-form-cancel").addEventListener("click", function(e) {
         e.preventDefault();
-        reset();
-        state.running = false;
+        resetState(state);
+        if (state.running) {
+            state.cancel = true;
+        }
         notify("Cancelled");
     });
-
-    function reset() {
-        state.cy.nodes().forEach((block) => {
-            resetBlock(block);
-        });
-        deselectNode(state);
-    }
 
     function getBlocksOfType(blockType) {
         return state.cy.nodes('[id ^= "' + blockType+'"]');

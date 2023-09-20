@@ -3,7 +3,7 @@ import { resetBlock } from './utils.js';
 import { blockFuncs } from './blockfuncs.js';
 
 export function activateBlock(input, block, srcId, state) {
-    if (!state.running) {
+    if (state.cancel) {
         return new Promise((resolve, reject) => reject("Stopped"));
     }
     return new Promise((resolve, reject) => {
@@ -94,7 +94,7 @@ function executeBlockQueue(block, state) {
 }
 
 function executeBlock(input, block, state) {
-    if (!state.running) {
+    if (state.cancel) {
         return new Promise((resolve, reject) => reject("Stopped"));
     }
     return new Promise((resolve, reject) => {
