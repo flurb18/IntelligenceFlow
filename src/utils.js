@@ -87,6 +87,7 @@ export function addParametersToMenu(parameters, menu, type) {
                     paramNum.setAttribute("step", parameters[param]["step"]);
                 }
                 paramNum.setAttribute("value", parameters[param]["default"]);
+                paramNumDisplay.setAttribute("id", menu.id + "-" + param + "-display");
                 paramNumDisplay.textContent = paramNum.value;
                 paramNum.addEventListener("input", function () {
                     this.nextElementSibling.textContent = this.value;

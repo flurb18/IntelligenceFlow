@@ -115,6 +115,10 @@ document.addEventListener('DOMContentLoaded', function () {
         for (var paramName of Object.keys(blockTypeParams)) {
             var inputElement = document.getElementById(editMenu.id + "-" + paramName);
             inputElement.value = node.data().parameters[paramName];
+            if (blockTypeParams[paramName].type === "num") {
+                var inputElementLabel = document.getElementById(editMenu.id + "-" + paramName + "-display");
+                inputElementLabel.textContent = node.data().parameters[paramName];
+            }
             if (blockTypeParams[paramName].final) {
                 inputElement.disabled = true;
             }
