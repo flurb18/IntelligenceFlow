@@ -160,7 +160,7 @@ export function createSubmenusByType(config, selectElement) {
 // State altering functions
 
 export function selectNode(node, state) {
-    deselectNode();
+    deselectNode(state);
     state.selectedNode = node;
     node.addClass("targeted");
     if (node.isEdge()) { return; }
