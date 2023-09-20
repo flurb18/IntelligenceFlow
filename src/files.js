@@ -1,7 +1,10 @@
+import cytoscape from 'cytoscape';
+
 import { blockFuncs } from "./blockfuncs.js";
 import { addSelectionHandlers, deselectNode, resetBlock } from './utils.js';
 
 import blockTypes from "./blocktypes.json";
+import cytostyle from "./cytoscape-styles.json";
 
 function resetState(cy, state) {
     cy.nodes().forEach((block) => {
