@@ -1,15 +1,23 @@
-import OpenAI from 'openai';
-
 export var apiFuncs = {
     OpenAI: function(_prompt, params) {
-        const oa = new OpenAI({
-            apiKey: OPENAI_API_KEY,
-            dangerouslyAllowBrowser: true
+        var request = {
+            model: OPENAI_MODEL,
+            prompt: _prompt,
+            temperature: params["LLM-temperature"],
+            max_tokens: params["LLM-max-new-tokens"],
+            n: 1
+        }
+        var url = "https://api.openai.com/v1/chat/completions";
+        return fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+ OPENAI_API_KEY
+            },
+            body: JSON.stringify(request)
+        }).then((response) => response.json()).then((responseJSON) => {
+            return responseJSON["choices"][0]["message"]["content"];
         });
-        return oa.chat.completions.create({
-            messages: [{ role: "user", content: _prompt }],
-            model: "gpt-3.5-turbo"
-        }).then((response) => response.data.choices[0].message.content.trim());
     },
     Oobabooga: function(_prompt, params) {
         var request = {
