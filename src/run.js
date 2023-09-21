@@ -59,6 +59,7 @@ function executeBlockQueue(block, state) {
                     block.addClass("active");
                     setTimeout(() => {
                         executeBlock(queuedInputs, block, state).then(executeOutput => {
+                            block.removeClass("active");
                             queueItem["resolve"](executeOutput);
                             block.scratch({
                                 "waiting-for": [...block.data("waits-for")],
@@ -72,6 +73,7 @@ function executeBlockQueue(block, state) {
                             }
                             resolve();
                         }).catch(error => {
+                            block.removeClass("active");
                             queueItem["reject"](error);
                             block.scratch({
                                 "waiting-for": [...block.data("waits-for")],
