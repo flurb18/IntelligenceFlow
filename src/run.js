@@ -1,5 +1,3 @@
-import { resetBlock } from './utils.js';
-
 import { blockFuncs } from './blockfuncs.js';
 
 export function activateBlock(input, block, srcId, state) {
@@ -13,14 +11,7 @@ export function activateBlock(input, block, srcId, state) {
             "resolve": resolve,
             "reject": reject
         });
-        if (!block.hasClass("running")) {
-            block.addClass("running");
-            executeBlockQueue(block, state).then((out) => {
-                block.removeClass("running");
-            }).catch((reason) => {
-                block.removeClass("running");
-            });
-        }
+        runBlock(block, state);
     }).then((statuses) => {
         var activationPromises = [];
         statuses.forEach((status) => {
@@ -36,6 +27,17 @@ export function activateBlock(input, block, srcId, state) {
         });
         return Promise.all(activationPromises);
     });
+}
+
+function runBlock(block, state) {
+    if (!block.hasClass("running")) {
+        block.addClass("running");
+        executeBlockQueue(block, state).then((out) => {
+            block.removeClass("running");
+        }).catch((reason) => {
+            block.removeClass("running");
+        });
+    }
 }
 
 function executeBlockQueue(block, state) {
@@ -58,11 +60,25 @@ function executeBlockQueue(block, state) {
                     setTimeout(() => {
                         executeBlock(queuedInputs, block, state).then(executeOutput => {
                             queueItem["resolve"](executeOutput);
-                            resetBlock(block);
+                            block.scratch({
+                                "waiting-for": [...block.data("waits-for")],
+                                "queued-inputs": {}
+                            });
+                            var extras = JSON.parse(JSON.stringify(block.data("waiting-extra-input-queue")));
+                            block.data("default-input-queue", extras);
+                            block.data("waiting-extra-input-queue", []);
+                            if (extras.length > 0) {
+                                runBlock(block, state);
+                            }
                             resolve();
                         }).catch(error => {
                             queueItem["reject"](error);
-                            resetBlock(block);
+                            block.scratch({
+                                "waiting-for": [...block.data("waits-for")],
+                                "queued-inputs": {}
+                            });
+                            block.data("default-input-queue", []);
+                            block.data("waiting-extra-input-queue", []);
                             reject();
                         });
                     }, 500);
@@ -75,7 +91,7 @@ function executeBlockQueue(block, state) {
                     resolve();
                 }
             } else {
-                block.data("default-input-queue").push(queueItem);
+                block.data("waiting-extra-input-queue").push(queueItem);
                 resolve();
             }
         } else { 

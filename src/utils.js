@@ -51,7 +51,8 @@ export function newBlockData(blockType, idNum, inputLabel) {
         "input-type": "none",
         "parameters": {},
         "waits-for": [],
-        "default-input-queue": []
+        "default-input-queue": [],
+        "waiting-extra-input-queue": []
     };
 }
 
