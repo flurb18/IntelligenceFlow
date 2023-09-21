@@ -171,7 +171,7 @@ export var blockFuncs = {
     },
     "COMBINE": {
         exec: function (input, blockData, state, resolve, reject) {
-            resolve([{done: true, output: input.join(" ")}]);
+            resolve([{done: true, output: input.join("\n\n")}]);
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];

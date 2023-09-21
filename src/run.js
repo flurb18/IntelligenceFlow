@@ -41,7 +41,7 @@ function runBlock(block, state) {
 }
 
 function executeBlockQueue(block, state) {
-    if (state.cancel) {
+    if (state.cancel || !state.running) {
         return new Promise((resolve, reject) => reject("Stopped"));
     }
     return new Promise((resolve, reject) => {
@@ -81,9 +81,9 @@ function executeBlockQueue(block, state) {
                             });
                             block.data("default-input-queue", []);
                             block.data("waiting-extra-input-queue", []);
-                            reject();
+                            reject(error);
                         });
-                    }, 500);
+                    }, parseInt(state.animationDelay));
                 } else {
                     block.scratch("queued-inputs", queuedInputs);
                     block.scratch("waiting-for", waitIds);
@@ -106,12 +106,12 @@ function executeBlockQueue(block, state) {
                 }).catch(error => {
                     block.removeClass("active");
                     queueItem["reject"](error);
-                    reject();
+                    reject(error);
                 });
-            }, 500);
+            }, parseInt(state.animationDelay));
         }
     }).then((out) => {
-        if (block.data("default-input-queue").length == 0 || !state.running || state.cancel) {
+        if (block.data("default-input-queue").length == 0) {
             return Promise.resolve();
         } else {
             return executeBlockQueue(block, state);

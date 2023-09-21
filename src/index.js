@@ -70,11 +70,12 @@ document.getElementById("edit-block-menu").addEventListener("submit", (e) => {e.
 createSubmenusByType(blockTypes, document.getElementById("new-block-type"));
 
 var state = {
-    selectedNode: null,
     blockTypeIdNums: {},
     running: false,
     cancel: false,
     apiType: document.getElementById("settings-api-type").value,
+    animationDelay: document.getElementById("settings-animation-delay").value,
+    selectedNode: null,
     cy: null
 }
 
@@ -85,6 +86,7 @@ for (var blockType of Object.keys(blockTypes)) {
 document.getElementById("settings-form").addEventListener("submit", function(e) {
     e.preventDefault();
     state.apiType = document.getElementById("settings-api-type").value;
+    state.animationDelay = document.getElementById("settings-animation-delay").value;
     notify("Settings saved");
 });
 
