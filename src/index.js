@@ -85,9 +85,13 @@ for (var blockType of Object.keys(blockTypes)) {
 
 document.getElementById("settings-form").addEventListener("submit", function(e) {
     e.preventDefault();
-    state.apiType = document.getElementById("settings-api-type").value;
-    state.animationDelay = document.getElementById("settings-animation-delay").value;
-    notify("Settings saved");
+    if (!state.running) {
+        state.apiType = document.getElementById("settings-api-type").value;
+        state.animationDelay = document.getElementById("settings-animation-delay").value;
+        notify("Settings saved");
+    } else {
+        notify("Cannot save settings while running");
+    }
 });
 
 document.addEventListener('DOMContentLoaded', function () {
