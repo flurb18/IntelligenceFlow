@@ -1,3 +1,4 @@
 #!/bin/bash
 
-python -m http.server ./dist
+cd ./dist
+python -m http.server 9900
