@@ -36,7 +36,7 @@ cfg = {
 }
 
 enabled_apis = []
-for (key in cfg.keys()):
+for key in cfg.keys():
     if (cfg[key]["enabled"]):
         enabled_apis.append(key)
 
