@@ -25,6 +25,7 @@ async def handle_post(request):
         page = await browser.new_page()
 
         async def on_load():
+            print("got here", flush=True)
             for expand in await page.locator(".sidebar-submenu-expand-button").all():
                 await expand.click()
             await page.locator("#import-file").set_input_files(
