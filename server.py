@@ -1,12 +1,24 @@
+import sys
 import asyncio
 import aiohttp
-from playwright.async_api import async_playwright
+
+import argparse
+ 
+ 
+parser = argparse.ArgumentParser()
+ 
+parser.add_argument("-a", "--api", help = "Enable API", action="store_true")
+requiredNamed = parser.add_argument_group('required named arguments')
+requiredNamed.add_argument('-h', '--host', help='Host IP to bind to', required=True)
+requiredNamed.add_argument("-p", "--port", help = "Port to bind to", required=True)
+args = parser.parse_args()
+if (args.api):
+    from playwright.async_api import async_playwright
 
 from aiohttp import web
 
 async def handle_post(request):
     data = await request.post()
-    print(data, flush=True)
     response = {}
     async with async_playwright() as p:
         browser = await p.chromium.launch()
@@ -35,12 +47,11 @@ async def handle_post(request):
         async def accept_dialog(dialog):
             await dialog.accept()
 
-        await page.goto("file:///api/web/index.html")
+        await page.goto("")
         page.on('dialog', accept_dialog)
         page.once("load", on_load)
         async with page.expect_console_message() as msg_info:
-            pass
-        msg = await msg_info.value
+            msg = await msg_info.value
         if (await msg.args[0].json_value() == "Done!"):
             for output_element in await page.locator("textarea[id$='-output']").all():
                 response[output_element.id().removesuffix("-output")] = output_element.input_value()
@@ -52,6 +63,8 @@ async def handle_post(request):
     return web.json_response(response_data)
 
 app = web.Application()
-app.router.add_post('/api', handle_post)
+app.router.add_static('/app', "./dist")
+if (args.api):
+    app.router.add_post('/api', handle_post)
 
-web.run_app(app, port=9901)
+web.run_app(app, host=args.host, port=args.port)

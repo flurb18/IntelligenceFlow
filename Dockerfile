@@ -5,16 +5,17 @@ RUN npm install
 ADD . /build
 RUN npm run build
 
-FROM python as api
+FROM python
+ARG API=""
+ARG HOST="localhost"
+ARG PORT="9900"
 RUN pip install --upgrade pip && \
-    pip install playwright asyncio aiohttp && \
+    pip install asyncio aiohttp
+RUN if [[ -z "$API" ]]; then pip install playwright && \
     playwright install && \
-    playwright install-deps
-ADD ./api/ /api
-RUN mkdir /api/web
-COPY --from=builder /build/dist /api/web/
-WORKDIR /api
-CMD python server.py
-
-FROM nginx
-COPY --from=builder /build/dist /usr/share/nginx/html
+    playwright install-deps; fi
+RUN mkdir /app
+COPY --from=builder /build/dist /app/dist/
+ADD ./server.py /app/
+WORKDIR /app
+CMD python server.py $(if [[-z "$API"]]; then echo "--api"; fi) --host "$HOST" --port "$PORT"
