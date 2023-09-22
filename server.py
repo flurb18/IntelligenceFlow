@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser()
  
 parser.add_argument("-a", "--api", help = "Enable API", action="store_true")
 requiredNamed = parser.add_argument_group('required named arguments')
-requiredNamed.add_argument('-h', '--host', help='Host IP to bind to', required=True)
+requiredNamed.add_argument('-b', '--host', help='Host IP to bind to', required=True)
 requiredNamed.add_argument("-p", "--port", help = "Port to bind to", required=True)
 args = parser.parse_args()
 if (args.api):
