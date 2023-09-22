@@ -43,7 +43,7 @@ async def handle_post(request):
 
         page.on('dialog', accept_dialog)
         page.once("load", on_load)
-        await page.goto(f"{request.url.scheme}://localhost:{args.port}/")
+        await page.goto(f"http://localhost:{args.port}/")
         async with page.expect_console_message() as msg_info:
             msg = await msg_info.value
         print(msg.text, flush=True)
