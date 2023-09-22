@@ -19,14 +19,13 @@ if (args.api):
 from aiohttp import web
 
 async def handle_post(request):
-    data = await request.post()
+    data = await request.post().json()
     response = {}
     async with async_playwright() as p:
         browser = await p.chromium.launch()
         page = await browser.new_page()
 
         async def on_load():
-            print("got here", flush=True)
             for expand in await page.locator(".sidebar-submenu-expand-button").all():
                 await expand.click()
             await page.locator("#import-file").set_input_files(
