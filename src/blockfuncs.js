@@ -280,7 +280,7 @@ export var blockFuncs = {
         exec: function (input, blockData, state, resolve, reject) {
             function apiCall(_input) {
                 var prompt = blockData.parameters["LLM-query"].replace("_INPUT_", _input);
-                apiFuncs[state.apiType](prompt, blockData.parameters).then((_output) => {
+                apiFuncs[state.apiType](prompt, blockData.parameters, state).then((_output) => {
                     resolve([{ done: true, output: _output }]);
                 }).catch((error) => {
                     reject("API error");

@@ -18,24 +18,6 @@ import {
 import blockTypes from './blocktypes.json';
 import cytostyle from './cytoscape-styles.json';
 
-function addApiType(type) {
-    var selectElement = document.getElementById("settings-api-type");
-    var choiceOption = document.createElement("option");
-    choiceOption.setAttribute("value", type);
-    choiceOption.innerText = type;
-    selectElement.appendChild(choiceOption);
-}
-
-if (ENABLE_OPENAI) {
-    addApiType("OpenAI");
-}
-if (ENABLE_OOBABOOGA) {
-    addApiType("Oobabooga");
-}
-if (ENABLE_KOBOLDCPP) {
-    addApiType("KoboldCPP");
-}
-
 // Generate block type info
 var infoSection = document.getElementById("sidebar-info");
 for (var blockType of Object.keys(blockTypes)) {
@@ -73,7 +55,8 @@ var state = {
     blockTypeIdNums: {},
     running: false,
     cancel: false,
-    apiType: document.getElementById("settings-api-type").value,
+    apiType: null,
+    apiConfig: null,
     animationDelay: document.getElementById("settings-animation-delay").value,
     selectedNode: null,
     cy: null
@@ -92,6 +75,21 @@ document.getElementById("settings-form").addEventListener("submit", function(e) 
     } else {
         notify("Cannot save settings while running");
     }
+});
+
+fetch("config.json").then((response) => response.json()).then((config) => {
+    apiTypes = ["OpenAI", "Oobabooga", "KoboldCPP"];
+    for (type of apiTypes) {
+        if (config[type].enabled) {
+            var selectElement = document.getElementById("settings-api-type");
+            var choiceOption = document.createElement("option");
+            choiceOption.setAttribute("value", type);
+            choiceOption.innerText = type;
+            selectElement.appendChild(choiceOption);
+        }
+    }
+    state.apiType = document.getElementById("settings-api-type").value;
+    state.apiConfig = config;
 });
 
 document.addEventListener('DOMContentLoaded', function () {

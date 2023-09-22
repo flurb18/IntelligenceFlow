@@ -1,7 +1,7 @@
 export var apiFuncs = {
-    OpenAI: function(_prompt, params) {
+    OpenAI: function(_prompt, params, state) {
         var request = {
-            model: OPENAI_MODEL,
+            model: state.apiConfig.OpenAI.model,
             prompt: _prompt,
             temperature: params["LLM-temperature"],
             max_tokens: params["LLM-max-new-tokens"],
@@ -12,20 +12,20 @@ export var apiFuncs = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer "+ OPENAI_API_KEY
+                "Authorization": "Bearer "+ state.apiConfig.OpenAI.APIKey
             },
             body: JSON.stringify(request)
         }).then((response) => response.json()).then((responseJSON) => {
             return responseJSON["choices"][0]["message"]["content"];
         });
     },
-    Oobabooga: function(_prompt, params) {
+    Oobabooga: function(_prompt, params, state) {
         var request = {
             prompt: _prompt,
             temperature: params["LLM-temperature"],
             max_new_tokens: params["LLM-max-new-tokens"]
         };
-        var url = OOBABOOGA_API_URL;
+        var url = state.apiConfig.Oobabooga.APIURL;
         if (!url.endsWith("/api/v1/generate") || !url.endsWith("/api/v1/generate/")) {
             url = url + "/api/v1/generate";
         }
@@ -43,13 +43,13 @@ export var apiFuncs = {
             return _output;
         });
     },
-    KoboldCPP: function(_prompt, params) {
+    KoboldCPP: function(_prompt, params, state) {
         var request = {
             prompt: _prompt,
             temperature: params["LLM-temperature"],
             max_new_tokens: params["LLM-max-new-tokens"]
         };
-        var url = params["KoboldCPP-URL"];
+        var url = state.apiConfig.KoboldCPP.APIURL;
         if (!url.endsWith("/api/v1/generate") && !url.endsWith("/api/v1/generate/")) {
             url = url + "/api/v1/generate";
         }

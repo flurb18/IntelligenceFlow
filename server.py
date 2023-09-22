@@ -1,11 +1,12 @@
 import sys
+import os
 import asyncio
 import aiohttp
+from aiohttp import web
 import json
-
+import dotenv
 import argparse
- 
- 
+  
 parser = argparse.ArgumentParser()
  
 parser.add_argument("-a", "--api", help = "Enable API", action="store_true")
@@ -16,7 +17,22 @@ args = parser.parse_args()
 if (args.api):
     from playwright.async_api import async_playwright
 
-from aiohttp import web
+dotenv.load_dotenv()
+cfg = {
+    "OpenAI": {
+        "enabled": not(os.environ.get("OPENAI_ENABLE") is None),
+        "APIKey": os.environ.get("OPENAI_API_KEY"),
+        "model": os.environ.get("OPENAI_MODEL")
+    },
+    "Oobabooga": {
+        "enabled": not(os.environ.get("OOBABOOGA_ENABLE") is None),
+        "APIURL": os.environ.get("OOBABOOGA_API_URL")
+    },
+    "KoboldCPP": {
+        "enabled": not(os.environ.get("KOBOLDCPP_ENABLE") is None),
+        "APIURL": os.environ.get("KOBOLDCPP_API_URL")
+    }
+}
 
 async def handle_post(request):
     data = await request.json()
@@ -61,9 +77,13 @@ async def handle_post(request):
 async def redirect_to_index(request):
     raise web.HTTPFound('/index.html')
 
+async def handle_config(request):
+    return web.json_response(cfg)
+
 app = web.Application()
 app.router.add_get('/', redirect_to_index)
 app.router.add_static('/', "./dist")
+app.router.add_get('/config.json', handle_config)
 if (args.api):
     app.router.add_post('/api', handle_post)
 
