@@ -293,7 +293,12 @@ export var blockFuncs = {
                     },
                     body: JSON.stringify(request)
                 }).then((response) => response.json()).then((responseJSON) => {
-                    resolve([{done: true, output: responseJSON["output"]}])
+                    if (responseJSON.hasOwnProperty("error") || !responseJSON.hasOwnProperty("output")) {
+                        reject("API Error");
+                        console.log(responseJSON["error"]);
+                    } else {
+                        resolve([{done: true, output: responseJSON["output"]}])
+                    }
                 }).catch((error) => {
                     reject("API Error");
                     console.log(error);

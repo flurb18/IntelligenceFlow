@@ -110,8 +110,11 @@ async def handle_llm_post(request):
         print("Invalid API requested", flush=True)
         return web.HTTPBadRequest()
     async with aiohttp.ClientSession() as session:
-        async with session.post(api_endpoint, json=api_request_data, headers=api_request_headers) as response:
-            api_response = await response.json()
+        try:
+            async with session.post(api_endpoint, json=api_request_data, headers=api_request_headers) as response:
+                api_response = await response.json()
+        except Exception as e:
+            return web.json_response({"error": str(e)})
     if request_data["type"] == "OpenAI":
         return web.json_response({"output":api_response["choices"][0]["message"]["content"]})
     if request_data["type"] == "Oobabooga" or request_data["type"] == "KoboldCPP":
