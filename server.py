@@ -50,7 +50,7 @@ async def handle_post(request):
         if (msg.text == "Done!"):
             for output_element in await page.locator("textarea[id$='-output']").all():
                 id = await output_element.evaluate("node => node.id")
-                response[id.removesuffix("-output")] = output_element.input_value()
+                response[id.removesuffix("-output")] = await output_element.input_value()
         await browser.close()
     response_data = {
         'message': 'Output from Flow',
