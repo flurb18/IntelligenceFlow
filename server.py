@@ -34,7 +34,7 @@ cfg = {
     }
 }
 
-async def handle_post(request):
+async def handle_api_post(request):
     data = await request.json()
     response = {}
     async with async_playwright() as p:
@@ -85,6 +85,6 @@ app.router.add_get('/', redirect_to_index)
 app.router.add_get('/config.json', handle_config)
 app.router.add_static('/', "./dist")
 if (args.api):
-    app.router.add_post('/api', handle_post)
+    app.router.add_post('/api', handle_api_post)
 
 web.run_app(app, host=args.host, port=args.port)
