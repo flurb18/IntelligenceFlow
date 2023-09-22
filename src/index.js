@@ -79,7 +79,7 @@ document.getElementById("settings-form").addEventListener("submit", function(e) 
 
 fetch("config.json").then((response) => response.json()).then((config) => {
     var apiTypes = ["OpenAI", "Oobabooga", "KoboldCPP"];
-    for (type of apiTypes) {
+    for (var type of apiTypes) {
         if (config[type].enabled) {
             var selectElement = document.getElementById("settings-api-type");
             var choiceOption = document.createElement("option");
