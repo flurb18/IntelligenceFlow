@@ -46,6 +46,7 @@ async def handle_post(request):
         await page.goto(f"{request.url.scheme}://localhost:{args.port}/")
         async with page.expect_console_message() as msg_info:
             msg = await msg_info.value
+        print(msg.text, flush=True)
         if (msg.text == "Done!"):
             for output_element in await page.locator("textarea[id$='-output']").all():
                 response[output_element.id().removesuffix("-output")] = output_element.input_value()
