@@ -40,7 +40,7 @@ async def handle_post(request):
         async def accept_dialog(dialog):
             await dialog.accept()
 
-        await page.goto(request.host)
+        await page.goto(request.url)
         page.on('dialog', accept_dialog)
         page.once("load", on_load)
         async with page.expect_console_message() as msg_info:
