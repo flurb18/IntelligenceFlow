@@ -93,7 +93,7 @@ async def handle_llm_post(request):
             "model": cfg["OpenAI"]["model"],
             "prompt": request_data["prompt"],
             "temperature":  request_data["temperature"],
-            "max_tokens": request_data["max_new_tokens"]
+            "max_tokens": request_data["max_new_tokens"],
             "n": 1
         }
         api_request_headers["Authorization"] = f"Bearer {cfg["OpenAI"]["APIKey"]}"
