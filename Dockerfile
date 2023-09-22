@@ -7,8 +7,6 @@ RUN npm run build
 
 FROM python
 ARG API=""
-ARG HOST="localhost"
-ARG PORT="9900"
 RUN pip install --upgrade pip && \
     pip install asyncio aiohttp
 RUN if [[ -z "$API" ]]; then pip install playwright && \
@@ -18,4 +16,4 @@ RUN mkdir /app
 COPY --from=builder /build/dist /app/dist/
 ADD ./server.py /app/
 WORKDIR /app
-CMD python server.py $(if [[ -z "$API" ]]; then echo "--api"; fi) --host "$HOST" --port "$PORT"
+CMD python server.py $(if [[ -z "$API" ]]; then echo "--api"; fi) --host "0.0.0.0" --port "9900"
