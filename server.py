@@ -33,13 +33,6 @@ async def handle_post(request):
                 ]
             )
             await page.locator("#import-submit").click()
-            apiType = data["api"]["type"]
-            await page.locator("#api-settings-type").selectOption(apiType)
-            if apiType == "Oobabooga":
-                await page.locator("#Oobabooga-submenu-Oobabooga-URL").fill(data["api"]["Oobabooga-URL"])
-            elif apiType == "OpenAI":
-                await page.locator("#OpenAI-submenu-OpenAI-APIkey").fill(data["api"]["OpenAI-APIkey"])
-            await page.locator("#api-settings-submit").click()
             for i in range(len(data["inputs"])):
                 await page.locator(f"#INPUT{i+1}-input").fill(data["inputs"][i])
             await page.locator("#execute-form-submit").click()
