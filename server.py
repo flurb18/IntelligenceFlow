@@ -41,9 +41,9 @@ async def handle_post(request):
         async def accept_dialog(dialog):
             await dialog.accept()
 
-        await page.goto(f"{request.url.scheme}://localhost:{args.port}/")
         page.on('dialog', accept_dialog)
         page.once("load", on_load)
+        await page.goto(f"{request.url.scheme}://localhost:{args.port}/")
         async with page.expect_console_message() as msg_info:
             msg = await msg_info.value
         if (await msg.args[0].json_value() == "Done!"):
