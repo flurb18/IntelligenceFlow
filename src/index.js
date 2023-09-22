@@ -79,14 +79,12 @@ document.getElementById("settings-form").addEventListener("submit", function(e) 
 
 fetch("config.json").then((response) => response.json()).then((config) => {
     var apiTypes = ["OpenAI", "Oobabooga", "KoboldCPP"];
-    for (var type of apiTypes) {
-        if (config[type].enabled) {
-            var selectElement = document.getElementById("settings-api-type");
-            var choiceOption = document.createElement("option");
-            choiceOption.setAttribute("value", type);
-            choiceOption.innerText = type;
-            selectElement.appendChild(choiceOption);
-        }
+    for (var type of config["enabled"]) {
+        var selectElement = document.getElementById("settings-api-type");
+        var choiceOption = document.createElement("option");
+        choiceOption.setAttribute("value", type);
+        choiceOption.innerText = type;
+        selectElement.appendChild(choiceOption);
     }
     state.apiType = document.getElementById("settings-api-type").value;
     state.apiConfig = config;

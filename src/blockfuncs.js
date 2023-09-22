@@ -279,13 +279,32 @@ export var blockFuncs = {
     "LLM": {
         exec: function (input, blockData, state, resolve, reject) {
             function apiCall(_input) {
-                var prompt = blockData.parameters["LLM-query"].replace("_INPUT_", _input);
+                var _prompt = blockData.parameters["LLM-query"].replace("_INPUT_", _input);
+                var request = {
+                    type: state.apiType,
+                    prompt: _prompt,
+                    temperature: blockData.parameters["LLM-temperature"],
+                    max_new_tokens: blockData.parameters["LLM-max-new-tokens"]
+                };
+                return fetch("api/llm", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(request)
+                }).then((response) => response.json()).then((responseJSON) => {
+                    resolve([{done: true, output: responseJSON["output"]}])
+                }).catch((error) => {
+                    reject("API Error");
+                    console.log(error);
+                });
+                /*
                 apiFuncs[state.apiType](prompt, blockData.parameters, state).then((_output) => {
                     resolve([{ done: true, output: _output }]);
                 }).catch((error) => {
                     reject("API error");
                     console.log(error);
-                });
+                });*/
             }
             apiCall(input);
         },
