@@ -62,12 +62,9 @@ async def handle_post(request):
     }
     return web.json_response(response_data)
 
-async def redirect_to_index(request):
-    raise web.HTTPFound('/index.html')
 
 app = web.Application()
-app.router.add_get('/', redirect_to_index)
-app.router.add_static('/', "./dist")
+app.router.add_static('/', "./dist", show_index=True)
 if (args.api):
     app.router.add_post('/api', handle_post)
 
