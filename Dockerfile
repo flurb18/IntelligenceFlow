@@ -16,4 +16,5 @@ RUN mkdir /app
 COPY --from=builder /build/dist /app/dist/
 ADD ./server.py /app/
 WORKDIR /app
-CMD python server.py $([ ! -z "$API" ] && echo "--api") --host "0.0.0.0" --port "9900"
+ENV E_API="$API"
+CMD python server.py $([ ! -z "$E_API" ] && echo "--api") --host "0.0.0.0" --port "9900"
