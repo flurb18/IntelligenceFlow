@@ -114,9 +114,14 @@ async def handle_llm_post(request):
                 api_response = await response.json()
         except Exception as e:
             return web.json_response({"error": str(e)})
+
     if request_data["type"] == "OpenAI":
-        return web.json_response({"output":api_response["choices"][0]["message"]["content"]})
+        if not "choices" in api_response:
+            return web.json_response({"error": ""})
+        return web.json_response({"output": api_response["choices"][0]["message"]["content"]})
     if request_data["type"] == "Oobabooga" or request_data["type"] == "KoboldCPP":
+        if not "results" in api_response:
+            return web.json_response({"error": ""})
         return web.json_response({"output": "\n".join([result["text"] for result in api_response["results"]])})
 
 async def redirect_to_index(request):
