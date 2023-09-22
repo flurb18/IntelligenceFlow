@@ -96,7 +96,7 @@ async def handle_llm_post(request):
             "max_tokens": request_data["max_new_tokens"],
             "n": 1
         }
-        api_request_headers["Authorization"] = f"Bearer {cfg["OpenAI"]["APIKey"]}"
+        api_request_headers["Authorization"] = f"Bearer {cfg.OpenAI.APIKey}"
     elif request_data["type"] == "Oobabooga" or request_data["type"] == "KoboldCPP":
         api_endpoint = cfg[request_data["type"]]["APIURL"]
         if not(api_endpoint.endswith("/api/v1/generate") or api_endpoint.endswith("/api/v1/generate/")):
