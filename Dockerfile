@@ -18,4 +18,4 @@ RUN mkdir /app
 COPY --from=builder /build/dist /app/dist/
 ADD ./server.py /app/
 WORKDIR /app
-CMD python server.py $(if [[-z "$API"]]; then echo "--api"; fi) --host "$HOST" --port "$PORT"
+CMD python server.py $(if [[ -z "$API" ]]; then echo "--api"; fi) --host "$HOST" --port "$PORT"
