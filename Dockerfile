@@ -11,9 +11,9 @@ RUN pip install --upgrade pip && \
 RUN mkdir /app
 COPY --from=builder /build/dist /app/dist/
 ADD ./server.py /app/
+ADD ./.env /app/
 WORKDIR /app
 CMD python server.py --host "0.0.0.0" --port "9900"
-
 
 FROM default as api
 RUN pip install playwright && \
