@@ -75,7 +75,7 @@ async def handle_api_post(request):
     return web.json_response(response_data)
 
 async def redirect_to_index(request):
-    raise web.HTTPFound('/index.html')
+    raise web.HTTPMovedPermanently('/index.html')
 
 async def handle_config(request):
     return web.json_response(cfg)
