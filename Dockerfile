@@ -11,10 +11,13 @@ RUN pip install --upgrade pip && \
 RUN mkdir /app
 COPY --from=builder /build/dist /app/dist/
 
-FROM stage as api-stage
-RUN pip install playwright && \
+FROM python as api-stage
+RUN pip install --upgrade pip && \
+    pip install asyncio aiohttp python-dotenv playwright && \
     playwright install && \
     playwright install-deps
+RUN mkdir /app
+COPY --from=builder /build/dist /app/dist/
 
 FROM api-stage as api
 ADD ./server.py /app/
