@@ -82,8 +82,8 @@ async def handle_config(request):
 
 app = web.Application()
 app.router.add_get('/', redirect_to_index)
-app.router.add_static('/', "./dist")
 app.router.add_get('/config.json', handle_config)
+app.router.add_static('/', "./dist")
 if (args.api):
     app.router.add_post('/api', handle_post)
 
