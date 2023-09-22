@@ -15,6 +15,7 @@ RUN mkdir /app
 COPY --from=builder /build/dist /app/dist/
 ADD ./server.py /app/
 WORKDIR /app
+RUN echo "nginx-proxy dserver.me" >> /etc/hosts
 CMD python server.py --api --host "0.0.0.0" --port "9900"
 
 FROM python
