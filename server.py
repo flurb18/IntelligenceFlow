@@ -4,7 +4,6 @@ import asyncio
 import aiohttp
 from aiohttp import web
 import json
-import requests
 import dotenv
 import argparse
   
