@@ -7,7 +7,7 @@ RUN npm run build
 
 FROM python as default
 RUN pip install --upgrade pip && \
-    pip install asyncio aiohttp dotenv
+    pip install asyncio aiohttp python-dotenv
 RUN mkdir /app
 COPY --from=builder /build/dist /app/dist/
 ADD ./server.py /app/
