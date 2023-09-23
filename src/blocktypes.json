@@ -76,15 +76,15 @@
         },
         "parameters": {
             "SPLIT-chunk-size": {
-                "label": "Chunk Size",
+                "label": "Chunk Size (Characters)",
                 "type": "num",
-                "min": "100",
+                "min": "500",
                 "max": "10000",
-                "default": "1000",
+                "default": "2000",
                 "final": false
             },
             "SPLIT-chunk-overlap": {
-                "label": "Chunk Overlap",
+                "label": "Chunk Overlap (Characters)",
                 "type": "num",
                 "min": "0",
                 "max": "500",
@@ -92,7 +92,7 @@
                 "final": false
             },
             "SPLIT-chunk-deviation": {
-                "label": "Chunk Deviation",
+                "label": "Chunk Deviation (Characters)",
                 "type": "num",
                 "min": "0",
                 "max": "200",

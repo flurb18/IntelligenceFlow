@@ -123,17 +123,17 @@ export var blockFuncs = {
                 for (var breakingChar of breaks) {
                     for (var r = 0; r < search_radius; r++) {
                         if (center_idx + r < str.length) {
-                            if (str.substring(center_idx + r, center_idx + r + 1) === breakingChar) {
+                            if (str.charAt(center_idx + r) === breakingChar) {
                                 breakingPos = center_idx + r + 1;
                                 break;
                             }
                         }
-                        /*if (center_idx - r >= 0) {
+                        if (center_idx - r >= 0) {
                             if (str.substring(center_idx - r, center_idx - r + 1) === breakingChar) {
                                 breakingPos = center_idx - r + 1;
                                 break;
                             }
-                        }*/
+                        }
                     }
                     if (breakingPos > 0) {
                         break;
@@ -153,12 +153,13 @@ export var blockFuncs = {
             var breakingPos = -1;
             var breakingPos = c_size;
 
-            while (remaining) {
+            while (remaining.length > 2*c_size) {
                 var breakpoint = findBreakPos(remaining, c_size, c_deviation);
                 _output.push(remaining.substring(0, breakpoint));
                 var laggingBreakpoint = findBreakPos(remaining, breakpoint - c_overlap, c_deviation);
                 remaining = remaining.substring(laggingBreakpoint, remaining.length);
             }
+            _output.push(remaining);
             resolve([{done: true, output: _output}]);
         },
         create: function (blockData) {
