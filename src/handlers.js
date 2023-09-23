@@ -42,7 +42,7 @@ export function addNewBlockHandler(state) {
         var _data = newBlockData(blockType, newId, newBlockForm.elements["new-block-label"].value);
         state.blockTypeIdNums[blockType].push(newId);
         for (var param of Object.keys(blockTypes[blockType]["parameters"])) {
-            if (blockTypes[blockType]["parameters"][param]["type"] == "checkbox") {
+            if (blockTypes[blockType]["parameters"][param]["type"] === "checkbox") {
                 _data["parameters"][param] = newBlockForm.elements[param].checked;
             } else {
                 _data["parameters"][param] = newBlockForm.elements[param].value;

@@ -244,11 +244,16 @@ export function selectNode(node, state) {
     addParametersToMenu(blockTypeParams, editMenu, node.data("label"));
     for (var paramName of Object.keys(blockTypeParams)) {
         var inputElement = document.getElementById(editMenu.id + "-" + paramName);
-        inputElement.value = node.data().parameters[paramName];
+        if (blockTypeParams[paramName].type === "checkbox") {
+            inputElement.checked = node.data().parameters[paramName];   
+        } else {
+            inputElement.value = node.data().parameters[paramName];
+        }
         if (blockTypeParams[paramName].type === "num") {
             var inputElementLabel = document.getElementById(editMenu.id + "-" + paramName + "-display");
             inputElementLabel.textContent = node.data().parameters[paramName];
         }
+        
         if (blockTypeParams[paramName].final) {
             inputElement.disabled = true;
         }
@@ -263,7 +268,11 @@ export function selectNode(node, state) {
             var params = node.data("parameters");
             for (var paramName of Object.keys(blockTypeParams)) {
                 var inputElement = document.getElementById(editMenu.id + "-" + paramName);
-                params[paramName] = inputElement.value
+                if (blockTypeParams[paramName].type === "checkbox") {
+                    params[paramName] = inputElement.checked;   
+                } else {
+                    params[paramName] = inputElement.value;
+                }
             }
             node.data("parameters", params);
             if (node.isParent()) {
