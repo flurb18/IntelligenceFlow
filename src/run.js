@@ -66,6 +66,8 @@ function executeBlockQueue(block, state) {
                             });
                             block.data("default-input-queue", block.data("waiting-extra-input-queue"));
                             block.data("waiting-extra-input-queue", []);
+                            console.log(block.data("default-input-queue"));
+                            console.log(block.data("waiting-extra-input-queue"));
                             queueItem["resolve"](executeOutput);
                             resolve();
                         }).catch(error => {
