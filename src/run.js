@@ -66,6 +66,8 @@ function executeBlockQueue(block, state) {
                                 "queued-inputs": {}
                             });
                             var extras = JSON.parse(JSON.stringify(block.data("waiting-extra-input-queue")));
+                            console.log(block.data("waiting-extra-input-queue"));
+                            console.log(block.data("default-input-queue"));
                             block.data("default-input-queue", extras);
                             block.data("waiting-extra-input-queue", []);
                             if (extras.length > 0) {
