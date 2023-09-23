@@ -98,7 +98,7 @@ async def handle_llm_post(request):
             "n": 1
         }
         api_request_headers["Authorization"] = f"Bearer {cfg.OpenAI.APIKey}"
-    elif request_data["type"] == "Oobabooga":
+    elif request_data["type"] == "Oobabooga" and request_data["use_instruct"] == "true":
         api_endpoint = cfg[request_data["type"]]["APIURL"]
         if not(api_endpoint.endswith("/api/v1/chat") or api_endpoint.endswith("/api/v1/chat/")):
             api_endpoint += "/api/v1/chat"
@@ -108,7 +108,7 @@ async def handle_llm_post(request):
             "max_new_tokens": request_data["max_new_tokens"],
             "mode": "instruct"
         }
-    elif request_data["type"] == "KoboldCPP":
+    elif request_data["type"] == "KoboldCPP" or request_data["type"] == "Oobabooga":
         api_endpoint = cfg[request_data["type"]]["APIURL"]
         if not(api_endpoint.endswith("/api/v1/generate") or api_endpoint.endswith("/api/v1/generate/")):
             api_endpoint += "/api/v1/generate"
@@ -129,9 +129,9 @@ async def handle_llm_post(request):
     try:
         if request_data["type"] == "OpenAI":            
                 return web.json_response({"output": api_response["choices"][0]["message"]["content"]})
-        elif request_data["type"] == "Oobabooga":
+        elif request_data["type"] == "Oobabooga" and request_data["use_instruct"] == "true":
                 return web.json_response({"output": "\n".join([result["history"]["visible"][-1][1] for result in api_response["results"]])})
-        elif request_data["type"] == "KoboldCPP":
+        else:
                 return web.json_response({"output": "\n".join([result["text"] for result in api_response["results"]])})
     except Exception as e:
             return web.json_response({"error": str(e)})

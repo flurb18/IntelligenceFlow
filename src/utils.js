@@ -108,6 +108,17 @@ export function addParametersToMenu(parameters, menu, type) {
                 menu.appendChild(paramChoice);
                 menu.appendChild(document.createElement("br"));
                 break;
+            //Checkbox
+            case "checkbox":
+                var paramCheck = document.createElement("input");
+                paramCheck.setAttribute("id", menu.id + "-" + param);
+                paramCheck.setAttribute("name", param);
+                paramCheck.setAttribute("type", "checkbox");
+                paramCheck.setAttribute("value", "true");
+                paramCheck.checked = parameters[param]["default"];
+                menu.appendChild(paramCheck);
+                menu.appendChild(document.createElement("br"));
+                break;
             //Textline
             case "text":
             case "url":
