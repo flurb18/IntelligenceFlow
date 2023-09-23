@@ -1,5 +1,4 @@
 import { removeElement, insertBefore, notify } from "./utils.js";
-import { apiFuncs } from "./apifuncs.js";
 
 export var blockFuncs = {
     "INPUT": {
@@ -286,7 +285,7 @@ export var blockFuncs = {
                     temperature: blockData.parameters["LLM-temperature"],
                     max_new_tokens: blockData.parameters["LLM-max-new-tokens"]
                 };
-                return fetch("api/llm", {
+                fetch("api/llm", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -295,7 +294,7 @@ export var blockFuncs = {
                 }).then((response) => response.json()).then((responseJSON) => {
                     if (responseJSON.hasOwnProperty("error") || !responseJSON.hasOwnProperty("output")) {
                         reject("API Error");
-                        console.log(responseJSON["error"]);
+                        if (responseJSON.hasOwnProperty("error")) {console.log(responseJSON["error"]);}
                     } else {
                         resolve([{done: true, output: responseJSON["output"]}])
                     }
@@ -303,13 +302,6 @@ export var blockFuncs = {
                     reject("API Error");
                     console.log(error);
                 });
-                /*
-                apiFuncs[state.apiType](prompt, blockData.parameters, state).then((_output) => {
-                    resolve([{ done: true, output: _output }]);
-                }).catch((error) => {
-                    reject("API error");
-                    console.log(error);
-                });*/
             }
             apiCall(input);
         },
