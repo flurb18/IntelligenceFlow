@@ -56,6 +56,8 @@ async def handle_runflow_post(request):
                 ]
             )
             await page.locator("#import-submit").click()
+            await page.locator("#settings-animation-delay").fill(str(1))
+            await page.locator("#settings-submit").click()
             for i in range(len(data["inputs"])):
                 await page.locator(f"#INPUT{i+1}-input").fill(data["inputs"][i])
             await page.locator("#execute-form-submit").click()
