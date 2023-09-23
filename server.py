@@ -98,7 +98,17 @@ async def handle_llm_post(request):
             "n": 1
         }
         api_request_headers["Authorization"] = f"Bearer {cfg.OpenAI.APIKey}"
-    elif request_data["type"] == "Oobabooga" or request_data["type"] == "KoboldCPP":
+    elif request_data["type"] == "Oobabooga":
+        api_endpoint = cfg[request_data["type"]]["APIURL"]
+        if not(api_endpoint.endswith("/api/v1/chat") or api_endpoint.endswith("/api/v1/chat/")):
+            api_endpoint += "/api/v1/chat"
+        api_request_data = {
+            "user_input": request_data["prompt"],
+            "temperature": request_data["temperature"],
+            "max_new_tokens": request_data["max_new_tokens"],
+            "mode": "instruct"
+        }
+    elif request_data["type"] == "KoboldCPP":
         api_endpoint = cfg[request_data["type"]]["APIURL"]
         if not(api_endpoint.endswith("/api/v1/generate") or api_endpoint.endswith("/api/v1/generate/")):
             api_endpoint += "/api/v1/generate"
@@ -116,15 +126,15 @@ async def handle_llm_post(request):
                 api_response = await response.json()
         except Exception as e:
             return web.json_response({"error": str(e)})
-
-    if request_data["type"] == "OpenAI":
-        if not "choices" in api_response:
-            return web.json_response({"error": ""})
-        return web.json_response({"output": api_response["choices"][0]["message"]["content"]})
-    if request_data["type"] == "Oobabooga" or request_data["type"] == "KoboldCPP":
-        if not "results" in api_response:
-            return web.json_response({"error": ""})
-        return web.json_response({"output": "\n".join([result["text"] for result in api_response["results"]])})
+    try:
+        if request_data["type"] == "OpenAI":            
+                return web.json_response({"output": api_response["choices"][0]["message"]["content"]})
+        elif request_data["type"] == "Oobabooga":
+                return web.json_response({"output": "\n".join([result["history"]["visible"][-1][1] for result in api_response["results"]])})
+        elif request_data["type"] == "KoboldCPP":
+                return web.json_response({"output": "\n".join([result["text"] for result in api_response["results"]])})
+    except Exception as e:
+            return web.json_response({"error": str(e)})
 
 async def redirect_to_index(request):
     raise web.HTTPMovedPermanently('/index.html')
