@@ -67,8 +67,7 @@ function executeBlockQueue(block, state) {
                                 "waiting-for": [...block.data("waits-for")],
                                 "queued-inputs": {}
                             });
-                            var extras = JSON.parse(JSON.stringify(block.data("waiting-extra-input-queue")));
-                            block.data("default-input-queue", extras);
+                            block.data("default-input-queue", block.data("waiting-extra-input-queue"));
                             block.data("waiting-extra-input-queue", []);
                             //if (extras.length > 0) {
                              //  runBlock(block, state);
