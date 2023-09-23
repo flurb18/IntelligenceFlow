@@ -75,6 +75,7 @@ export function resetBlock(block) {
         block.data("save", null);
     }
     block.data("default-input-queue", []);
+    block.data("waiting-extra-input-queue", []);
 }
 
 export function addParametersToMenu(parameters, menu, type) {
