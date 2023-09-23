@@ -44,6 +44,9 @@ function executeBlockQueue(block, state) {
     if (state.cancel || !state.running) {
         return new Promise((resolve, reject) => reject("Stopped"));
     }
+    if (block.data("default-input-queue").length == 0) {
+        return Promise.resolve();
+    }
     return new Promise((resolve, reject) => {
         const queueItem = block.data("default-input-queue").shift();
         if (!(block.data("waits-for").length == 0)) {
@@ -66,8 +69,7 @@ function executeBlockQueue(block, state) {
                             });
                             block.data("default-input-queue", block.data("waiting-extra-input-queue"));
                             block.data("waiting-extra-input-queue", []);
-                            console.log(block.data("default-input-queue"));
-                            console.log(block.data("waiting-extra-input-queue"));
+                            runBlock(block, state);
                             queueItem["resolve"](executeOutput);
                             resolve();
                         }).catch(error => {
