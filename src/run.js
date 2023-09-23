@@ -70,9 +70,9 @@ function executeBlockQueue(block, state) {
                             var extras = JSON.parse(JSON.stringify(block.data("waiting-extra-input-queue")));
                             block.data("default-input-queue", extras);
                             block.data("waiting-extra-input-queue", []);
-                            if (extras.length > 0) {
-                                runBlock(block, state);
-                            }
+                            //if (extras.length > 0) {
+                             //  runBlock(block, state);
+                           // }
                             queueItem["resolve"](executeOutput);
                             resolve();
                         }).catch(error => {
