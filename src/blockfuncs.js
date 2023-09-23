@@ -128,12 +128,12 @@ export var blockFuncs = {
                                 break;
                             }
                         }
-                        if (center_idx - r >= 0) {
+                        /*if (center_idx - r >= 0) {
                             if (str.substring(center_idx - r, center_idx - r + 1) === breakingChar) {
                                 breakingPos = center_idx - r + 1;
                                 break;
                             }
-                        }
+                        }*/
                     }
                     if (breakingPos > 0) {
                         break;
