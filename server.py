@@ -3,6 +3,7 @@ import os
 import asyncio
 import aiohttp
 from aiohttp import web
+import html
 import json
 import dotenv
 import argparse
@@ -129,7 +130,7 @@ async def handle_llm_post(request):
         if request_data["type"] == "OpenAI":            
                 return web.json_response({"output": api_response["choices"][0]["message"]["content"]})
         elif request_data["type"] == "Oobabooga" and request_data["use_instruct"] == "true":
-                return web.json_response({"output": "\n".join([result["history"]["visible"][-1][1] for result in api_response["results"]])})
+                return web.json_response({"output": "\n".join([html.unescape(result["history"]["visible"][-1][1]) for result in api_response["results"]])})
         else:
                 return web.json_response({"output": "\n".join([result["text"] for result in api_response["results"]])})
     except Exception as e:
