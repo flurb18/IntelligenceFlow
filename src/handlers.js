@@ -24,8 +24,8 @@ export function addCancellationHandler(state) {
         resetState(state);
         if (state.running) {
             state.cancel = true;
+            notify("Cancelled");
         }
-        notify("Cancelled");
     });
 }
 
