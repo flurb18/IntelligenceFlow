@@ -67,7 +67,7 @@ function executeBlockQueue(block, state) {
                                 "waiting-for": [...block.data("waits-for")],
                                 "queued-inputs": {}
                             });
-                            var newQueue = [...block.data("default-input-queue"), ...block.data("waiting-extra-input-queue")];
+                            var newQueue = [...block.data("waiting-extra-input-queue"), ...block.data("default-input-queue")];
                             block.data("default-input-queue", newQueue);
                             block.data("waiting-extra-input-queue", []);
                             queueItem["resolve"](executeOutput);
