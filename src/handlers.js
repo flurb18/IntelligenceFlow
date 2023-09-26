@@ -220,7 +220,8 @@ export function addFileImportHandler(state) {
                                     "source": newSource,
                                     "target": newTarget,
                                     "user-created": true
-                                }
+                                },
+                                classes: edgesData[edgeKey].classes
                             });
                         }
                     });
