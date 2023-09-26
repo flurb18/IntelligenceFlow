@@ -63,7 +63,7 @@ export function addNewBlockHandler(state) {
 export function addDeletionHandler(state) {
      // Handle delete block button
      document.getElementById("delete-block-button").addEventListener("click", function(e) {
-        if (state.selectedNode) {
+        if (state.selectedNode && !state.running) {
             var toDestroy = state.selectedNode;
             deselectNode(state);
             if ((!toDestroy.isNode() && toDestroy.data("user-created")) ||
@@ -74,7 +74,6 @@ export function addDeletionHandler(state) {
             } else {
                 notify("You can only delete top-level blocks and edges.");
             }
-            
         }
     });
 }
