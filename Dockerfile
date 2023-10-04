@@ -5,7 +5,7 @@ RUN npm install
 ADD . /build
 RUN npm run build
 
-FROM python3.11 as api
+FROM python:3.11 as api
 RUN pip install --upgrade pip && \
     pip install asyncio aiohttp python-dotenv playwright && \
     playwright install && \
@@ -17,7 +17,7 @@ ADD ./.env /app/
 WORKDIR /app
 CMD python server.py --api --host "0.0.0.0" --port "9900"
 
-FROM python
+FROM python:3.11
 RUN pip install --upgrade pip && \
     pip install asyncio aiohttp python-dotenv
 RUN mkdir /app
