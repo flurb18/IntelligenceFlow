@@ -5,7 +5,7 @@ RUN npm install
 ADD . /build
 RUN npm run build
 
-FROM python as api
+FROM python3.11 as api
 RUN pip install --upgrade pip && \
     pip install asyncio aiohttp python-dotenv playwright && \
     playwright install && \
