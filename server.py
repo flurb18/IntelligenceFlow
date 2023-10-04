@@ -106,6 +106,7 @@ async def handle_llm_post(request):
             "user_input": request_data["prompt"],
             "temperature": request_data["temperature"],
             "max_new_tokens": request_data["max_new_tokens"],
+            "truncation_length": request_data["max_prompt_tokens"]
             "mode": "instruct"
         }
     elif request_data["type"] == "KoboldCPP" or request_data["type"] == "Oobabooga":
@@ -115,7 +116,8 @@ async def handle_llm_post(request):
         api_request_data = {
             "prompt": request_data["prompt"],
             "temperature": request_data["temperature"],
-            "max_new_tokens": request_data["max_new_tokens"]
+            "max_new_tokens": request_data["max_new_tokens"],
+            "truncation_length": request_data["max_prompt_tokens"]
         }
     else:
         print("Invalid API requested", flush=True)

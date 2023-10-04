@@ -170,6 +170,15 @@
                 "default": true,
                 "final": false
             },
+            "LLM-max-prompt-tokens": {
+                "label": "Truncate Prompt To Length (Tokens)",
+                "type": "num",
+                "min": "1024",
+                "max": "65536",
+                "step": "1024",
+                "default": "2048",
+                "final": false
+            },
             "LLM-temperature": {
                 "label": "Temperature",
                 "type": "num",

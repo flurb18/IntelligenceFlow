@@ -285,7 +285,8 @@ export var blockFuncs = {
                     use_instruct: blockData.parameters["LLM-use-instruct-templates"] ? "true" : "false",
                     prompt: _prompt,
                     temperature: blockData.parameters["LLM-temperature"],
-                    max_new_tokens: blockData.parameters["LLM-max-new-tokens"]
+                    max_new_tokens: blockData.parameters["LLM-max-new-tokens"],
+                    max_prompt_tokens: blockData.parameters["LLM-max-prompt-tokens"]
                 };
                 fetch("api/llm", {
                     method: "POST",
