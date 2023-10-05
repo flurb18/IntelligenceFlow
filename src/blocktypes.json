@@ -170,15 +170,6 @@
                 "default": true,
                 "final": false
             },
-            "LLM-max-prompt-tokens": {
-                "label": "Truncate Prompt To Length (Tokens)",
-                "type": "num",
-                "min": "1024",
-                "max": "65536",
-                "step": "1024",
-                "default": "2048",
-                "final": false
-            },
             "LLM-temperature": {
                 "label": "Temperature",
                 "type": "num",
@@ -189,11 +180,19 @@
                 "final": false
             },
             "LLM-max-new-tokens": {
-                "label": "Max new tokens",
+                "label": "Max New Tokens",
                 "type": "num",
-                "min": "10",
-                "max": "8192",
+                "min": "1",
+                "max": "32768",
                 "default": 1024,
+                "final": false
+            },"LLM-max-prompt-tokens": {
+                "label": "Max Prompt Tokens",
+                "type": "num",
+                "min": "1024",
+                "max": "65536",
+                "step": "1024",
+                "default": "2048",
                 "final": false
             }
         },
