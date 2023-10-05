@@ -140,23 +140,16 @@ export function addParametersToMenu(parameters, menu, type) {
             //Numeric input
             case "num":
                 var paramNum = document.createElement("input");
-                var paramNumDisplay = document.createElement("output");
                 paramNum.setAttribute("id", menu.id + "-" + param);
                 paramNum.setAttribute("name", param);
-                paramNum.setAttribute("type", "range");
+                paramNum.setAttribute("type", "number");
                 paramNum.setAttribute("min", parameters[param]["min"]);
                 paramNum.setAttribute("max", parameters[param]["max"]);
                 if (parameters[param].hasOwnProperty("step")) {
                     paramNum.setAttribute("step", parameters[param]["step"]);
                 }
                 paramNum.setAttribute("value", parameters[param]["default"]);
-                paramNumDisplay.setAttribute("id", menu.id + "-" + param + "-display");
-                paramNumDisplay.textContent = paramNum.value;
-                paramNum.addEventListener("input", function () {
-                    this.nextElementSibling.textContent = this.value;
-                });
                 menu.appendChild(paramNum);
-                menu.appendChild(paramNumDisplay);
                 menu.appendChild(document.createElement("br"))
                 break;
             //File input
@@ -249,10 +242,6 @@ export function selectNode(node, state) {
             inputElement.checked = node.data().parameters[paramName];   
         } else {
             inputElement.value = node.data().parameters[paramName];
-        }
-        if (blockTypeParams[paramName].type === "num") {
-            var inputElementLabel = document.getElementById(editMenu.id + "-" + paramName + "-display");
-            inputElementLabel.textContent = node.data().parameters[paramName];
         }
         
         if (blockTypeParams[paramName].final) {
