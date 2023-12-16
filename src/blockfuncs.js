@@ -282,7 +282,6 @@ export var blockFuncs = {
                 var _prompt = blockData.parameters["LLM-query"].replace("_INPUT_", _input);
                 var request = {
                     type: state.apiType,
-                    use_instruct: blockData.parameters["LLM-use-instruct-templates"] ? "true" : "false",
                     prompt: _prompt,
                     temperature: blockData.parameters["LLM-temperature"],
                     max_new_tokens: blockData.parameters["LLM-max-new-tokens"],

@@ -88,28 +88,21 @@ async def handle_llm_post(request):
     api_request_headers = { "Content-Type": "application/json"}
     request_data = await request.json()
 
-    if request_data["type"] == "OpenAI":
-        api_endpoint = "https://api.openai.com/v1/chat/completions"
+    if request_data["type"] == "OpenAI" or request_data["type"] == "Oobabooga":
+        api_endpoint = "https://api.openai.com" if request_data["type"] == "OpenAI" else cfg["Oobabooga"]["APIURL"]
+        if not(api_endpoint.endswith("/v1/chat/completions") or api_endpoint.endswith("/v1/chat/completions/")):
+            api_endpoint += "/v1/chat/completions"
         api_request_data = {
-            "model": cfg["OpenAI"]["model"],
-            "prompt": request_data["prompt"],
+            "messages": [{"role": "user", "content": request_data["prompt"]}],
             "temperature":  request_data["temperature"],
             "max_tokens": request_data["max_new_tokens"],
-            "n": 1
+            "n": 1,
+            "mode" : "instruct"
         }
-        api_request_headers["Authorization"] = f"Bearer {cfg.OpenAI.APIKey}"
-    elif request_data["type"] == "Oobabooga" and request_data["use_instruct"] == "true":
-        api_endpoint = cfg[request_data["type"]]["APIURL"]
-        if not(api_endpoint.endswith("/api/v1/chat") or api_endpoint.endswith("/api/v1/chat/")):
-            api_endpoint += "/api/v1/chat"
-        api_request_data = {
-            "user_input": request_data["prompt"],
-            "temperature": request_data["temperature"],
-            "max_new_tokens": request_data["max_new_tokens"],
-            "truncation_length": request_data["max_prompt_tokens"],
-            "mode": "instruct"
-        }
-    elif request_data["type"] == "KoboldCPP" or request_data["type"] == "Oobabooga":
+        if request_data["type"] == "OpenAI":
+            api_request_data["model"] = cfg["OpenAI"]["model"]
+            api_request_headers["Authorization"] = f"Bearer {cfg.OpenAI.APIKey}"
+    elif request_data["type"] == "KoboldCPP":
         api_endpoint = cfg[request_data["type"]]["APIURL"]
         if not(api_endpoint.endswith("/api/v1/generate") or api_endpoint.endswith("/api/v1/generate/")):
             api_endpoint += "/api/v1/generate"

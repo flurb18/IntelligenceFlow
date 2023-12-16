@@ -164,12 +164,6 @@
                 "type": "textbox",
                 "final": false
             },
-            "LLM-use-instruct-templates": {
-                "label": "Use Instruct Templates If Available",
-                "type": "checkbox",
-                "default": true,
-                "final": false
-            },
             "LLM-temperature": {
                 "label": "Temperature",
                 "type": "num",
