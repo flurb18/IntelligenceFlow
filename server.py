@@ -143,4 +143,4 @@ app.router.add_post('/api/llm', handle_llm_post)
 if (args.api):
     app.router.add_post('/api/runflow', handle_runflow_post)
 
-web.run_app(app, host=args.host, port=args.port)
+web.run_app(app, host=args.host, port=int(args.port))
