@@ -587,8 +587,8 @@ export var blockFuncs = {
                     reject("API Error");
                     if (responseJSON.hasOwnProperty("error")) {console.log(responseJSON["error"]);}
                 } else {
-                    pageText = responseJSON["output"];
-                    pageUrls = responseJSON["links"];
+                    var pageText = responseJSON["output"];
+                    var pageUrls = responseJSON["links"];
                     var _output = [];
                     _output.push({
                         done: true,
