@@ -145,7 +145,7 @@ async def handle_forward_get(request):
                 continue
             if isinstance(child, NavigableString) or len(child.find_all('a')) == 0 or child.name == 'a':
                 result += child.get_text(strip=True).strip()
-                if child.name == 'a' and hasattr(child, "href"):
+                if child.name == 'a' and child.has_attr("href"):
                     link_references.append(urljoin(url, child['href']))
                     result += f" (Link #{len(link_references)})"
             else:
