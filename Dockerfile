@@ -7,7 +7,7 @@ RUN npm run build
 
 FROM python:3.11-slim as api
 RUN pip install --upgrade pip && \
-    pip install asyncio aiohttp python-dotenv playwright && \
+    pip install asyncio aiohttp python-dotenv beautifulsoup4 urllib playwright && \
     playwright install && \
     playwright install-deps
 RUN mkdir /app
@@ -19,7 +19,7 @@ CMD python server.py --api --host "0.0.0.0" --port "9900"
 
 FROM python:3.11-slim
 RUN pip install --upgrade pip && \
-    pip install asyncio aiohttp python-dotenv
+    pip install asyncio aiohttp python-dotenv beautifulsoup4 urllib
 RUN mkdir /app
 COPY --from=builder /build/dist /app/dist/
 ADD ./server.py /app/

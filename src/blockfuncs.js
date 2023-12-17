@@ -503,5 +503,137 @@ export var blockFuncs = {
         destroy: function (blockData) {
 
         }
+    },
+    "GET" : {
+        exec: function (input, blockData, state, resolve, reject) {
+            reject("This block is a container and shouldn't ever run");
+        },
+        create: function(blockData) {
+            var elements = [{ group: 'nodes', data: blockData }];
+            var textOutputId = blockData.id + "TEXTOUTPUT";
+            var urlOutputId = blockData.id + "URLOUTPUT";
+            var inputId = blockData.id + "INPUT";
+            elements.push({
+                group: 'nodes',
+                data: {
+                    "id": inputId,
+                    "parent": blockData.id,
+                    "label": blockData.label + "-INPUT",
+                    "block-type": "GET-INPUT",
+                    "input-type": "none",
+                    "parameters": blockData.parameters,
+                    "waits-for": []
+                }
+            });
+            elements.push({
+                group: 'nodes',
+                data: {
+                    "id": textOutputId,
+                    "parent": blockData.id,
+                    "label": blockData.label + "-TEXT-OUTPUT",
+                    "block-type": "GET-TEXT-OUTPUT",
+                    "input-type": "unavailable",
+                    "parameters": blockData.parameters,
+                    "waits-for": []
+                }
+            });
+            elements.push({
+                group: 'nodes',
+                data: {
+                    "id": urlOutputId,
+                    "parent": blockData.id,
+                    "label": blockData.label + "-URL-OUTPUT",
+                    "block-type": "GET-URL-OUTPUT",
+                    "input-type": "unavailable",
+                    "parameters": blockData.parameters,
+                    "waits-for": []
+                }
+            });
+            elements.push({
+                group: 'edges',
+                data: {
+                    "id": inputId + textOutputId,
+                    "source": inputId,
+                    "target": textOutputId
+                }
+            });
+            elements.push({
+                group: 'edges',
+                data: {
+                    "id": inputId + urlOutputId,
+                    "source": inputId,
+                    "target": urlOutputId
+                }
+            });
+            return elements;
+        },
+        destroy: function(blockData) {
+
+        }
+    },
+    "GET-INPUT" : {
+        exec: function (input, blockData, state, resolve, reject) {
+            var request = {
+                url: input
+            };
+            fetch("api/get", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(request)
+            }).then((response) => response.json()).then((responseJSON) => {
+                if (responseJSON.hasOwnProperty("error") || !responseJSON.hasOwnProperty("output") || !responseJSON.hasOwnProperty("links")) {
+                    reject("API Error");
+                    if (responseJSON.hasOwnProperty("error")) {console.log(responseJSON["error"]);}
+                } else {
+                    pageText = responseJSON["output"];
+                    pageUrls = responseJSON["links"];
+                    var _output = [];
+                    _output.push({
+                        done: true,
+                        output: pageText,
+                        for: blockData.parent + "TEXTOUTPUT"
+                    });
+                    _output.push({
+                        done: true,
+                        output: pageUrls,
+                        for: blockData.parent + "URLOUTPUT"
+                    });
+                    resolve(_output);
+                }
+            }).catch((error) => {
+                reject("API Error");
+                console.log(error);
+            });
+        },
+        create: function(blockData) {
+            return [{ group: 'nodes', data: blockData }];
+        },
+        destroy: function(blockData) {
+
+        }
+    },
+    "GET-TEXT-OUTPUT" : {
+        exec: function (input, blockData, state, resolve, reject) {
+            resolve([{done: true, output: input}]);
+        },
+        create: function(blockData) {
+            return [{ group: 'nodes', data: blockData }];
+        },
+        destroy: function(blockData) {
+
+        }
+    },
+    "GET-URL-OUTPUT" : {
+        exec: function (input, blockData, state, resolve, reject) {
+            resolve([{done: true, output: input}]);
+        },
+        create: function(blockData) {
+            return [{ group: 'nodes', data: blockData }];
+        },
+        destroy: function(blockData) {
+
+        }
     }
 };

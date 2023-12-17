@@ -3,6 +3,8 @@ import os
 import asyncio
 import aiohttp
 from aiohttp import web
+from bs4 import BeautifulSoup, NavigableString
+from urllib.parse import urljoin
 import html
 import json
 import dotenv
@@ -127,7 +129,7 @@ async def handle_llm_post(request):
         elif request_data["type"] == "KoboldCPP":
                 return web.json_response({"output": "\n".join([result["text"] for result in api_response["results"]])})
     except Exception as e:
-            return web.json_response({"error": str(e)})
+        return web.json_response({"error": str(e)})
 
 async def redirect_to_index(request):
     raise web.HTTPMovedPermanently('/index.html')
@@ -135,11 +137,41 @@ async def redirect_to_index(request):
 async def handle_config(request):
     return web.json_response({"enabled": enabled_apis})
 
+async def handle_forward_get(request):
+    def process_element(url, element, link_references):
+        result = ''
+        for child in element.children:
+            if child.name in ["script", "style", "template"]:
+                continue
+            if isinstance(child, NavigableString) or len(child.find_all('a')) == 0 or child.name == 'a':
+                result += child.get_text(strip=True).strip()
+                if child.name == 'a':
+                    link_references.append(urljoin(url, child['href']))
+                    result += f" (Link #{len(link_references)})"
+            else:
+                child_result = process_element(url, child, link_references)
+                if child_result:
+                    result += child_result.strip() + "\n"
+        return result
+
+    request_data = await request.json()
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.get(request_data["url"]) as response:
+                page_text = await response.text()
+        except Exception as e:
+            return web.json_response({"error": str(e)})
+
+    link_ref = []
+    out = process_element(request_data["url"], BeautifulSoup(page_text, "html.parser"), link_ref)
+    return web.json_response({"output": out, "links": link_ref})
+
 app = web.Application()
 app.router.add_get('/', redirect_to_index)
 app.router.add_get('/config.json', handle_config)
 app.router.add_static('/', "./dist")
 app.router.add_post('/api/llm', handle_llm_post)
+app.router.add_post('/api/get', handle_forward_get)
 if (args.api):
     app.router.add_post('/api/runflow', handle_runflow_post)
 

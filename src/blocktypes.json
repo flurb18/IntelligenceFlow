@@ -272,5 +272,35 @@
         },
         "parameters": {},
         "hidden": true
+    },
+    "GET" : {
+        "info": "The GET block is a special compound block. It takes no parameters. It consists of an input block for a URL, and two outputs: One that gives the text extracted from the website at that URL along with link references starting at 1, and one that outputs an array of links to other URLs found in the webpage. The link references in the output text extracted correspond to the indices of the URLs in the output link array, starting with 1.",
+        "maps": {
+            "none": "unavailable"
+        },
+        "parameters": {},
+        "hidden": false
+    },
+    "GET-INPUT" : {
+        "maps": {
+            "none": "unavailable",
+            "single": "unavailable"
+        },
+        "parameters": {},
+        "hidden": true
+    },
+    "GET-TEXT-OUTPUT" : {
+        "maps": {
+            "unavailable": "single"
+        },
+        "parameters": {},
+        "hidden": true
+    },
+    "GET-URL-OUTPUT" : {
+        "maps": {
+            "unavailable": "multi"
+        },
+        "parameters": {},
+        "hidden": true
     }
 }
