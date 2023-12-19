@@ -129,10 +129,9 @@ export function addFileImportHandler(state) {
                         return;
                     }
                     resetState(state);
-                    state.blockTypeIdNums = data["state"].blockTypeIdNums;
                     state.cy.nodes().forEach((block) => {
                         blockFuncs[block.data("block-type")].destroy(block.data());
-                    })
+                    });
                     state.cy.destroy();
                     state.cy = cytoscape({
                         container: document.getElementById('flow-diagram'),
@@ -143,92 +142,91 @@ export function addFileImportHandler(state) {
                         style: cytostyle,
                         layout: { name: 'grid' }
                     });
-                    state.cy.json(data["cytoscape"]);
-                    addSelectionHandler(state);
-                    state.cy.nodes().forEach((block) => {
-                        if (!block.isChild()) {
-                            state.cy.add(blockFuncs[block.data("block-type")].create(block.data()));
-                        }
-                    });
-                    resetState(state);
+                    for (var blockType of Object.keys(blockTypes)) {
+                        state.blockTypeIdNums[blockType] = [0];
+                    }
+                    //state.cy.json(data["cytoscape"]);
                     break;
                 case "copy":
                     if (!confirm("Import file into current flow?")) {
                         return;
                     }
-                    var nodesData = data["cytoscape"]["elements"]["nodes"];
-                    var newEles = [];
-                    var idMap = {};
-                    var idNumMap = {};
-                    Object.keys(nodesData).forEach((nodeKey) => {
-                        var nodeData = nodesData[nodeKey]["data"];
-                        var blockType = nodeData["block-type"];
-                        if (!blockTypes[blockType]["hidden"]) {
-                            var newIdNum = Math.max(...state.blockTypeIdNums[blockType]) + 1;
-                            var newId = blockType + newIdNum;
-                            idMap[nodeData["id"]] = newId;
-                            idNumMap[nodeData["id"]] = newIdNum;
-                            state.blockTypeIdNums[blockType].push(newIdNum);
-                        }
-                    });
-                    Object.keys(nodesData).forEach((nodeKey) => {
-                        var nodeData = nodesData[nodeKey]["data"];
-                        var blockType = nodeData["block-type"];
-                        if (!blockTypes[blockType]["hidden"]) {
-                            var _data = newBlockData(blockType, idNumMap[nodeData["id"]], nodeData["barelabel"]);
-                            _data["input-type"] = nodeData["input-type"];
-                            _data["parameters"] = nodeData["parameters"];
-                            blockFuncs[blockType].create(_data).forEach((desc) => {
-                                if (desc["group"] === "nodes") {
-                                    var pos = {
-                                        x: nodesData[nodeKey]["position"]["x"],
-                                        y: nodesData[nodeKey]["position"]["y"]
-                                    }
-                                    if (blockTypes[desc["data"]["block-type"]]["hidden"]) {
-                                        var oldId = desc["data"]["id"].replace(_data["id"], nodeData["id"]);
-                                        idMap[oldId] = desc["data"]["id"];
-                                        //Find old node and take position
-                                        Object.keys(nodesData).forEach((nodeSearchKey) => {
-                                            if (nodesData[nodeSearchKey]["data"]["id"] === oldId) {
-                                                pos = {
-                                                    x: nodesData[nodeSearchKey]["position"]["x"],
-                                                    y: nodesData[nodeSearchKey]["position"]["y"]
-                                                };
-                                            }
-                                        });
-                                    }
-                                    newEles.push({
-                                        ...desc,
-                                        "position": pos
-                                    });
-                                } else {
-                                    newEles.push(desc);
-                                }
-                            });
-                        }
-                    });
-                    var edgesData = data["cytoscape"]["elements"]["edges"];
-                    Object.keys(edgesData).forEach((edgeKey) => {
-                        var oldEdgeData = edgesData[edgeKey]["data"];
-                        if (oldEdgeData["user-created"]) {
-                            var newSource = idMap[oldEdgeData["source"]];
-                            var newTarget = idMap[oldEdgeData["target"]];
-                            newEles.push({
-                                group: 'edges',
-                                data: {
-                                    "id": newSource + newTarget,
-                                    "source": newSource,
-                                    "target": newTarget,
-                                    "user-created": true
-                                },
-                                classes: edgesData[edgeKey].classes
-                            });
-                        }
-                    });
-                    state.cy.add(newEles);
-                    resetState(state);
                     break;
             }
+            var nodesData = data["cytoscape"]["elements"]["nodes"];
+            var newEles = [];
+            var idMap = {};
+            var idNumMap = {};
+            Object.keys(nodesData).forEach((nodeKey) => {
+                var nodeData = nodesData[nodeKey]["data"];
+                var blockType = nodeData["block-type"];
+                if (!blockTypes[blockType]["hidden"]) {
+                    var newIdNum = Math.max(...state.blockTypeIdNums[blockType]) + 1;
+                    var newId = blockType + newIdNum;
+                    idMap[nodeData["id"]] = newId;
+                    idNumMap[nodeData["id"]] = newIdNum;
+                    state.blockTypeIdNums[blockType].push(newIdNum);
+                }
+            });
+            Object.keys(nodesData).forEach((nodeKey) => {
+                var nodeData = nodesData[nodeKey]["data"];
+                var blockType = nodeData["block-type"];
+                if (!blockTypes[blockType]["hidden"]) {
+                    var _data = newBlockData(blockType, idNumMap[nodeData["id"]], nodeData["barelabel"]);
+                    _data["input-type"] = nodeData["input-type"];
+                    _data["parameters"] = nodeData["parameters"];
+                    blockFuncs[blockType].create(_data).forEach((desc) => {
+                        if (desc["group"] === "nodes") {
+                            var pos = {
+                                x: nodesData[nodeKey]["position"]["x"],
+                                y: nodesData[nodeKey]["position"]["y"]
+                            }
+                            if (blockTypes[desc["data"]["block-type"]]["hidden"]) {
+                                var oldId = desc["data"]["id"].replace(_data["id"], nodeData["id"]);
+                                idMap[oldId] = desc["data"]["id"];
+                                //Find old node and take position
+                                Object.keys(nodesData).forEach((nodeSearchKey) => {
+                                    if (nodesData[nodeSearchKey]["data"]["id"] === oldId) {
+                                        pos = {
+                                            x: nodesData[nodeSearchKey]["position"]["x"],
+                                            y: nodesData[nodeSearchKey]["position"]["y"]
+                                        };
+                                    }
+                                });
+                            }
+                            newEles.push({
+                                ...desc,
+                                "position": pos
+                            });
+                        } else {
+                            newEles.push(desc);
+                        }
+                    });
+                }
+            });
+            var edgesData = data["cytoscape"]["elements"]["edges"];
+            Object.keys(edgesData).forEach((edgeKey) => {
+                var oldEdgeData = edgesData[edgeKey]["data"];
+                if (oldEdgeData["user-created"]) {
+                    var newSource = idMap[oldEdgeData["source"]];
+                    var newTarget = idMap[oldEdgeData["target"]];
+                    newEles.push({
+                        group: 'edges',
+                        data: {
+                            "id": newSource + newTarget,
+                            "source": newSource,
+                            "target": newTarget,
+                            "user-created": true
+                        },
+                        classes: edgesData[edgeKey].classes
+                    });
+                }
+            });
+            state.cy.add(newEles);
+            if (selectElement.options[selectElement.selectedIndex].value === "new") {
+                addSelectionHandler(state);
+            }
+            resetState(state);
         }
     });
 }
