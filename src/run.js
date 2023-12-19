@@ -63,10 +63,8 @@ function executeBlockQueue(block, state) {
                     setTimeout(() => {
                         executeBlock(queuedInputs, block, state).then(executeOutput => {
                             block.removeClass("active");
-                            block.scratch({
-                                "waiting-for": [...block.data("waits-for")],
-                                "queued-inputs": {}
-                            });
+                            block.scratch("waiting-for", [...block.data("waits-for")]);
+                            block.scratch("queued-inputs", {});
                             var newQueue = [...block.data("waiting-extra-input-queue"), ...block.data("default-input-queue")];
                             block.data("default-input-queue", newQueue);
                             block.data("waiting-extra-input-queue", []);
@@ -74,10 +72,8 @@ function executeBlockQueue(block, state) {
                             resolve();
                         }).catch(error => {
                             block.removeClass("active");
-                            block.scratch({
-                                "waiting-for": [...block.data("waits-for")],
-                                "queued-inputs": {}
-                            });
+                            block.scratch("waiting-for", [...block.data("waits-for")]);
+                            block.scratch("queued-inputs", {});
                             block.data("default-input-queue", []);
                             block.data("waiting-extra-input-queue", []);
                             queueItem["reject"](error);

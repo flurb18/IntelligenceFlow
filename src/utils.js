@@ -67,10 +67,8 @@ export function resetState(state) {
 export function resetBlock(block) {
     block.removeClass("active");
     block.removeClass("waiting");
-    block.scratch({
-        "waiting-for": [...block.data("waits-for")],
-        "queued-inputs": {}
-    });
+    block.scratch("waiting-for", [...block.data("waits-for")]);
+    block.scratch("queued-inputs", {});
     if (block.data("block-type") === "SAVE") {
         block.data("save", null);
     }
