@@ -321,7 +321,7 @@ export var blockFuncs = {
         create: function (blockData) {
             var elements = [{ group: 'nodes', data: blockData }];
             var outputId = blockData.id + "OUTPUT";
-            var inputIds = []
+            var inputIds = [];
             for (var i = 1; i <= blockData.parameters["SYNTHESIZE-num-inputs"]; i++) {
                 var inputId = blockData.id + "INPUT" + i;
                 inputIds.push(inputId);
@@ -457,7 +457,8 @@ export var blockFuncs = {
                     data: {
                         "id": inputId + outputId,
                         "source": inputId,
-                        "target": outputId
+                        "target": outputId,
+                        "user-created": false
                     }
                 })
             }
@@ -554,7 +555,8 @@ export var blockFuncs = {
                 data: {
                     "id": inputId + textOutputId,
                     "source": inputId,
-                    "target": textOutputId
+                    "target": textOutputId,
+                    "user-created": false
                 }
             });
             elements.push({
@@ -562,7 +564,8 @@ export var blockFuncs = {
                 data: {
                     "id": inputId + urlOutputId,
                     "source": inputId,
-                    "target": urlOutputId
+                    "target": urlOutputId,
+                    "user-created": false
                 }
             });
             return elements;
@@ -633,6 +636,151 @@ export var blockFuncs = {
             return [{ group: 'nodes', data: blockData }];
         },
         destroy: function(blockData) {
+
+        }
+    },
+    "SCRIPT" : {
+        exec: function (input, blockData, state, resolve, reject) {
+            reject("This block is a container and shouldn't ever run");
+        },
+        create: function(blockData) {
+            var elements = [{ group: 'nodes', data: blockData }];
+            var isMulti = blockData.parameters["SCRIPT-output-type"] === "Array of Text";
+            var outputId = blockData.id + "OUTPUT";
+            var inputIds = [];
+            for (var i = 1; i <= blockData.parameters["SCRIPT-num-text-inputs"]; i++) {
+                var inputId = blockData.id + "TEXTINPUT" + i;
+                inputIds.push(inputId);
+                elements.push({
+                    group: 'nodes',
+                    data: {
+                        "id": inputId,
+                        "parent": blockData.id,
+                        "label": blockData.label + "-TEXT-INPUT" + i,
+                        "block-type": "SCRIPT-TEXT-INPUT",
+                        "input-type": "none",
+                        "parameters": blockData.parameters,
+                        "waits-for": []
+                    }
+                });
+                elements.push({
+                    group: 'edges',
+                    data: {
+                        "id": inputId + outputId,
+                        "source": inputId,
+                        "target": outputId,
+                        "user-created": false
+                    }
+                });
+            }
+            for (var i = 1; i <= blockData.parameters["SCRIPT-num-array-inputs"]; i++) {
+                var inputId = blockData.id + "ARRAYINPUT" + i;
+                inputIds.push(inputId);
+                elements.push({
+                    group: 'nodes',
+                    data: {
+                        "id": inputId,
+                        "parent": blockData.id,
+                        "label": blockData.label + "-ARRAY-INPUT" + i,
+                        "block-type": "SCRIPT-ARRAY-INPUT",
+                        "input-type": "none",
+                        "parameters": blockData.parameters,
+                        "waits-for": []
+                    }
+                });
+                elements.push({
+                    group: 'edges',
+                    data: {
+                        "id": inputId + outputId,
+                        "source": inputId,
+                        "target": outputId,
+                        "user-created": false
+                    },
+                    classes: ["multi"]
+                });
+            }
+            elements.push({
+                group: 'nodes',
+                data: {
+                    "id": outputId,
+                    "parent": blockData.id,
+                    "label": blockData.label + "-OUTPUT",
+                    "block-type": isMulti ? "SCRIPT-ARRAY-OUTPUT" : "SCRIPT-TEXT-OUTPUT",
+                    "input-type": "unavailable",
+                    "parameters": blockData.parameters,
+                    "waits-for": inputIds
+                },
+                scratch: {
+                    "waiting-for": [...inputIds],
+                    "queued-inputs": {},
+                    "function-object": new Function("textInputs", "arrayInputs", blockData.parameters["SCRIPT-code"])
+                }
+            });
+            return elements;
+        },
+        destroy: function (blockData) {
+
+        }
+    },
+    "SCRIPT-TEXT-INPUT" : {
+        exec: function (input, blockData, state, resolve, reject) {
+            resolve([{done: true, output: input}]);
+        },
+        create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
+        },
+        destroy: function (blockData) {
+
+        }
+    },
+    "SCRIPT-ARRAY-INPUT" : {
+        exec: function (input, blockData, state, resolve, reject) {
+            resolve([{done: true, output: input}]);
+        },
+        create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
+        },
+        destroy: function (blockData) {
+
+        }
+    },
+    "SCRIPT-TEXT-OUTPUT" : {
+        exec: function (input, blockData, state, resolve, reject) {
+            textInputs = [];
+            arrayInputs = [];
+            for (var i = 1; i <= blockData.parameters["SCRIPT-num-text-inputs"]; i++) {
+                textInputs.push(input[blockData.parent + "TEXTINPUT" + i]);
+            }
+            for (var i = 1; i <= blockData.parameters["SCRIPT-num-array-inputs"]; i++) {
+                arrayInputs.push(input[blockData.parent + "ARRAYINPUT" + i]);
+            }
+            var _output = state.cy.getElementById(blockData.id).scratch("function-object")(textInputs, arrayInputs);
+            resolve([{done: true, output: _output}]);
+        },
+        create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
+        },
+        destroy: function (blockData) {
+
+        }
+    },
+    "SCRIPT-ARRAY-OUTPUT" : {
+        exec: function (input, blockData, state, resolve, reject) {
+            textInputs = [];
+            arrayInputs = [];
+            for (var i = 1; i <= blockData.parameters["SCRIPT-num-text-inputs"]; i++) {
+                textInputs.push(input[blockData.parent + "TEXTINPUT" + i]);
+            }
+            for (var i = 1; i <= blockData.parameters["SCRIPT-num-array-inputs"]; i++) {
+                arrayInputs.push(input[blockData.parent + "ARRAYINPUT" + i]);
+            }
+            var _output = state.cy.getElementById(blockData.id).scratch("function-object")(textInputs, arrayInputs);
+            resolve([{done: true, output: _output}]);
+        },
+        create: function (blockData) {
+            return [{ group: 'nodes', data: blockData }];
+        },
+        destroy: function (blockData) {
 
         }
     }

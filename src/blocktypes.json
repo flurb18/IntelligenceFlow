@@ -302,5 +302,71 @@
         },
         "parameters": {},
         "hidden": true
+    },
+    "SCRIPT" : {
+        "info" : "The SCRIPT block is a special compound block. It allows you to write your own javascript to edit the text mid-flow. It takes several parameters: the number of Text Inputs, the number of Array Inputs, the type of the output, and the Javascript for the block. The Javascript will be executed once all inputs have arrived, and pass on the returned value to the output. When writing your Javascript, the text inputs will be available to you in an array named textInputs, and the array inputs will be available in an array named arrayInputs. Thus textInputs will be an array of strings corresponding to the text inputs, and arrayInputs will be an array of arrays of strings corresponding to the array inputs. For example, to access the first text input in your Javascript, you would write textInputs[0]. You can return either a single string or an array of strings.",
+        "maps": {
+            "none": "unavailable"
+        },
+        "parameters": {
+            "SCRIPT-num-text-inputs": {
+                "label": "Number of Text Inputs",
+                "type": "num",
+                "min": "0",
+                "max": "10",
+                "default": "1",
+                "final": true
+            },
+            "SCRIPT-num-array-inputs": {
+                "label": "Number of Array Inputs",
+                "type": "num",
+                "min": "0",
+                "max": "10",
+                "default": "0",
+                "final": true
+            },
+            "SCRIPT-output-type" : {
+                "label" : "Output Type",
+                "type": "choice",
+                "choices": ["Text", "Array of Text"],
+                "final": true
+            },
+            "SCRIPT-code" : {
+                "label": "Javascript",
+                "type": "textbox",
+                "final": true
+            }
+        },
+        "hidden": false
+    },
+    "SCRIPT-TEXT-INPUT" : {
+        "maps": {
+            "none": "unavailable",
+            "single": "unavailable"
+        },
+        "parameters": {},
+        "hidden": true
+    },
+    "SCRIPT-ARRAY-INPUT" : {
+        "maps": {
+            "none": "unavailable",
+            "multi": "unavailable"
+        },
+        "parameters": {},
+        "hidden": true
+    },
+    "SCRIPT-TEXT-OUTPUT" : {
+        "maps": {
+            "unavailable": "single"
+        },
+        "parameters": {},
+        "hidden": true
+    },
+    "SCRIPT-ARRAY-OUTPUT" : {
+        "maps": {
+            "unavailable": "multi"
+        },
+        "parameters": {},
+        "hidden": true
     }
 }
