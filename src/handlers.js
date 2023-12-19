@@ -146,8 +146,9 @@ export function addFileImportHandler(state) {
                     state.cy.json(data["cytoscape"]);
                     addSelectionHandler(state);
                     state.cy.nodes().forEach((block) => {
-                        // Run creation hook, but don't import data (already there)
-                        blockFuncs[block.data("block-type")].create(block.data());
+                        if (!block.isChild()) {
+                            state.cy.add(blockFuncs[block.data("block-type")].create(block.data()));
+                        }
                     });
                     resetState(state);
                     break;
