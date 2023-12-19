@@ -746,8 +746,8 @@ export var blockFuncs = {
     },
     "SCRIPT-TEXT-OUTPUT" : {
         exec: function (input, blockData, state, resolve, reject) {
-            textInputs = [];
-            arrayInputs = [];
+            var textInputs = [];
+            var arrayInputs = [];
             for (var i = 1; i <= blockData.parameters["SCRIPT-num-text-inputs"]; i++) {
                 textInputs.push(input[blockData.parent + "TEXTINPUT" + i]);
             }
@@ -766,8 +766,8 @@ export var blockFuncs = {
     },
     "SCRIPT-ARRAY-OUTPUT" : {
         exec: function (input, blockData, state, resolve, reject) {
-            textInputs = [];
-            arrayInputs = [];
+            var textInputs = [];
+            var arrayInputs = [];
             for (var i = 1; i <= blockData.parameters["SCRIPT-num-text-inputs"]; i++) {
                 textInputs.push(input[blockData.parent + "TEXTINPUT" + i]);
             }
