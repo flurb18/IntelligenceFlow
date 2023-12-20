@@ -776,7 +776,7 @@ export var blockFuncs = {
             }
             var _output = state.cy.getElementById(blockData.id).scratch("function-object")(textInputs, arrayInputs);
             if (Array.isArray(_output)) {
-                stringOutput = [];
+                var stringOutput = [];
                 _output.forEach((out) => stringOutput.push(String(out)));
                 resolve([{done: true, output: stringOutput}]);
             } else {
