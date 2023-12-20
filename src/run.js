@@ -4,7 +4,7 @@ export function activateBlock(input, block, srcId, state) {
     if (state.cancel || !state.running) {
         return new Promise((resolve, reject) => reject("Stopped"));
     }
-    return new Promise((resolve, reject) => {  
+    return new Promise((resolve, reject) => {
         block.data("default-input-queue").push({
             "input": input,
             "from": srcId,

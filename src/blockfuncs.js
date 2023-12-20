@@ -99,18 +99,6 @@ export var blockFuncs = {
 
         }
     },
-    "COPY": {
-        exec: function (input, blockData, state, resolve, reject) {
-            var numCopies = parseInt(blockData.parameters["COPY-num-copies"]);
-            resolve([{done:true, output: Array(numCopies).fill(input)}]);
-        },
-        create: function (blockData) {
-            return [{ group: 'nodes', data: blockData }];
-        },
-        destroy: function (blockData) {
-
-        }
-    },
     "SPLIT": {
         exec: function (input, blockData, state, resolve, reject) {
             const breaks = ['\n', '.', ',',' '];
@@ -161,17 +149,6 @@ export var blockFuncs = {
             }
             _output.push(remaining);
             resolve([{done: true, output: _output}]);
-        },
-        create: function (blockData) {
-            return [{ group: 'nodes', data: blockData }];
-        },
-        destroy: function (blockData) {
-
-        }
-    },
-    "COMBINE": {
-        exec: function (input, blockData, state, resolve, reject) {
-            resolve([{done: true, output: input.join("\n\n")}]);
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];

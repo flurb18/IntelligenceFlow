@@ -1,6 +1,6 @@
 {
     "INPUT": {
-        "info": "The INPUT block takes user input before the flow is executed and passes it to its outgoing neighbors at the start of execution. All chains of execution start with either an INPUT block, or an INPUT-FIXED block.",
+        "info": "The INPUT block takes user input before the flow is executed and passes it to its outgoing neighbors at the start of execution. All chains of execution start with either an INPUT block, or an FIXED-INPUT block.",
         "maps": {
             "none": "single"
         },
@@ -50,24 +50,6 @@
         "parameters": {},
         "hidden": false
     },
-    "COPY": {
-        "info": "The COPY block creates an array of n copies of its input, where n is a parameter chosen when the block is created. Note that the COPY block outputs an array.",
-        "maps": {
-            "none": "none",
-            "single": "multi"
-        },
-        "parameters": {
-            "COPY-num-copies": {
-                "label": "Number of Copies",
-                "type": "num",
-                "min": "2",
-                "max": "100",
-                "default": "10",
-                "final": false
-            }
-        },
-        "hidden": false
-    },
     "SPLIT": {
         "info": "The SPLIT block splits its input into overlapping chunks, where the chunk size and overlap is set when the block is created. It attempts to break the chunks on newlines, periods, commas, or spaces, in that order. The chunk deviation parameter controls how far it searchs for those break elements. The block outputs these chunks as an array.",
         "maps": {
@@ -100,15 +82,6 @@
                 "final": false
             }
         },
-        "hidden": false
-    },
-    "COMBINE": {
-        "info": "The COMBINE block takes arrays as input and concatenates them for its output.",
-        "maps": {
-            "none": "none",
-            "multi": "single"
-        },
-        "parameters": {},
         "hidden": false
     },
     "SEPARATE": {
@@ -193,7 +166,7 @@
         "hidden": false
     },
     "SYNTHESIZE": {
-        "info": "The SYNTHESIZE block is a special compound block. It takes an output format as a paramter, which is a string. It consists of n+1 sub-blocks, where n is another parameter set when the block is created. The sub-blocks consist of n numbered inputs all pointing to one output; this output will wait for all of its inputs to come in before executing, entering a yellow waiting state when it has received some inputs but not all. Once all inputs are in, the block will output the result of replacing all instances of the string '_INPUTi_' in the output format parameter with the input from the sub-block labeled input i, for each i from 1 to n. As an example, if n=2 and the output format is '_INPUT1_ (hi!) _INPUT2_', and the inputs are 'Hello' and 'World!', the output will be 'Hello (hi!) World!'.",
+        "info": "The SYNTHESIZE block is a special compound block. It takes an output format as a paramter, which is a string. It consists of n numbered inputs all pointing to one output, where n is a parameter set when the block is created; this output will wait for all of its inputs to come in before executing, entering a yellow waiting state when it has received some inputs but not all. Once all inputs are in, the block will output the result of replacing all instances of the string '_INPUTi_' in the output format parameter with the input from the sub-block labeled input i, for each i from 1 to n. As an example, if n=2 and the output format is '_INPUT1_ (hi!) _INPUT2_', and the inputs are 'Hello' and 'World!', the output will be 'Hello (hi!) World!'.",
         "maps": {
             "none": "unavailable"
         },
