@@ -755,7 +755,7 @@ export var blockFuncs = {
                 arrayInputs.push(input[blockData.parent + "ARRAYINPUT" + i]);
             }
             var _output = state.cy.getElementById(blockData.id).scratch("function-object")(textInputs, arrayInputs);
-            resolve([{done: true, output: _output}]);
+            resolve([{done: true, output: String(_output)}]);
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];
@@ -775,7 +775,13 @@ export var blockFuncs = {
                 arrayInputs.push(input[blockData.parent + "ARRAYINPUT" + i]);
             }
             var _output = state.cy.getElementById(blockData.id).scratch("function-object")(textInputs, arrayInputs);
-            resolve([{done: true, output: _output}]);
+            if (Array.isArray(_output)) {
+                stringOutput = [];
+                _output.forEach((out) => stringOutput.push(String(out)));
+                resolve([{done: true, output: stringOutput}]);
+            } else {
+                reject("Improper Javascript output");
+            }
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];
