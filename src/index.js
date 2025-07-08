@@ -103,14 +103,14 @@ document.getElementById("settings-form").addEventListener("submit", function(e) 
         switch (state.apiType) {
             case "OpenAI" :
                 state.apiConfig = {
-                    model: document.getElementById("settings-api-type-OpenAI-Model-Name").value,
-                    key: document.getElementById("settings-api-type-OpenAI-Key").value
+                    model: document.getElementById("OpenAI-submenu-OpenAI-Model-Name").value,
+                    key: document.getElementById("OpenAI-submenu-OpenAI-Key").value
                 };
                 break;
             case "Ollama" :
                 state.apiConfig = {
-                    URL: document.getElementById("settings-api-type-Ollama-URL").value,
-                    model: document.getElementById("settings-api-type-Ollama-Model-Name").value
+                    URL: document.getElementById("Ollama-submenu-Ollama-URL").value,
+                    model: document.getElementById("Ollama-submenu-Ollama-Model-Name").value
                 };
                 break;
         }
