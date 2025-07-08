@@ -51,6 +51,38 @@ document.getElementById("edit-block-menu").addEventListener("submit", (e) => {e.
 
 createSubmenusByType(blockTypes, document.getElementById("new-block-type"));
 
+apiSubmenuConfig = {
+    "OpenAI" : {
+        "parameters" : {
+            "OpenAI-Key" : {
+                "label" : "OpenAI API Key",
+                "type" : "text",
+                "final" : false
+            },
+            "OpenAI-Model-Name" : {
+                "label" : "Model Name",
+                "type" : "text",
+                "final" : false
+            }
+        }
+    },
+    "Ollama" : {
+        "parameters" : {
+            "Ollama-URL" : {
+                "label" : "Ollama URL",
+                "type" : "text",
+                "final" : false
+            },
+            "Ollama-Model-Name" : {
+                "label" : "Model Name",
+                "type" : "text",
+                "final" : false
+            }
+        }
+    }
+};
+createSubmenusByType(apiSubmenuConfig, document.getElementById("settings-api-type"));
+
 var state = {
     blockTypeIdNums: {},
     running: false,
@@ -60,7 +92,7 @@ var state = {
     animationDelay: document.getElementById("settings-animation-delay").value,
     selectedNode: null,
     cy: null
-}
+};
 
 for (var blockType of Object.keys(blockTypes)) {
     state.blockTypeIdNums[blockType] = [0];
@@ -70,24 +102,25 @@ document.getElementById("settings-form").addEventListener("submit", function(e) 
     e.preventDefault();
     if (!state.running) {
         state.apiType = document.getElementById("settings-api-type").value;
+        switch (state.apiType) {
+            case "OpenAI" :
+                state.apiConfig = {
+                    model: document.getElementById("settings-api-type-OpenAI-Model-Name").value,
+                    key: document.getElementById("settings-api-type-OpenAI-Key").value
+                };
+                break;
+            case "Ollama" :
+                state.apiConfig = {
+                    URL: document.getElementById("settings-api-type-Ollama-URL").value,
+                    model: document.getElementById("settings-api-type-Ollama-Model-Name").value
+                };
+                break;
+        }
         state.animationDelay = document.getElementById("settings-animation-delay").value;
         notify("Settings saved");
     } else {
         notify("Cannot save settings while running");
     }
-});
-
-fetch("config.json").then((response) => response.json()).then((config) => {
-    var apiTypes = ["OpenAI", "Oobabooga", "KoboldCPP"];
-    for (var type of config["enabled"]) {
-        var selectElement = document.getElementById("settings-api-type");
-        var choiceOption = document.createElement("option");
-        choiceOption.setAttribute("value", type);
-        choiceOption.innerText = type;
-        selectElement.appendChild(choiceOption);
-    }
-    state.apiType = document.getElementById("settings-api-type").value;
-    state.apiConfig = config;
 });
 
 document.addEventListener('DOMContentLoaded', function () {

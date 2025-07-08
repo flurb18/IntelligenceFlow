@@ -255,34 +255,50 @@ export var blockFuncs = {
     },
     "LLM": {
         exec: function (input, blockData, state, resolve, reject) {
-            function apiCall(_input) {
-                var _prompt = blockData.parameters["LLM-query"].replace("_INPUT_", _input);
-                var request = {
-                    type: state.apiType,
-                    prompt: _prompt,
-                    temperature: blockData.parameters["LLM-temperature"],
-                    max_new_tokens: blockData.parameters["LLM-max-new-tokens"],
-                    max_prompt_tokens: blockData.parameters["LLM-max-prompt-tokens"]
-                };
-                fetch("api/llm", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(request)
-                }).then((response) => response.json()).then((responseJSON) => {
-                    if (responseJSON.hasOwnProperty("error") || !responseJSON.hasOwnProperty("output")) {
-                        reject("API Error");
-                        if (responseJSON.hasOwnProperty("error")) {console.log(responseJSON["error"]);}
-                    } else {
-                        resolve([{done: true, output: responseJSON["output"]}])
-                    }
-                }).catch((error) => {
-                    reject("API Error");
-                    console.log(error);
-                });
+            var prompt = blockData.parameters["LLM-query"].replace("_INPUT_", input);
+            var fetchURL;
+            var request = {
+                "model": state.apiConfig.model,
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature":  blockData.parameters["LLM-temperature"],
+                "stream":  false,
+                "max_tokens": blockData.parameters["LLM-max-new-tokens"],
+                "n": 1
+            };
+            var headers = { "Content-Type" : "application/json" };
+            switch (state.apiType) {
+                case "OpenAI" :
+                    fetchURL = "https://api.openai.com/v1/chat/completions";
+                    headers["Authorization"] = "Bearer " + state.apiConfig.key;
+                    break;
+                case "Ollama" :
+                    fetchURL = state.apiConfig.URL;
+                    break;
             }
-            apiCall(input);
+            fetch(fetchURL, {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify(request)
+            }).then((response) => response.json()).then((responseJSON) => {
+                if (responseJSON.hasOwnProperty("error") || !responseJSON.hasOwnProperty("choices")) {
+                    reject("API Error");
+                    if (responseJSON.hasOwnProperty("error")) {console.log(responseJSON["error"]);}
+                } else {
+                    var oup;
+                    switch (state.apiType) {
+                        case "OpenAI" :
+                            oup = responseJSON["choices"][0]["message"]["content"];
+                            break;
+                        case "Ollama" :
+                            oup = responseJSON["message"]["content"];
+                            break;
+                    }
+                    resolve([{done: true, output: oup}]);
+                }
+            }).catch((error) => {
+                reject("API Error");
+                console.log(error);
+            });
         },
         create: function (blockData) {
             return [{ group: 'nodes', data: blockData }];
