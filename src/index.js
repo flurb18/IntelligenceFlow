@@ -50,8 +50,7 @@ for (var i = 0; i < expands.length; i++) {
 document.getElementById("edit-block-menu").addEventListener("submit", (e) => {e.preventDefault()});
 
 createSubmenusByType(blockTypes, document.getElementById("new-block-type"));
-
-apiSubmenuConfig = {
+createSubmenusByType({
     "OpenAI" : {
         "parameters" : {
             "OpenAI-Key" : {
@@ -80,8 +79,7 @@ apiSubmenuConfig = {
             }
         }
     }
-};
-createSubmenusByType(apiSubmenuConfig, document.getElementById("settings-api-type"));
+}, document.getElementById("settings-api-type"));
 
 var state = {
     blockTypeIdNums: {},
