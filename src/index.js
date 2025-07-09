@@ -12,7 +12,8 @@ import {
     addExecuteHandler,
     addDeletionHandler,
     addNewBlockHandler,
-    addCancellationHandler
+    addCancellationHandler,
+    addSaveSettingsHandler
 } from './handlers.js';
 
 import blockTypes from './blocktypes.json';
@@ -96,31 +97,6 @@ for (var blockType of Object.keys(blockTypes)) {
     state.blockTypeIdNums[blockType] = [0];
 }
 
-document.getElementById("settings-form").addEventListener("submit", function(e) {
-    e.preventDefault();
-    if (!state.running) {
-        state.apiType = document.getElementById("settings-api-type").value;
-        switch (state.apiType) {
-            case "OpenAI" :
-                state.apiConfig = {
-                    model: document.getElementById("OpenAI-submenu-OpenAI-Model-Name").value,
-                    key: document.getElementById("OpenAI-submenu-OpenAI-Key").value
-                };
-                break;
-            case "Ollama" :
-                state.apiConfig = {
-                    URL: document.getElementById("Ollama-submenu-Ollama-URL").value,
-                    model: document.getElementById("Ollama-submenu-Ollama-Model-Name").value
-                };
-                break;
-        }
-        state.animationDelay = document.getElementById("settings-animation-delay").value;
-        notify("Settings saved");
-    } else {
-        notify("Cannot save settings while running");
-    }
-});
-
 document.addEventListener('DOMContentLoaded', function () {
 
     // Run Cytoscape
@@ -143,6 +119,6 @@ document.addEventListener('DOMContentLoaded', function () {
     addNewBlockHandler(state);
     addFileImportHandler(state);
     addFileExportHandler(state);
-    
+    addSaveSettingsHandler(state);
 });
 

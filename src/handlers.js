@@ -313,3 +313,30 @@ export function addSelectionHandler(state) {
     state.cy.on('taphold', handleBlockSelection);
 }
 
+export function addSaveSettingsHandler(state) {
+    var settingsForm = document.getElementById("settings-form");
+    settingsForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        if (!state.running) {
+            state.apiType = settingsForm.elements["settings-api-type"].value;
+            switch (state.apiType) {
+                case "OpenAI" :
+                    state.apiConfig = {
+                        model: settingsForm.elements["OpenAI-Model-Name"].value,
+                        key: settingsForm.elements["OpenAI-Key"].value
+                    };
+                    break;
+                case "Ollama" :
+                    state.apiConfig = {
+                        URL: settingsForm.elements["Ollama-URL"].value,
+                        model: settingsForm.elements["Ollama-Model-Name"].value
+                    };
+                    break;
+            }
+            state.animationDelay = settingsForm.elements["settings-animation-delay"].value;
+            notify("Settings saved");
+        } else {
+            notify("Cannot save settings while running");
+        }
+    });
+}
