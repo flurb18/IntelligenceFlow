@@ -280,10 +280,9 @@ export var blockFuncs = {
                 headers: headers,
                 body: JSON.stringify(request)
             }).then((response) => response.json()).then((responseJSON) => {
-                if (responseJSON.hasOwnProperty("error") || !responseJSON.hasOwnProperty("choices")) {
+                if (responseJSON.hasOwnProperty("error")) {
                     reject("API Error");
-                    if (responseJSON.hasOwnProperty("error")) {console.log(responseJSON["error"]);}
-                    console.log(responseJSON);
+                    console.log(responseJSON["error"]);
                 } else {
                     var oup;
                     switch (state.apiType) {
@@ -299,7 +298,6 @@ export var blockFuncs = {
             }).catch((error) => {
                 reject("API Error");
                 console.log(error);
-                console.log(responseJSON);
             });
         },
         create: function (blockData) {
