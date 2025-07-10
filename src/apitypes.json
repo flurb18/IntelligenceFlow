@@ -1,0 +1,39 @@
+{
+    "OpenAI" : {
+        "parameters" : {
+            "OpenAI-Key" : {
+                "label" : "OpenAI API Key",
+                "type" : "text",
+                "final" : false
+            },
+            "OpenAI-Model-Name" : {
+                "label" : "Model Name",
+                "type" : "text",
+                "final" : false
+            }
+        }
+    },
+    "Ollama" : {
+        "parameters" : {
+            "Ollama-URL" : {
+                "label" : "Ollama URL",
+                "type" : "text",
+                "final" : false
+            },
+            "Ollama-Model-Name" : {
+                "label" : "Model Name",
+                "type" : "text",
+                "final" : false
+            }
+        }
+    },
+    "Oobabooga" : {
+        "parameters" : {
+            "Oobabooga-URL" : {
+                "label" : "Oobabooga URL",
+                "type" : "text",
+                "final" : false
+            }
+        }
+    }
+}

@@ -17,6 +17,7 @@ import {
 } from './handlers.js';
 
 import blockTypes from './blocktypes.json';
+import apiTypes from './apitypes.json';
 import cytostyle from './cytoscape-styles.json';
 
 // Generate block type info
@@ -51,36 +52,7 @@ for (var i = 0; i < expands.length; i++) {
 document.getElementById("edit-block-menu").addEventListener("submit", (e) => {e.preventDefault()});
 
 createSubmenusByType(blockTypes, document.getElementById("new-block-type"));
-createSubmenusByType({
-    "OpenAI" : {
-        "parameters" : {
-            "OpenAI-Key" : {
-                "label" : "OpenAI API Key",
-                "type" : "text",
-                "final" : false
-            },
-            "OpenAI-Model-Name" : {
-                "label" : "Model Name",
-                "type" : "text",
-                "final" : false
-            }
-        }
-    },
-    "Ollama" : {
-        "parameters" : {
-            "Ollama-URL" : {
-                "label" : "Ollama URL",
-                "type" : "text",
-                "final" : false
-            },
-            "Ollama-Model-Name" : {
-                "label" : "Model Name",
-                "type" : "text",
-                "final" : false
-            }
-        }
-    }
-}, document.getElementById("settings-api-type"));
+createSubmenusByType(apiTypes, document.getElementById("settings-api-type"));
 
 var state = {
     blockTypeIdNums: {},

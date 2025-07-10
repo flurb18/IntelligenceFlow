@@ -332,6 +332,11 @@ export function addSaveSettingsHandler(state) {
                         model: settingsForm.elements["Ollama-Model-Name"].value
                     };
                     break;
+                case "Oobabooga" :
+                    state.apiConfig = {
+                        URL: settingsForm.elements["Oobabooga-URL"].value
+                    };
+                    break;
             }
             state.animationDelay = settingsForm.elements["settings-animation-delay"].value;
             notify("Settings saved");
