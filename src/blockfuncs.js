@@ -274,7 +274,7 @@ export var blockFuncs = {
                     break;
                 case "OpenAI-Compatible" :
                 case "Ollama" :
-                    var suffix = state.apiType === "Ollama" ? "/api/chat" : "/v1/chat/completions";
+                    var suffix = ((state.apiType === "Ollama") ? "/api/chat" : "/v1/chat/completions");
                     request["model"] = state.apiConfig.model;
                     fetchURL = state.apiConfig.URL.replace(/\/+$/, "");
                     if (!fetchURL.endsWith(suffix)) {
