@@ -297,6 +297,7 @@ export var blockFuncs = {
                             oup = responseJSON["message"]["content"];
                             break;
                         case "Oobabooga" :
+                            console.log(responseJSON);
                             oup = responseJSON["message"]["content"];
                             break;
                     }
