@@ -275,7 +275,11 @@ export var blockFuncs = {
                 case "OpenAI-Compatible" :
                 case "Ollama" :
                     request["model"] = state.apiConfig.model;
-                    fetchURL = state.apiConfig.URL;
+                    fetchURL = state.apiConfig.URL.replace(/\/+$/, "");
+                    var suffix = "/v1/chat/completions"
+                    if (!fetchURL.endswith(suffix)) {
+                        fetchURL = fetchURL + suffix;
+                    }
                     break;
             }
             fetch(fetchURL, {
