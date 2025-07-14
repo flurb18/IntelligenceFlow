@@ -276,8 +276,8 @@ export var blockFuncs = {
                 case "Ollama" :
                     request["model"] = state.apiConfig.model;
                     fetchURL = state.apiConfig.URL.replace(/\/+$/, "");
-                    var suffix = "/v1/chat/completions"
-                    if (!fetchURL.endswith(suffix)) {
+                    var suffix = "/v1/chat/completions";
+                    if (!fetchURL.endsWith(suffix)) {
                         fetchURL = fetchURL + suffix;
                     }
                     break;
