@@ -291,13 +291,10 @@ export var blockFuncs = {
                     var oup;
                     switch (state.apiType) {
                         case "OpenAI" :
+                        case "Oobabooga" :
                             oup = responseJSON["choices"][0]["message"]["content"];
                             break;
                         case "Ollama" :
-                            oup = responseJSON["message"]["content"];
-                            break;
-                        case "Oobabooga" :
-                            console.log(responseJSON);
                             oup = responseJSON["message"]["content"];
                             break;
                     }
