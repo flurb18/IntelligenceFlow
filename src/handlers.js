@@ -326,15 +326,16 @@ export function addSaveSettingsHandler(state) {
                         key: settingsForm.elements["OpenAI-Key"].value
                     };
                     break;
+                case "OpenAI-Compatible" :
+                    state.apiConfig = {
+                        URL: settingsForm.elements["OpenAI-Compatible-URL"].value,
+                        model: settingsForm.elements["OpenAI-Compatible-Model-Name"].value
+                    };
+                    break;
                 case "Ollama" :
                     state.apiConfig = {
                         URL: settingsForm.elements["Ollama-URL"].value,
                         model: settingsForm.elements["Ollama-Model-Name"].value
-                    };
-                    break;
-                case "Oobabooga" :
-                    state.apiConfig = {
-                        URL: settingsForm.elements["Oobabooga-URL"].value
                     };
                     break;
             }

@@ -258,6 +258,7 @@ export var blockFuncs = {
             var prompt = blockData.parameters["LLM-query"].replace("_INPUT_", input);
             var fetchURL;
             var request = {
+                "model": state.apiConfig.model,
                 "messages": [{"role": "user", "content": prompt}],
                 "temperature":  blockData.parameters["LLM-temperature"],
                 "stream":  false,
@@ -271,9 +272,7 @@ export var blockFuncs = {
                     fetchURL = "https://api.openai.com/v1/chat/completions";
                     headers["Authorization"] = "Bearer " + state.apiConfig.key;
                     break;
-                case "Oobabooga" :
-                    fetchURL = state.apiConfig.URL;
-                    break;
+                case "OpenAI-Compatible" :
                 case "Ollama" :
                     request["model"] = state.apiConfig.model;
                     fetchURL = state.apiConfig.URL;
@@ -291,7 +290,7 @@ export var blockFuncs = {
                     var oup;
                     switch (state.apiType) {
                         case "OpenAI" :
-                        case "Oobabooga" :
+                        case "OpenAI-Compatible" :
                             oup = responseJSON["choices"][0]["message"]["content"];
                             break;
                         case "Ollama" :

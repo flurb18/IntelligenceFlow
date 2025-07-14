@@ -13,6 +13,20 @@
             }
         }
     },
+    "OpenAI-Compatible" : {
+        "parameters" : {
+            "OpenAI-Compatible-URL" : {
+                "label" : "OpenAI Compatible URL",
+                "type" : "text",
+                "final" : false
+            },
+            "OpenAI-Compatible-Model-Name" : {
+                "label" : "Model Name",
+                "type" : "text",
+                "final" : false
+            }
+        }
+    },
     "Ollama" : {
         "parameters" : {
             "Ollama-URL" : {
@@ -22,15 +36,6 @@
             },
             "Ollama-Model-Name" : {
                 "label" : "Model Name",
-                "type" : "text",
-                "final" : false
-            }
-        }
-    },
-    "Oobabooga" : {
-        "parameters" : {
-            "Oobabooga-URL" : {
-                "label" : "Oobabooga URL",
                 "type" : "text",
                 "final" : false
             }
